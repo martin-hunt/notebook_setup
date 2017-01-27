@@ -1,0 +1,17 @@
+{
+        "argv": [
+                "$python", 
+                "-m", 
+                "octave_kernel", 
+                "-f", 
+                "{connection_file}"
+        ], 
+        "display_name": "$ver", 
+        "language": "octave", 
+        "mimetype": "text/x-octave", 
+        "name": "octave",
+        "env": {
+               "OCTAVE_EXECUTABLE": "$exe",
+               "OCTAVE_HOME": "$home"
+        }
+}

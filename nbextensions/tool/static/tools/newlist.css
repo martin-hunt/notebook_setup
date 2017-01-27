@@ -1,0 +1,45 @@
+/* newlist.css */
+
+body {
+	font-family: arial, sans-serif;
+}
+
+table#notebooks tr, th, td {
+	margin-top: 10px;
+	padding: 10px;
+}
+
+table#notebooks tr {
+	padding: 10px;
+	background: #ccccff;
+}
+table#notebooks tr:nth-child(odd) {
+	padding: 10px;
+	background: #e6e6ff;
+}
+ul#notebooks li {
+	padding: 10px;
+	background: 	#ccccff		;
+}
+ul#notebooks li:nth-child(odd) {
+	padding: 10px;
+	background: #e6e6ff;
+}
+ul#notebooks li:last-child {
+	-webkit-border-bottom-right-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-bottom: none;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+ul#notebooks li:first-child {
+	-webkit-border-top-right-radius: 5px;
+	-webkit-border-top-left-radius: 5px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-topleft: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+}
+
