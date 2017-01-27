@@ -186,6 +186,21 @@ def install_updates(pathlist):
         os.environ['PATH'] = path
 
 
+def install_R_pkgs(pathlist):
+    global dirname
+
+    path = os.environ['PATH']
+    for p in pathlist:
+        bindir = os.path.join(p, 'bin')
+        os.environ['PATH'] = bindir + ':' + path
+
+        # install packages we want
+        scriptname = os.path.join(dirname, 'inst.R')
+        os.system('Rscript %s' % scriptname)
+
+        os.environ['PATH'] = path
+
+
 def install_kernels(pathlist):
     "Install python 2 and python 3 kernels in anadonda2"
     print("install_kernels", pathlist)
@@ -360,6 +375,7 @@ def do_update(desktop, pathlist):
     install_updates(pathlist)
     install_kernels(pathlist)
     install_octave(pathlist[0], desktop)
+    install_R_pkgs(pathlist)
     install_misc(pathlist, desktop)
     install_extensions(pathlist, desktop)
     check_perm(pathlist)
