@@ -35,7 +35,7 @@ So we uninstall the jupyter conda extensions and then reenable our extensions.
 # This script is going to need customization for each release, so
 # hard-code the release here.
 VERSION = "4.1.1"
-RVERSION = "4.1"
+RVERSION = "4.1dev"
 
 # location of the environment files for 'use'
 ENVIRON_CONFIG_DIR = '/apps/share64/debian7/environ.d'

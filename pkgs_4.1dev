@@ -38,8 +38,8 @@ cryptography 1.7.1 conda
 datashape 0.5.4 conda
 gevent 1.2.1 conda
 greenlet 0.4.11 conda
-lxml 3.7.2 conda
 matplotlib 2.0.0 conda
+lxml 3.7.2 conda
 openssl 1.0.2j conda
 pyzmq 16.0.2 conda
 sqlalchemy 1.1.5 conda
@@ -47,7 +47,6 @@ zeromq 4.1.5 conda
 yt 3.3.2 conda
 rpy2 2.8.5 conda
 r-essentials 1.5.1 conda
-imageio 2.1.1 conda conda-forge
 cartopy 0.14.3 conda conda-forge
 iris 1.11.0 conda conda-forge
 geoviews 1.1.0 conda ioam
@@ -71,12 +70,15 @@ ez-setup 0.9 pip
 imolecule 0.1.13 pip
 ezvis3d 0.2 pip
 Pint 0.7.2 pip
-joommfutil 0.6 pip
-oommfc 0.6 pip
-oommfodt 0.6 pip
 
+# oommf stuff. versions must match
+joommfutil 0.5.6 pip
+oommfc 0.5.6.13 pip
+oommfodt 0.5.6 pip
+discretisedfield 0.5.6 pip
 
-# FIXME. need our own package with libs here
+# imageio is used by moviepy. Needs 1.6
+imageio 1.6 pip
 moviepy 0.2.2.11 pip
 
 git+https://github.com/jakevdp/JSAnimation.git * pip
