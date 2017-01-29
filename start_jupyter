@@ -23,14 +23,15 @@ This script handles four different modes.
 from __future__ import print_function
 import sys
 import os
+import shutil
 import signal
 import argparse
 import json
 from subprocess import call, Popen, check_output
 
 EXAMPLES = '/apps/share64/debian7/anaconda/examples-4.1'
-EXAMPLES_DIR = " Examples"
-
+OLD_EXAMPLES_DIR = " Examples"
+EXAMPLES_DIR = "DOCS_AND_EXAMPLES"
 
 def handler(signum, frame):
     pass
@@ -135,6 +136,62 @@ def get_proxy_addr():
     return url_path, proxy_url
 
 
+def load_examples(arglist):
+    # Run in users 'notebooks' subdirectory
+    os.chdir(os.environ['HOME'])
+    call(['mkdir', '-p', 'notebooks'])
+    os.chdir('notebooks')
+
+    # delete any old symlink
+    if os.path.islink(OLD_EXAMPLES_DIR):
+        os.remove(OLD_EXAMPLES_DIR)
+
+    if not os.path.isdir(EXAMPLES_DIR):
+        call(['mkdir','-p',EXAMPLES_DIR])
+
+    # create directory of symlinks to examples
+    call("cp -sRf %s/* %s" % (EXAMPLES, EXAMPLES_DIR), shell=True)
+
+    # The NotebookSettings is an autorun tool and we must flag it as trusted.
+    sign_tool('%s/NotebookSettings/NotebookSettings.ipynb' % EXAMPLES, True)
+    notebook = "notebooks/%s/Index.ipynb" % EXAMPLES_DIR
+    arglist.append('--NotebookApp.default_url="%s"' % notebook)
+
+def find_notebook(name, tool, arglist):
+    if tool is None:
+        if not os.path.isfile(name):
+            print("Cannot find %s." % name, file=sys.stderr)
+            sys.exit(1)
+        return os.path.split(name)
+
+    # We are running a published notebook.
+    # symlink copy it to RESULTSDIR
+    tname = os.path.basename(os.path.dirname(tool))
+    tdest = os.path.join(os.environ['RESULTSDIR'], tname)
+
+    # remove and make tdest
+    if os.path.exists(tdest):
+        shutil.rmtree(tdest)
+    os.makedirs(tdest)
+    call("cp -sRf %s/* %s" % (tool, tdest), shell=True)
+
+
+    # notebook will be either relative to the tool
+    # directory or in the bin directory
+    nb_name = os.path.abspath(os.path.join(tdest, name))
+    if not os.path.isfile(nb_name):
+        # look in bin dir
+        nb_name = os.path.abspath(os.path.join(tdest, 'bin', name))
+        if not os.path.isfile(nb_name):
+            print("Cannot find %s." % name, file=sys.stderr)
+            sys.exit(1)
+
+
+    # It's a published tool, so no terminals or dashboard
+    arglist.append("--NotebookApp.nbserver_extensions={'terminate':True}")
+    return os.path.split(nb_name)
+
+
 def run_notebook(args):
     arglist = []
 
@@ -142,52 +199,20 @@ def run_notebook(args):
         if args.tool:
             parser.error("ERROR: -t with no filename.\n")
 
+        # If no notebook name, just run server in current directory,
+        # unless -T parameter is there, then load examples.  Normally
+        # only the jupyter tool invoke script does this.
         if args.T:
-            # Run in users 'notebooks' subdirectory
-            os.chdir(os.environ['HOME'])
-            call(['mkdir', '-p', 'notebooks'])
-            os.chdir('notebooks')
+            load_examples(arglist)
 
-            # create symlink if necessary
-            try:
-                os.symlink(EXAMPLES , EXAMPLES_DIR)
-            except:
-                pass
-
-            # The NotebookSettings is an autorun tool and we must flag it as trusted.
-            sign_tool('%s/NotebookSettings/NotebookSettings.ipynb' % EXAMPLES, True)
-            notebook = "notebooks/%s/Index.ipynb" % EXAMPLES_DIR
-            arglist.append('--NotebookApp.default_url="%s"' % notebook)
     else:
-        if args.T is None:
-            if not os.path.isfile(args.name):
-                print("Cannot find %s." % args.name, file=sys.stderr)
-                sys.exit(1)
-            nb_dir, nb_name = os.path.split(args.name)
-        else:
-            # notebook will be either relative to the tool
-            # directory or in the bin directroy
-            nb_name = os.path.abspath(os.path.join(args.T, args.name))
-            if not os.path.isfile(nb_name):
-                # look in bin dir
-                nb_name = os.path.abspath(os.path.join(args.T, 'bin', args.name))
-                if not os.path.isfile(nb_name):
-                    print("Cannot find %s." % args.name, file=sys.stderr)
-                    sys.exit(1)
-            nb_dir, nb_name = os.path.split(nb_name)
-
-            # This will remove terminals and tree view (dashboard)
-            arglist.append("--NotebookApp.nbserver_extensions={'terminate':True}")
-
+        nb_dir, nb_name = find_notebook(args.name, args.T, arglist)
         if nb_dir:
             print("Changing directory to", nb_dir)
             os.chdir(nb_dir)
-        arglist.append('--NotebookApp.default_url="notebooks/%s"' % nb_name)
 
-        if nb_dir.startswith('/apps'):
-            print("WARNING: You should be runing tools in /apps using their invoke script.")
-        else:
-            set_tool(nb_name, args.tool)
+        arglist.append('--NotebookApp.default_url="notebooks/%s"' % nb_name)
+        set_tool(nb_name, args.tool)
         sign_tool(nb_name, args.tool)
 
 
@@ -195,9 +220,8 @@ def run_notebook(args):
     workspace = True
     if os.environ["SHELL"] == "/bin/dash":
         workspace = False
-
-    # system shell is "dash". Users probably want "bash"
-    os.environ['SHELL'] = "/bin/bash"
+        # Users probably want "bash"
+        os.environ['SHELL'] = "/bin/bash"
 
     p_path, p_url = get_proxy_addr()
     cmdlist = ["jupyter", "notebook", "--no-browser", "--port=8000",
@@ -220,12 +244,11 @@ def run_notebook(args):
 
     # having DISPLAY set breaks notebook terminals
     os.environ['DISPLAY']= ""
-
+    # print("CMDLIST:", cmdlist)
     call(cmdlist)
     print("\n\nNotebook server terminated.\n")
 
 if __name__ == "__main__":
-
     if os.getuid() == 0:
         print("Do not run this as root.", file=sys.stderr)
         sys.exit(1)
