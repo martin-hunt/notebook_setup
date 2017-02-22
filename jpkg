@@ -323,6 +323,7 @@ def cleanup(pathlist):
         os.system('jupyter nbextension enable --sys-prefix autorun/main 2> /dev/null')
         os.system('jupyter nbextension enable --sys-prefix dragdrop/main')
         os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
+        os.system('jupyter nbextension enable --py --sys-prefix gmaps')
 
         # maybe someday we will enable nbpresent, but right now it is much too buggy
         # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
