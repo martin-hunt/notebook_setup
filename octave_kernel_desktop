@@ -11,6 +11,6 @@
         "mimetype": "text/x-octave",
         "name": "octave",
         "env": {
-               "OCTAVE_EXECUTABLE": "$exe",
+               "OCTAVE_EXECUTABLE": "$exe"
         }
 }

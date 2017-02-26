@@ -32,14 +32,6 @@ So we uninstall the jupyter conda extensions and then reenable our extensions.
 
 """
 
-# This script is going to need customization for each release, so
-# hard-code the release here.
-VERSION = "4.1.1"
-RVERSION = "4.1"
-
-# location of the environment files for 'use'
-ENVIRON_CONFIG_DIR = '/apps/share64/debian7/environ.d'
-
 
 def get_pkg_list():
     olist = check_output("conda list", shell=True).split('\n')
@@ -61,15 +53,15 @@ def get_pkg_list():
     return d
 
 
-def install_packages(pyver):
+def install_packages(cname, pyver):
     global dirname
 
     # get a list of installed packages so we can quickly
     # skip ones that are up-to-date.
     pkg_list = get_pkg_list()
 
-    pname = os.path.join(dirname, "pkgs_%s" % RVERSION)
-    print("Installing Packages for Python%s" % pyver)
+    pname = os.path.join(dirname, "configs", cname)
+    print("Installing Packages for Python%s from %s" % (pyver, cname))
     two = True
     three = True
 
@@ -165,7 +157,7 @@ def check_perm(pathlist):
         os.chdir(cwd)
 
 
-def install_updates(pathlist):
+def install_updates(cname, pathlist):
     global dirname
 
     path = os.environ['PATH']
@@ -175,7 +167,7 @@ def install_updates(pathlist):
         os.environ['PATH'] = bindir + ':' + path
 
         # install packages we want
-        install_packages(pyver)
+        install_packages(cname, pyver)
 
         # install jupyter_unsign.py
         os.system('cp %s %s' % (os.path.join(dirname, 'jupyter_unsign.py'), bindir))
@@ -215,9 +207,9 @@ def install_kernels(pathlist):
         os.environ['PATH'] = path
 
 
-def install_octave(path, desktop):
+def install_octave(path, env_dir, desktop):
     "Install octave kernel, if octave is found"
-    octave_kstr = find_octave(path, desktop, prompt=False)
+    octave_kstr = find_octave(path, desktop, env_dir, prompt=False)
     if octave_kstr is not None:
         dname = os.path.join(path, 'share', 'jupyter', 'kernels', 'octave')
         if not os.path.exists(dname):
@@ -227,7 +219,7 @@ def install_octave(path, desktop):
             f.write(octave_kstr)
 
 
-def write_env(pathlist):
+def write_env(rver, env_dir, pathlist):
     # write environ files for 'use' on the hubs
     for p in pathlist:
         bindir = os.path.join(p, 'bin')
@@ -237,7 +229,7 @@ def write_env(pathlist):
             f.write('\nconflict ANACONDA_CHOICE\n\n')
             f.write('desc "Python distribution for large-scale data processing, predictive analytics, and scientific computing."\n\n')
             f.write('help "https://docs.continuum.io/new-anaconda-start-here"\n\n')
-            f.write('version=%s\n\n' % RVERSION)
+            f.write('version=%s\n\n' % rver)
             f.write('prepend PATH %s\n\n' % bindir)
             f.write('tags MATHSCI\n')
 
@@ -347,10 +339,47 @@ def install_misc(pathlist, desktop):
         os.system("cp %s %s" % (libfreeimage, lib))
 
 
-def make_new(desktop, pathlist):
+def get_pathlist(rver):
+    global dirname
 
-    scripts = ["Anaconda2-%s-Linux-x86_64.sh" % VERSION,
-               "Anaconda3-%s-Linux-x86_64.sh" % VERSION]
+    pathlist = ['anaconda2-%s' % (rver),
+                'anaconda3-%s' % (rver)]
+
+    for i, p in enumerate(pathlist):
+        pathlist[i] = os.path.realpath(p)
+    return pathlist
+
+def get_versions(cname):
+    global dirname
+    env_dir = ""
+
+    cname = os.path.join(dirname, 'configs', cname)
+    with open(cname) as fp:
+        for line in fp:
+            if line[0] == '#':
+                # comment
+                continue
+            sline = line.split()
+            if len(sline) != 2:
+                continue
+            if sline[0] == '+DESKTOP':
+                desk = sline[1] == 'True'
+            elif sline[0] == '+VERSION':
+                ver = sline[1]
+            elif sline[0] == '+RVERSION':
+                rver = sline[1]
+            elif sline[0] == '+ENVIRON_CONFIG_DIR':
+                env_dir = sline[1]
+            elif sline[0] == '++':
+                return (ver, rver, env_dir, desk)
+
+
+def make_new(args):
+    ver, rver, env_dir, desktop = get_versions(args.name)
+    pathlist  = get_pathlist(rver)
+
+    scripts = ["Anaconda2-%s-Linux-x86_64.sh" % ver,
+               "Anaconda3-%s-Linux-x86_64.sh" % ver]
     ok = True
     for name in scripts:
         if not os.path.isfile(name):
@@ -360,22 +389,27 @@ def make_new(desktop, pathlist):
                 print("Error: %s not found and could not download." % name)
                 sys.exit(1)
 
-    print("Installing Anaconda2-%s in %s" % (VERSION, pathlist[0]))
-    print("Installing Anaconda3-%s in %s" % (VERSION, pathlist[1]))
+    print("Installing Anaconda2-%s in %s" % (ver, pathlist[0]))
+    print("Installing Anaconda3-%s in %s" % (ver, pathlist[1]))
 
     for script, path, pyver in zip(scripts, pathlist, [2, 3]):
         install_file(script, path, pyver)
 
     if not desktop:
-        write_env(pathlist)
+        write_env(rver, env_dir, pathlist)
 
-    do_update(desktop, pathlist)
+    do_update(desktop, args.name, env_dir, pathlist)
 
 
-def do_update(desktop, pathlist):
-    install_updates(pathlist)
+def make_update(args):
+    ver, rver, env_dir, desktop = get_versions(args.name)
+    pathlist  = get_pathlist(rver)
+    do_update(desktop, args.name, env_dir, pathlist)
+
+def do_update(desktop, cname, env_dir, pathlist):
+    install_updates(cname, pathlist)
     install_kernels(pathlist)
-    install_octave(pathlist[0], desktop)
+    install_octave(pathlist[0], env_dir, desktop)
     install_R_pkgs(pathlist)
     install_misc(pathlist, desktop)
     install_extensions(pathlist, desktop)
@@ -383,7 +417,15 @@ def do_update(desktop, pathlist):
     cleanup(pathlist)
 
 
-def find_octave(pypath, desktop, prompt=True):
+def make_fix(args):
+    ver, rver, env_dir, desktop = get_versions(args.name)
+    pathlist  = get_pathlist(rver)
+    install_extensions(pathlist, desktop)
+    check_perm(pathlist)
+    cleanup(pathlist)
+
+
+def find_octave(pypath, desktop, env_dir, prompt=True):
     global dirname
 
     pypath += "/bin/python"
@@ -392,13 +434,13 @@ def find_octave(pypath, desktop, prompt=True):
         try:
             oc = check_output("octave --version", shell=True).split('\n')[0]
             ver = oc.split()[-1]
-            opath = check_output("which octave", shell=True)
+            opath = check_output("which octave", shell=True).strip()
         except:
             if prompt:
                 print("\nWARNING: Octave not found.  You may want to install it.")
                 inp = ''
                 while inp == '':
-                    inp = input('Continue without installing Octave kernel? [Y]')
+                    inp = input('Continue without installing Octave kernel? [Y/N]')
                 if inp.upper() != 'Y':
                     sys.exit(0)
             return None
@@ -407,17 +449,17 @@ def find_octave(pypath, desktop, prompt=True):
         s = Template(kernel)
         d = dict(python=pypath,
                  ver="Octave %s" % ver,
-                 exe=opath + '/octave')
+                 exe=opath)
         return s.substitute(d)
 
     try:
-        olist = check_output("ls %s/octave*" % ENVIRON_CONFIG_DIR, shell=True).split()
+        olist = check_output("ls %s/octave*" % env_dir, shell=True).split()
     except:
         if prompt:
             print("\nWARNING: No octave module was found.")
             inp = ''
             while inp == '':
-                inp = input('Continue without installing Octave kernel? [Y]')
+                inp = input('Continue without installing Octave kernel? [Y/N]')
             if inp.upper() != 'Y':
                 sys.exit(0)
         return None
@@ -442,46 +484,49 @@ if __name__ == '__main__':
     global dirname
     dirname = os.path.dirname(os.path.realpath(sys.argv[0]))
 
-    pathlist = ['anaconda2-%s' % (RVERSION),
-                'anaconda3-%s' % (RVERSION)]
-
-    for i, p in enumerate(pathlist):
-        pathlist[i] = os.path.realpath(p)
-
     # at least one install fails if this is not set
     os.environ['LANG'] = 'en_US.UTF-8'
 
     parser = argparse.ArgumentParser(
-            usage='''jpkg <command> [<args>]
+            usage="""jpkg <command> [<args>]
 
 Commands are:
-   new      Install new.
+   install {configname}    New install using the config file in config/configname.
 
-   update   Update the current installation from the package list.
+   update {configname}     Update the current installation from the package list.
 
-   fix      Fix any problems with local changes and extensions.
+   fix {configname}        Fix any problems with local changes and extensions.
 
 Packages will be installed in the current directory in
-subdirectories anaconda[2|3]-%s.
+subdirectories anaconda[2|3]-{rversion}.
 
-To add new packages, add them to %s
+To add new packages, add them to the config file
 then run the update command.
+""")
 
-Use the "-d" option when not installing on a hub.
-''' % (RVERSION, os.path.join(dirname, "pkgs_" + RVERSION)))
+    subparsers = parser.add_subparsers()
 
-    parser.add_argument('command', nargs='*')
-    parser.add_argument('-d', dest='desktop', default=False, action='store_true',
-        help="Configure for a desktop environment, instead of a hub.")
+    # create the parser for the "install" command
+    parser_install = subparsers.add_parser('install')
+    parser_install.add_argument('name', type=str)
+    parser_install.set_defaults(func=make_new)
+
+    # create the parser for the "update" command
+    parser_up = subparsers.add_parser('update')
+    parser_up.add_argument('name', type=str)
+    parser_up.set_defaults(func=make_update)
+
+    # create the parser for the "fix" command
+    parser_fix = subparsers.add_parser('fix')
+    parser_fix.add_argument('name', type=str)
+    parser_fix.set_defaults(func=make_fix)
+
     args = parser.parse_args()
-    if args.command == []:
-        parser.print_help()
-        sys.exit(0)
-    if args.command[0] == 'new':
-        find_octave(pathlist[0], args.desktop, prompt=True)
-        make_new(args.desktop, pathlist)
-    elif args.command[0] == 'update':
-        do_update(args.desktop, pathlist)
-    else:
-        print('Unrecognized command')
-        parser.print_help()
+    args.func(args)
+
+    # jpkg install nano41
+    # jpkg install nano41-dev
+    # jpkg install hubzero41
+    # jpkg update nano41
+    # jpkg fix nano41
+    # jpkg new na
