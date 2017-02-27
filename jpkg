@@ -224,7 +224,7 @@ def write_env(rver, env_dir, pathlist):
     for p in pathlist:
         bindir = os.path.join(p, 'bin')
 
-        fname = os.path.join(ENVIRON_CONFIG_DIR, os.path.basename(p))
+        fname = os.path.join(env_dir, os.path.basename(p))
         with open(fname, 'w') as f:
             f.write('\nconflict ANACONDA_CHOICE\n\n')
             f.write('desc "Python distribution for large-scale data processing, predictive analytics, and scientific computing."\n\n')
