@@ -151,8 +151,8 @@ def check_perm(pathlist):
         print("Finding non-searchable directories.  Should be none.")
         os.system('find . -type d -a ! -perm -011')
 
-        print('Finding world-writable files.  Should be none.')
-        os.system('find . -perm o+w')
+        print('Finding and fixing world-writable files.')
+        os.system('find . -perm o+w -exec chmod o-w {} \;')
 
         os.chdir(cwd)
 
