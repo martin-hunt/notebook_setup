@@ -67,6 +67,8 @@ def install_packages(cname, pyver):
 
     with open(pname) as fp:
         for line in fp:
+            if line[0] == '+':
+                continue
             if line[0:8] == "# 2 ONLY":
                 two = True
                 three = False
@@ -376,7 +378,7 @@ def get_versions(cname):
 
 def make_new(args):
     ver, rver, env_dir, desktop = get_versions(args.name)
-    pathlist  = get_pathlist(rver)
+    pathlist = get_pathlist(rver)
 
     scripts = ["Anaconda2-%s-Linux-x86_64.sh" % ver,
                "Anaconda3-%s-Linux-x86_64.sh" % ver]
@@ -403,8 +405,9 @@ def make_new(args):
 
 def make_update(args):
     ver, rver, env_dir, desktop = get_versions(args.name)
-    pathlist  = get_pathlist(rver)
+    pathlist = get_pathlist(rver)
     do_update(desktop, args.name, env_dir, pathlist)
+
 
 def do_update(desktop, cname, env_dir, pathlist):
     install_updates(cname, pathlist)
@@ -419,7 +422,7 @@ def do_update(desktop, cname, env_dir, pathlist):
 
 def make_fix(args):
     ver, rver, env_dir, desktop = get_versions(args.name)
-    pathlist  = get_pathlist(rver)
+    pathlist = get_pathlist(rver)
     install_extensions(pathlist, desktop)
     check_perm(pathlist)
     cleanup(pathlist)
