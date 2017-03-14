@@ -154,7 +154,7 @@ def check_perm(pathlist):
         os.system('find . -type d -a ! -perm -011')
 
         print('Finding and fixing world-writable files.')
-        os.system('find . -perm o+w -exec chmod o-w {} \;')
+        os.system('find -L . -perm -o+w -exec chmod o-w {} \;')
 
         os.chdir(cwd)
 
