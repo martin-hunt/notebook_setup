@@ -34,7 +34,8 @@ So we uninstall the jupyter conda extensions and then reenable our extensions.
 
 
 def get_pkg_list():
-    olist = check_output("conda list", shell=True).split('\n')
+    olist = check_output("conda list", shell=True)
+    olist = olist.decode('utf-8').split('\n')
     d = {}
     for line in olist:
         if line == '' or line[0] == '#':

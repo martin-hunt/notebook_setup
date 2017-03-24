@@ -1,0 +1,92 @@
+# desktop or hub install? (True/False)
++DESKTOP True
+
+# anaconda version to start with
++VERSION 4.3.1
+
+# name to call it when installed: anaconda2-$RVERSION
++RVERSION 4.3
+
+++ DONE
+
+# common packages for python2 and python3
+# columns are:
+# package version {conda|pip} [channel_name]
+# Use '*' for any version
+
+ipython 5.3.0 conda
+notebook 4.4.1 conda
+ipywidgets 6.0.0 conda
+jupyter_declarativewidgets 0.7.0 pip
+traitlets 4.3.2 conda
+astropy 1.3.1 conda
+dask 0.14.1 conda
+numba 0.31.0 conda
+scipy 0.19.0 conda
+pymc    2.3.6 conda
+xarray 0.9.1 conda
+basemap 1.0.7 conda
+pivottablejs 2.7.0 conda
+netcdf4 1.2.4 conda
+holoviews 1.6.2 conda
+openblas 0.2.19 conda
+biopython 1.68 conda
+cryptography 1.7.1 conda
+datashape 0.5.4 conda
+greenlet 0.4.12 conda
+lxml 3.7.3 conda
+sqlalchemy 1.1.6 conda
+yt 3.3.2 conda
+rpy2 2.8.5 conda
+r-essentials 1.5.2 conda
+cartopy 0.15.1 conda conda-forge
+# iris 1.11.0 conda conda-forge
+# geoviews 1.1.0 conda ioam
+mdtraj 1.8.0 conda conda-forge
+
+# FIXME!!!
+# pytraj 1.0.9 conda ambermd
+
+folium 0.3.0 conda conda-forge
+oct2py 4.0.5 pip
+geoplotlib 0.3.2 pip
+
+gpy 1.6.1 pip
+common 0.1.2 pip
+plotly 2.0.6 pip
+bqplot 0.8.4 pip
+nglview 0.6.2.3 pip
+ase 3.13.0 pip
+xmltodict 0.10.2 pip
+atomman 1.1.1 pip
+ez-setup 0.9 pip
+imolecule 0.1.13 pip
+ezvis3d 0.2 pip
+pint 0.7.2 pip
+gmaps 0.4.1 pip
+hublib 0.5.9 pip
+
+# oommf stuff. versions must match and work with examples
+joommfutil 0.6.1 pip
+oommfc 0.6 pip
+
+# imageio is used by moviepy. Needs 1.6
+imageio 2.1.2 pip
+moviepy 0.2.2.13 pip
+
+git+https://github.com/jakevdp/JSAnimation.git * pip
+
+# FIXME. no 3.6 version
+#rdkit 2016.09.2 conda rdkit
+
+puq 2.6 pip
+
+# fixme no 3.6
+openbabel 2.4.1 conda bio
+
+# 2 ONLY
+FiPy 3.1.3 pip
+mdanalysis 0.15.0 conda MDAnalysis
+
+# 3 ONLY
+python 3.6.1 conda
