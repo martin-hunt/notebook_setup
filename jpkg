@@ -175,9 +175,9 @@ def install_updates(cname, pathlist):
         # install jupyter_unsign.py
         os.system('cp %s %s' % (os.path.join(dirname, 'jupyter_unsign.py'), bindir))
 
-        if pyver == 2:
         # start_jupyter script
-            os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyter'), bindir))
+        os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyter'), bindir))
+
         os.environ['PATH'] = path
 
 
@@ -287,6 +287,11 @@ def install_extensions(pathlist, desktop):
         # install calysto document tools
         os.system('jupyter nbextension install --sys-prefix https://github.com/Calysto/notebook-extensions/archive/master.zip')
 
+        # declarativewidgets, cms, dashboard
+        os.system('jupyter nbextension install --py --sys-prefix declarativewidgets')
+        os.system('jupyter nbextension install --py jupyter_cms --sys-prefix')
+        os.system('jupyter nbextension install --py jupyter_dashboards --sys-prefix')
+
         # install hublogin and terminate
         dst = os.path.join(p, 'share', 'jupyter')
         ext = os.path.join(dst, 'nbextensions')
@@ -319,6 +324,12 @@ def cleanup(pathlist):
         os.system('jupyter nbextension enable --sys-prefix dragdrop/main')
         os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
         os.system('jupyter nbextension enable --py --sys-prefix gmaps')
+        os.system('jupyter serverextension enable --py declarativewidgets --sys-prefix')
+        os.system('jupyter nbextension enable --py --sys-prefix declarativewidgets')
+        os.system('jupyter nbextension enable --py jupyter_cms --sys-prefix')
+        os.system('jupyter bundler enable --py jupyter_cms --sys-prefix')
+        os.system('jupyter dashboards_bundlers quick-setup --sys-prefix')
+        os.system('jupyter nbextension enable --py jupyter_dashboards --sys-prefix')
 
         # maybe someday we will enable nbpresent, but right now it is much too buggy
         # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
