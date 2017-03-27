@@ -114,6 +114,10 @@ def install_packages(cname, pyver):
                     print("ERROR: Installation of %s failed.\n" % pkg)
         print('\n')
 
+    # put node modules here for now.
+    os.system('npm install -g jupyter-dashboards-server')
+    os.system('npm install -g bower')
+
 
 def install_file(fname, destdir, pyver):
     "Run the anaconda install file"
@@ -325,6 +329,7 @@ def cleanup(pathlist):
         os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
         os.system('jupyter nbextension enable --py --sys-prefix gmaps')
         os.system('jupyter serverextension enable --py declarativewidgets --sys-prefix')
+        os.system('jupyter serverextension enable --py jupyter_cms --sys-prefix')
         os.system('jupyter nbextension enable --py --sys-prefix declarativewidgets')
         os.system('jupyter nbextension enable --py jupyter_cms --sys-prefix')
         os.system('jupyter bundler enable --py jupyter_cms --sys-prefix')
