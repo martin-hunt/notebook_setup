@@ -103,20 +103,17 @@ def install_packages(cname, pyver):
                     cmd = "conda install -qy %s=%s" % (pkg, ver)
                     if channel:
                         cmd += " -c %s" % channel
-                else:
+                elif inst == 'pip':
                     if ver == '*':
                         cmd = "pip install -qU --upgrade-strategy only-if-needed %s" % pkg
                     else:
                         cmd = "pip install -qU --upgrade-strategy only-if-needed %s==%s" % (pkg, ver)
-
+                elif inst == 'npm':
+                        cmd = 'npm install -g %s@%s' % (pkg, ver)
                 print("Running '%s'" % cmd)
                 if os.system(cmd):
                     print("ERROR: Installation of %s failed.\n" % pkg)
         print('\n')
-
-    # put node modules here for now.
-    os.system('npm install -g jupyter-dashboards-server')
-    os.system('npm install -g bower')
 
 
 def install_file(fname, destdir, pyver):

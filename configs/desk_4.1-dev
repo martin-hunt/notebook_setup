@@ -5,7 +5,7 @@
 +VERSION 4.1.1
 
 # name to call it when installed: anaconda2-$RVERSION
-+RVERSION 4.1
++RVERSION 4.1-dev
 
 ++ DONE
 
@@ -67,7 +67,16 @@ pytraj 1.0.9 conda ambermd
 folium 0.2.1 conda conda-forge
 branca 0.1.2 conda conda-forge
 
+# dashboards packages
+nodejs 6.6.0 conda conda-forge
 jupyter_declarativewidgets 0.7.0 pip
+jupyter_cms 0.6.2 conda conda-forge
+jupyter-dashboards-bundlers 0.8.1 pip
+jupyter_dashboards 0.6.1 conda conda-forge
+jupyter_kernel_gateway 1.2.0 conda conda-forge
+jupyter-dashboards-server 0.8.0 npm
+bower 1.8.0 npm
+
 
 oct2py 3.6.5 pip
 octave-kernel 0.19.14 pip
