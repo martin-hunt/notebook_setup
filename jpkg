@@ -330,7 +330,7 @@ def cleanup(pathlist):
         os.system('jupyter nbextension enable --py --sys-prefix declarativewidgets')
         os.system('jupyter nbextension enable --py jupyter_cms --sys-prefix')
         os.system('jupyter bundler enable --py jupyter_cms --sys-prefix')
-        os.system('jupyter dashboards_bundlers quick-setup --sys-prefix')
+        # os.system('jupyter dashboards_bundlers quick-setup --sys-prefix')
         os.system('jupyter nbextension enable --py jupyter_dashboards --sys-prefix')
 
         # maybe someday we will enable nbpresent, but right now it is much too buggy
