@@ -289,8 +289,8 @@ def install_extensions(pathlist, desktop):
         os.system('jupyter nbextension install --sys-prefix https://github.com/Calysto/notebook-extensions/archive/master.zip')
 
         # declarativewidgets, cms, dashboard
-        os.system('jupyter nbextension install --py --sys-prefix declarativewidgets')
-        os.system('jupyter nbextension install --py jupyter_cms --sys-prefix')
+        # os.system('jupyter nbextension install --py --sys-prefix declarativewidgets')
+        # os.system('jupyter nbextension install --py jupyter_cms --sys-prefix')
         os.system('jupyter nbextension install --py jupyter_dashboards --sys-prefix')
 
         # install hublogin and terminate
@@ -325,11 +325,11 @@ def cleanup(pathlist):
         os.system('jupyter nbextension enable --sys-prefix dragdrop/main')
         os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
         os.system('jupyter nbextension enable --py --sys-prefix gmaps')
-        os.system('jupyter serverextension enable --py declarativewidgets --sys-prefix')
-        os.system('jupyter serverextension enable --py jupyter_cms --sys-prefix')
-        os.system('jupyter nbextension enable --py --sys-prefix declarativewidgets')
-        os.system('jupyter nbextension enable --py jupyter_cms --sys-prefix')
-        os.system('jupyter bundler enable --py jupyter_cms --sys-prefix')
+        # os.system('jupyter serverextension enable --py declarativewidgets --sys-prefix')
+        # os.system('jupyter serverextension enable --py jupyter_cms --sys-prefix')
+        # os.system('jupyter nbextension enable --py --sys-prefix declarativewidgets')
+        # os.system('jupyter nbextension enable --py jupyter_cms --sys-prefix')
+        # os.system('jupyter bundler enable --py jupyter_cms --sys-prefix')
         # os.system('jupyter dashboards_bundlers quick-setup --sys-prefix')
         os.system('jupyter nbextension enable --py jupyter_dashboards --sys-prefix')
 
