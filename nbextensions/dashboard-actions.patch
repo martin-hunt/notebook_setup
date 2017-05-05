@@ -1,0 +1,13 @@
+--- dashboard-actions.js.orig	2017-05-05 14:40:06.760861869 -0400
++++ dashboard-actions.js	2017-05-05 14:40:54.766798710 -0400
+@@ -116,6 +116,10 @@
+     }
+ 
+     function setStateFromQueryString() {
++        if (IPython.notebook.metadata.tool == true && IPython.notebook.trusted == true) {
++            setDashboardState(STATE.DASHBOARD_PREVIEW);
++            return;
++        }
+         // set 'Dashboard View' state if 'dashboard' query parameter is set
+         var idx = window.location.search.slice(1).split(/[&=]/).indexOf('dashboard');
+         if (idx !== -1) {

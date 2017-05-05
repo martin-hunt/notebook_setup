@@ -268,7 +268,7 @@ def install_extensions(pathlist, desktop):
             f.write("c.NotebookApp.extra_template_paths = ['%s']\n" % os.path.join(spath, 'templates'))
             f.write("c.NotebookApp.extra_static_paths = ['%s']\n" % os.path.join(spath, 'static'))
             f.write("c.NotebookApp.trust_xheaders = True\n")
-            f.write("c.NotebookApp.mathjax_url = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js'\n")
+            f.write("c.NotebookApp.mathjax_url = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js'\n")
             if not desktop:
                 f.write("c.NotebookApp.login_handler_class = 'hublogin.HubLoginHandler'")
             # f.write("c.NotebookApp.nbserver_extensions = {'tool_ext': True}\n")
@@ -299,6 +299,10 @@ def install_extensions(pathlist, desktop):
         os.system('cp terminate.py %s' % ext)
         if not desktop:
             os.system('cp hublogin.py %s' % ext)
+
+        # patch dashboards to work with our tool mode and autorun extensions
+        dashdir = os.path.join(ext, 'jupyter_dashboards', 'notebook', 'dashboard-view')
+        os.system('patch -f -d %s < dashboard-actions.patch' % dashdir)
 
         # install tool view extensions (really just a replacement for the tree view)
         # os.system("cp tool/tool_ext.py " + ext)
