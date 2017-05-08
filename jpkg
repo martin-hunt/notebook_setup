@@ -173,8 +173,9 @@ def install_updates(cname, pathlist):
         # install packages we want
         install_packages(cname, pyver)
 
-        # install jupyter_unsign.py
+        # install jupyter_unsign.py and jupyter_tool.py
         os.system('cp %s %s' % (os.path.join(dirname, 'jupyter_unsign.py'), bindir))
+        os.system('cp %s %s' % (os.path.join(dirname, 'jupyter_tool.py'), bindir))
 
         # start_jupyter script
         os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyter'), bindir))
