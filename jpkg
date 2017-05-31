@@ -6,6 +6,12 @@ import os
 import argparse
 from subprocess import check_output
 from string import Template
+from glob import glob
+
+# Default where the examples get installed.  This will get ignored if
+# "*examples*" exists in the current or parent directory.
+# Override with --examples
+EXAMPLES_DEFAULT='/apps/share64/debian7/anaconda/examples-4.1'
 
 # for python2 compatibility
 try:
@@ -161,7 +167,7 @@ def check_perm(pathlist):
         os.chdir(cwd)
 
 
-def install_updates(cname, pathlist):
+def install_updates(cname, examples, pathlist):
     global dirname
 
     path = os.environ['PATH']
@@ -178,7 +184,12 @@ def install_updates(cname, pathlist):
         os.system('cp %s %s' % (os.path.join(dirname, 'jupyter_tool.py'), bindir))
 
         # start_jupyter script
-        os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyter'), bindir))
+        examples = os.path.abspath(examples)
+        s = open(os.path.join(dirname, 'start_jupyter')).read()
+        d = dict(examples=examples)
+        s = Template(s).substitute(d)
+        with open(os.path.join(bindir, 'start_jupyter'), 'w') as f:
+            f.write(s)
 
         os.environ['PATH'] = path
 
@@ -283,9 +294,6 @@ def install_extensions(pathlist, desktop):
         # drag and drop images
         os.system('jupyter nbextension install --sys-prefix dragdrop')
 
-        # manually install livereveal
-        os.system('cp -r livereveal %s' % os.path.join(spath, 'nbextensions'))
-
         # install calysto document tools
         os.system('jupyter nbextension install --sys-prefix https://github.com/Calysto/notebook-extensions/archive/master.zip')
 
@@ -341,7 +349,9 @@ def cleanup(pathlist):
         # maybe someday we will enable nbpresent, but right now it is much too buggy
         # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
 
-        os.system('jupyter nbextension enable --sys-prefix  livereveal/main 2> /dev/null')
+        # no longer using this
+        os.system('jupyter nbextension disable --sys-prefix  livereveal/main 2> /dev/null')
+
         # os.system('jupyter nbextension enable --sys-prefix  --py pythreejs')
         os.system('jupyter nbextension enable --sys-prefix  --py nglview')
         os.system('jupyter nbextension enable --sys-prefix  --py bqplot')
@@ -419,17 +429,17 @@ def make_new(args):
     if not desktop:
         write_env(rver, env_dir, pathlist)
 
-    do_update(desktop, args.name, env_dir, pathlist)
+    do_update(desktop, args.name, env_dir, args.examples, pathlist)
 
 
 def make_update(args):
     ver, rver, env_dir, desktop = get_versions(args.name)
     pathlist = get_pathlist(rver)
-    do_update(desktop, args.name, env_dir, pathlist)
+    do_update(desktop, args.name, env_dir, args.examples, pathlist)
 
 
-def do_update(desktop, cname, env_dir, pathlist):
-    install_updates(cname, pathlist)
+def do_update(desktop, cname, env_dir, examples, pathlist):
+    install_updates(cname, examples, pathlist)
     install_kernels(pathlist)
     install_octave(pathlist[0], env_dir, desktop)
     install_R_pkgs(pathlist)
@@ -525,6 +535,17 @@ subdirectories anaconda[2|3]-{rversion}.
 To add new packages, add them to the config file
 then run the update command.
 """)
+
+    ed = glob("*examples*")
+    if ed == []:
+        ed = glob("../*examples*")
+    if len(ed) == 1:
+        ed = ed[0]
+    else:
+        ed = EXAMPLES_DEFAULT
+
+    parser.add_argument('--examples', dest='examples', default=ed,
+                        help='Directory where the examples are installed.')
 
     subparsers = parser.add_subparsers()
 
