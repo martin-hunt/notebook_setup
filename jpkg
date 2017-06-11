@@ -87,8 +87,21 @@ def install_packages(cname, pyver):
             if line[0] == '#':
                 # comment
                 continue
+            if line[0] == '!':
+                line = line[1:].strip()
+                print("Running:", line)
+                os.system(line)
+                continue
             sline = line.split()
             channel = None
+            if len(sline) == 0:
+                continue
+            if sline[-1] == '--no-deps':
+                sline = sline[:-1]
+                nodeps = '--no-deps'
+            else:
+                nodeps = ''
+
             if len(sline) == 3:
                 pkg, ver, inst = sline
             elif len(sline) == 4:
@@ -97,6 +110,7 @@ def install_packages(cname, pyver):
                 if len(sline) > 0:
                     print("Cannot parse line:", line)
                 continue
+
             if (two and pyver == 2) or (three and pyver == 3):
                 if pkg in pkg_list and pkg_list[pkg]['ver'] == ver:
                     # that version is already installed
@@ -106,7 +120,7 @@ def install_packages(cname, pyver):
                 else:
                     print("Installing %s %s" % (pkg, ver))
                 if inst == 'conda':
-                    cmd = "conda install -qy %s=%s" % (pkg, ver)
+                    cmd = "conda install -qy %s=%s %s" % (pkg, ver, nodeps)
                     if channel:
                         cmd += " -c %s" % channel
                 elif inst == 'pip':
@@ -218,8 +232,10 @@ def install_kernels(pathlist):
     for p in pathlist:
         os.environ['PATH'] = os.path.join(p, 'bin') + ':' + path
         pyver = 3 if p == pathlist[1] else 2
+        print('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' %(pyver, pathlist[0], pyver))
         os.system('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' %
             (pyver, pathlist[0], pyver))
+
         os.environ['PATH'] = path
 
 
