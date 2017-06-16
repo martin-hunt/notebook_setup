@@ -204,7 +204,7 @@ def install_updates(cname, examples, pathlist):
         s = Template(s).substitute(d)
         with open(os.path.join(bindir, 'start_jupyter'), 'w') as f:
             f.write(s)
-
+        os.system('chmod +x %s' % os.path.join(bindir, 'start_jupyter'))
         os.environ['PATH'] = path
 
 
@@ -297,6 +297,8 @@ def install_extensions(pathlist, desktop):
             f.write("c.NotebookApp.extra_static_paths = ['%s']\n" % os.path.join(spath, 'static'))
             f.write("c.NotebookApp.trust_xheaders = True\n")
             f.write("c.NotebookApp.mathjax_url = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js'\n")
+            # needed for notebook 5.0 with holoviews and some others
+            f.write("c.NotebookApp.iopub_data_rate_limit=100000000\n")
             if not desktop:
                 f.write("c.NotebookApp.login_handler_class = 'hublogin.HubLoginHandler'")
             # f.write("c.NotebookApp.nbserver_extensions = {'tool_ext': True}\n")

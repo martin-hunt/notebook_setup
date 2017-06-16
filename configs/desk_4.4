@@ -14,6 +14,11 @@
 # package version {conda|pip} [channel_name]
 # Use '*' for any version
 
+# some updates from base installation
+bokeh 0.12.6 conda
+dask 0.15.0 conda
+nbconvert 5.2.1 conda
+
 opencv 3.1.0 conda --no-deps
 
 rpy2 2.8.5 conda
@@ -23,6 +28,7 @@ xarray 0.9.5 conda --no-deps
 basemap 1.0.7 conda --no-deps
 holoviews 1.7.0 conda
 mdtraj 1.8.0 conda conda-forge --no-deps
+pytraj 2.0.0 conda ambermd --no-deps
 
 # declarativewidgets does not work currently for notebook >= 4.3
 # nodejs 6.10.3 conda
@@ -38,7 +44,7 @@ oct2py 4.0.6 pip
 geoplotlib 0.3.2 pip
 
 gpy 1.6.1 pip
-plotly 2.0.9 pip
+plotly 2.0.10 pip
 bqplot 0.9.0 pip
 nglview 0.6.3 pip
 ase 3.13.0 pip
@@ -71,7 +77,7 @@ mmtf-python 1.0.5 conda conda-forge --no-deps
 mdanalysis 0.16.0 conda conda-forge --no-deps
 
 cartopy 0.15.1 conda conda-forge
-ipyleaflet 0.3.0 conda conda-forge
+#ipyleaflet 0.3.0 conda conda-forge
 
 # need ipywidgets > 0.6.0 because 0.6.0 is too broken
 # This needs to go last otherwise packages may require ipywidget 0.6.0
