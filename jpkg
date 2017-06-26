@@ -224,7 +224,7 @@ def install_R_pkgs(pathlist):
 
 
 def install_kernels(pathlist):
-    "Install python 2 and python 3 kernels in anadonda2"
+    "Install python 2 and python 3 kernels"
     print("install_kernels", pathlist)
 
     path = os.environ['PATH']
@@ -232,10 +232,10 @@ def install_kernels(pathlist):
     for p in pathlist:
         os.environ['PATH'] = os.path.join(p, 'bin') + ':' + path
         pyver = 3 if p == pathlist[1] else 2
-        print('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' %(pyver, pathlist[0], pyver))
-        os.system('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' %
-            (pyver, pathlist[0], pyver))
-
+        for k in pathlist:
+            print('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' % (pyver, k, pyver))
+            os.system('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' %
+            (pyver, k, pyver))
         os.environ['PATH'] = path
 
 
