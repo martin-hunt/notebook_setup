@@ -6,7 +6,9 @@
 
 # name to call it when installed: anaconda2-$RVERSION
 +RVERSION 4.4
+
 +ENVIRON_CONFIG_DIR /apps/share64/debian7/environ.d
+
 ++ DONE
 
 # common packages for python2 and python3
@@ -21,6 +23,7 @@ nbconvert 5.2.1 conda
 distributed 1.17.1 conda
 astropy 1.3.3 conda
 pandas 0.20.2 conda
+sphinx 1.6.2 conda
 opencv 3.1.0 conda --no-deps
 
 rpy2 2.8.5 conda
@@ -46,18 +49,18 @@ oct2py 4.0.6 pip
 geoplotlib 0.3.2 pip
 
 gpy 1.6.1 pip
-plotly 2.0.11 pip
+plotly 2.0.12 pip
 bqplot 0.9.0 pip
-nglview 0.6.3 pip
-ase 3.14.0 pip
+nglview 0.6.4 pip
+ase 3.14.1 pip
 xmltodict 0.11.0 pip
 atomman 1.1.2 pip
 ez-setup 0.9 pip
 imolecule 0.1.13 pip
 ezvis3d 0.2 pip
 pint 0.8 pip
-gmaps 0.5.0 pip
-hublib 0.6.7 pip
+gmaps 0.5.2 pip
+hublib 0.7.1 pip
 geopandas 0.2.1 pip
 moviepy 0.2.2.13 pip
 git+https://github.com/jakevdp/JSAnimation.git * pip
@@ -76,8 +79,8 @@ libnetcdf 4.4.1 conda --no-deps
 joblib 0.11 conda
 netcdf4 1.2.8 conda conda-forge --no-deps
 griddataformats 0.3.3 conda conda-forge --no-deps
-mmtf-python 1.0.5 conda conda-forge --no-deps
-mdanalysis 0.16.0 conda conda-forge --no-deps
+mmtf-python 1.0.6 conda conda-forge --no-deps
+mdanalysis 0.16.2 conda conda-forge --no-deps
 
 cartopy 0.15.1 conda conda-forge
 #ipyleaflet 0.3.0 conda conda-forge
@@ -92,6 +95,13 @@ pymysql 0.7.9 conda
 cymysql 0.9.0 pip
 mysqlclient 1.3.10 pip
 sshtunnel 0.1.2 pip
+
+# need ipywidgets > 0.6.0 because 0.6.0 is too broken
+# This needs to go last otherwise packages may require ipywidget 0.6.0
+!conda uninstall -y ipywidgets --force
+!conda uninstall -y widgetsnbextension --force
+https://github.com/jupyter-widgets/ipywidgets/archive/7.0.0a8.zip * pip
+!jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 # 2 ONLY
 FiPy 3.1.3 pip
