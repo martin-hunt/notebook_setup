@@ -56,12 +56,14 @@ positional arguments:
               and dashboard will be enabled.
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help  show this help message and exit.
+  -d          Show debug (verbose) output.
   -t          Run as a Tool with no notebook controls.
 """,
          prog=prog,
          add_help=False)
     parser.add_argument('-t', dest='tool', action='store_true')
+    parser.add_argument('-d', dest='debug', action='store_true')
     parser.add_argument('-T')
     parser.add_argument('-h', '--help', dest='help', action='store_true')
     parser.add_argument('name', nargs='?')
@@ -175,7 +177,6 @@ def find_notebook(name, tool, arglist):
     os.makedirs(tdest)
     call("cp -sRf %s/* %s" % (tool, tdest), shell=True)
 
-
     # notebook will be either relative to the tool
     # directory or in the bin directory
     nb_name = os.path.abspath(os.path.join(tdest, name))
@@ -185,7 +186,6 @@ def find_notebook(name, tool, arglist):
         if not os.path.isfile(nb_name):
             print("Cannot find %s." % name, file=sys.stderr)
             sys.exit(1)
-
 
     # It's a published tool, so no terminals or dashboard
     arglist.append("--NotebookApp.nbserver_extensions={'terminate':True}")
@@ -215,7 +215,6 @@ def run_notebook(args):
         set_tool(nb_name, args.tool)
         sign_tool(nb_name, args.tool)
 
-
     # When invoked by the system, the shell will be dash.
     workspace = True
     if os.environ["SHELL"] == "/bin/dash":
@@ -224,18 +223,21 @@ def run_notebook(args):
         os.environ['SHELL'] = "/bin/bash"
 
     p_path, p_url = get_proxy_addr()
-    cmdlist = ["jupyter", "notebook", "--no-browser", "--port=8000",
-          "--ip=0.0.0.0",
-          '--NotebookApp.base_url="%s"' % p_path
-        ]
+    cmdlist = [
+              "jupyter", "notebook", "--no-browser", "--port=8000",
+              "--ip=0.0.0.0",
+              '--NotebookApp.base_url="%s"' % p_path
+              ]
+
+    if args.debug:
+        cmdlist.append('--Application.log_level="DEBUG"')
     cmdlist += arglist
 
     print("=" * 60)
     print("URL is")
     print(p_url)
     print("=" * 60)
-    sys.stdout.flush()  ; # make sure this gets displayed now.
-
+    sys.stdout.flush()  # make sure this gets displayed now.
 
     # If invoked by system, display logo for screenshots
     if not workspace:
@@ -243,7 +245,7 @@ def run_notebook(args):
               '%s/images/jupyter.gif' % EXAMPLES])
 
     # having DISPLAY set breaks notebook terminals
-    os.environ['DISPLAY']= ""
+    os.environ['DISPLAY'] = ""
     # print("CMDLIST:", cmdlist)
     call(cmdlist)
     print("\n\nNotebook server terminated.\n")
