@@ -1,5 +1,6 @@
 import os
 import glob
+import binascii
 from notebook.base.handlers import IPythonHandler, AuthenticatedHandler
 from notebook.utils import url_unescape, url_escape
 
@@ -8,6 +9,7 @@ Basic authentication using a cookie set by the hub when the jupyter
 server is launched.  When reconnecting from another browser, it will
 necessary to go through the hub, otherwise there will be no cookie.
 """
+
 
 class HubLoginHandler(IPythonHandler):
     cookie_name = None
@@ -30,8 +32,6 @@ class HubLoginHandler(IPythonHandler):
 
         # print("HLH: get_user")
 
-        user_id = None
-
         if cls.cookie_name is None:
             cls.load_env()
 
@@ -44,21 +44,18 @@ class HubLoginHandler(IPythonHandler):
                 for item in cval.split(','):
                     session, passwd = item.split(':')
                     if session == cls.session and passwd == cls.vncpass:
-                        user_id = 'OK'  #  could be anything but None
-                        break
+                        return "OK"
 
-            if user_id is None:
-                # No valid cookie, but first browser to connect
-                # gets a free one!
-                # This allows painless development from a workspace.
-                if cls.first_login:
-                    cls.first_login = False
-                    val = url_escape("%s:%s" % (cls.session, cls.vncpass))
-                    handler.set_cookie(cls.cookie_name, val, domain=cls.host, expires_days=7)
-                    return "OK"
+            # No valid cookie, but first browser to connect
+            # gets a free one!
+            # This allows painless development from a workspace.
+            if cls.first_login:
+                cls.first_login = False
+                val = url_escape("%s:%s" % (cls.session, cls.vncpass))
+                handler.set_cookie(cls.cookie_name, val, domain=cls.host, expires_days=7)
+                return "OK"
 
-        return user_id
-
+        return None
 
     @classmethod
     def validate_security(cls, app, ssl_options=None):
@@ -78,9 +75,8 @@ class HubLoginHandler(IPythonHandler):
             cls.session = os.environ['SESSION']
 
             pwfile = glob.glob('/var/run/Xvnc/passwd-*')[0]
-            with open(pwfile, 'r') as f:
-                pw = f.read()
-                cls.vncpass = ''.join([('%02x' % ord(c)) for c in pw])
+            with open(pwfile, 'rb') as f:
+                cls.vncpass = str(binascii.hexlify(f.read()))
 
             fn = os.path.join(os.environ['SESSIONDIR'], 'resources')
             with open(fn, 'r') as f:
@@ -105,4 +101,3 @@ def login_available(self):
 
 AuthenticatedHandler.logged_in = property(logged_in)
 AuthenticatedHandler.login_available = property(login_available)
-
