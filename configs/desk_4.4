@@ -14,31 +14,34 @@
 # package version {conda|pip} [channel_name]
 # Use '*' for any version
 
+mdtraj 1.8.0 conda conda-forge
+
+rpy2 2.8.6 conda
+r-essentials 1.6.0 conda
+
+opencv 3.1.0 conda -c conda-forge
+pytraj 2.0.2 pip
+
 # some updates from base installation
 bokeh 0.12.6 conda
 dask 0.15.0 conda
 cython 0.26 conda
 numba 0.34.0 conda
+
 nbconvert 5.2.1 conda
 distributed 1.17.1 conda
-astropy 2.0 conda
+astropy 2.0.1 conda
 pandas 0.20.3 conda
 sphinx 1.6.2 conda
-opencv 3.1.0 conda --no-deps
 scikit-learn 0.18.2 conda
 scipy 0.19.1 conda
 seaborn 0.8 conda
-sympy 1.1 conda
 mkl 2017.0.3 conda
 
-rpy2 2.8.5 conda
-r-essentials 1.5.2 conda
-pymc    2.3.6 conda --no-deps
-xarray 0.9.5 conda --no-deps
-basemap 1.0.7 conda --no-deps
-holoviews 1.8.0 conda
-mdtraj 1.8.0 conda conda-forge --no-deps
-pytraj 2.0.0 conda ambermd --no-deps
+pymc    2.3.6 pip
+xarray 0.9.6 pip
+holoviews 1.8.1 conda
+
 
 # declarativewidgets does not work currently for notebook >= 4.3
 # nodejs 6.10.3 conda
@@ -46,47 +49,46 @@ pytraj 2.0.0 conda ambermd --no-deps
 jupyter_dashboards 0.7.0 pip
 # bower 1.8.0 npm
 
-vincent 0.4.4 conda conda-forge --no-deps
-branca 0.2.0 conda conda-forge --no-deps
-folium 0.3.0 conda conda-forge --no-deps
+vincent 0.4.4 conda
+branca 0.2.0 conda conda-forge
+folium 0.3.0 conda conda-forge
 
 oct2py 4.0.6 pip
 geoplotlib 0.3.2 pip
 
 gpy 1.7.7 pip
-plotly 2.0.12 pip
+plotly 2.0.13 pip
 bqplot 0.9.0 pip
-nglview 0.6.4 pip
+nglview 0.6.5 pip
 ase 3.14.1 pip
 xmltodict 0.11.0 pip
-atomman 1.1.2 pip
 ez-setup 0.9 pip
 imolecule 0.1.13 pip
 ezvis3d 0.2 pip
-pint 0.8 pip
+pint 0.8.1 pip
 gmaps 0.5.4 pip
 hublib 0.7.6 pip
 geopandas 0.2.1 pip
-moviepy 0.2.2.13 pip
+moviepy 0.2.3.2 pip
 git+https://github.com/jakevdp/JSAnimation.git * pip
 puq 2.6 pip
-phonopy 1.11.10.66 pip
-pymatgen 4.7.7 pip
+phonopy 1.11.12.31 pip
+pymatgen 2017.8.4 pip
 chemspipy 1.0.5 pip
 colorlover 0.2.1 pip
 parse 1.8.2 pip
-celery 4.0.2 pip
+celery 4.1.0 pip
 
 openbabel 2.4.1 conda openbabel
 
 # mdanalysis
-biopython 1.68 conda
+biopython 1.69 conda
 hdf4 4.2.12 conda
 libnetcdf 4.4.1 conda --no-deps
-joblib 0.11 conda
+joblib 0.11 conda --no-deps
 netcdf4 1.2.8 conda conda-forge --no-deps
 griddataformats 0.3.3 conda conda-forge --no-deps
-mmtf-python 1.0.6 conda conda-forge --no-deps
+mmtf-python 1.0.7 conda conda-forge --no-deps
 mdanalysis 0.16.2 conda conda-forge --no-deps
 
 cartopy 0.15.1 conda conda-forge
@@ -107,11 +109,12 @@ sshtunnel 0.1.2 pip
 # This needs to go last otherwise packages may require ipywidget 0.6.0
 #!conda uninstall -y ipywidgets --force
 #!conda uninstall -y widgetsnbextension --force
-ipywidgets 7.0.0b2 pip
-#!jupyter nbextension enable --py --sys-prefix widgetsnbextension
+ipywidgets 7.0.0b7 pip
+!jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 # 2 ONLY
 FiPy 3.1.3 pip
+atomman 1.1.3 pip
 
 # 3 ONLY
 ipython 6.1.0 conda
