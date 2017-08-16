@@ -298,7 +298,7 @@ def install_extensions(pathlist, desktop):
             f.write("c.NotebookApp.trust_xheaders = True\n")
             f.write("c.NotebookApp.mathjax_url = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js'\n")
             # needed for notebook 5.0 with holoviews and some others
-            # f.write("c.NotebookApp.iopub_data_rate_limit=100000000\n")
+            f.write("c.NotebookApp.iopub_data_rate_limit=100000000\n")
             if not desktop:
                 f.write("c.NotebookApp.login_handler_class = 'hublogin.HubLoginHandler'")
             # f.write("c.NotebookApp.nbserver_extensions = {'tool_ext': True}\n")
@@ -368,7 +368,7 @@ def cleanup(pathlist):
         # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
 
         # no longer using this
-        os.system('jupyter nbextension disable --sys-prefix  livereveal/main 2> /dev/null')
+        # os.system('jupyter nbextension disable --sys-prefix  livereveal/main 2> /dev/null')
 
         # os.system('jupyter nbextension enable --sys-prefix  --py pythreejs')
         os.system('jupyter nbextension enable --sys-prefix  --py nglview')
@@ -377,6 +377,7 @@ def cleanup(pathlist):
         #    # python2 only
         #    os.system('jupyter nbextension enable --sys-prefix  --py nbmolviz')
 
+        os.system('conda clean -y --all')
         os.environ['PATH'] = path
 
 
