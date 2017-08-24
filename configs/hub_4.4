@@ -30,23 +30,23 @@ pytraj 2.0.2 pip
 
 # some updates from base installation
 bokeh 0.12.6 conda
-dask 0.15.0 conda
+dask 0.15.1 conda
 cython 0.26 conda
 numba 0.34.0 conda
 
 nbconvert 5.2.1 conda
-distributed 1.17.1 conda
+distributed 1.18.0 conda
 astropy 2.0.1 conda
 pandas 0.20.3 conda
 sphinx 1.6.2 conda
-scikit-learn 0.18.2 conda
+scikit-learn 0.19.0 conda
 scipy 0.19.1 conda
 seaborn 0.8 conda
 mkl 2017.0.3 conda
 
 pymc    2.3.6 pip
 xarray 0.9.6 pip
-holoviews 1.8.1 conda
+holoviews 1.8.2 conda
 
 
 # declarativewidgets does not work currently for notebook >= 4.3
@@ -63,7 +63,7 @@ oct2py 4.0.6 pip
 geoplotlib 0.3.2 pip
 
 gpy 1.7.7 pip
-plotly 2.0.13 pip
+plotly 2.0.15 pip
 bqplot 0.9.0 pip
 nglview 0.6.5 pip
 ase 3.14.1 pip
@@ -78,7 +78,7 @@ geopandas 0.2.1 pip
 moviepy 0.2.3.2 pip
 git+https://github.com/jakevdp/JSAnimation.git * pip
 puq 2.6 pip
-phonopy 1.11.12.31 pip
+phonopy 1.11.12.92 pip
 pymatgen 2017.8.4 pip
 chemspipy 1.0.5 pip
 colorlover 0.2.1 pip
@@ -117,7 +117,7 @@ tensorflow 1.2.1 conda
 # This needs to go last otherwise packages may require ipywidget 0.6.0
 !conda uninstall -y ipywidgets --force
 !conda uninstall -y widgetsnbextension --force
-ipywidgets 7.0.0rc0 pip
+ipywidgets 7.0.0 pip
 !jupyter nbextension enable --py --sys-prefix widgetsnbextension
 
 k3d 2.0.12 pip
