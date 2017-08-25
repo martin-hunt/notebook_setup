@@ -301,7 +301,7 @@ def install_extensions(pathlist, desktop):
             # needed for notebook 5.0 with holoviews and some others
             f.write("c.NotebookApp.iopub_data_rate_limit=100000000\n")
             if not desktop:
-                f.write("c.NotebookApp.login_handler_class = 'hublogin.HubLoginHandler'")
+                f.write("c.NotebookApp.login_handler_class = 'hublogin.HubLoginHandler'\n")
             if socket.gethostname() == 'nanoHUB':
                 # mailboxes only on nanohub at this time
                 f.write("c.NotebookApp.nbserver_extensions = {'inboxes': True}\n")
