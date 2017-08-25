@@ -32,6 +32,7 @@ from subprocess import call, Popen, check_output
 EXAMPLES = '${examples}'
 OLD_EXAMPLES_DIR = " Examples"
 EXAMPLES_DIR = "DOCS_AND_EXAMPLES"
+INBOXES_DIR = "/data/tools/inboxes"
 
 def handler(signum, frame):
     pass
@@ -158,6 +159,12 @@ def load_examples(arglist):
     sign_tool('%s/NotebookSettings/NotebookSettings.ipynb' % EXAMPLES, True)
     notebook = "notebooks/%s/Index.ipynb" % EXAMPLES_DIR
     arglist.append('--NotebookApp.default_url="%s"' % notebook)
+
+    # create INBOX symlink if needeed
+    idir = os.path.join(INBOXES_DIR, os.environ['LOGNAME'])
+    if os.path.exists(idir) and not os.path.exists('INBOX'):
+        os.symlink(idir, 'INBOX')
+
 
 def find_notebook(name, tool, arglist):
     if tool is None:
