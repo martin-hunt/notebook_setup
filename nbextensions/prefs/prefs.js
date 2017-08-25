@@ -2,14 +2,19 @@
 define([
     'require',
     'jquery',
+    'base/js/namespace',
 ], function (
     require,
     $,
+    Jupyter,
 ) {
     'use strict';
 
     function load_jupyter_extension () {
-        $("#open_notebook").after("<li id=\"prefs\" title=\"Preferences\"><a href=\"/notebooks/NotebookSettings/NotebookSettings.ipynb\" target=\"_blank\">Preferences</a></li>")
+	var url = "<li id=\"prefs\" title=\"Preferences\"><a href=\"";
+	url += Jupyter.notebook.base_url + "notebooks/DOCS_AND_EXAMPLES/NotebookSettings/NotebookSettings.ipynb\"";
+	url += " target=\"_blank\">Preferences</a></li>";
+        $("#open_notebook").after(url);
     }
 
     return {
