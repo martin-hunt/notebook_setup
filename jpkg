@@ -7,11 +7,12 @@ import argparse
 from subprocess import check_output
 from string import Template
 from glob import glob
+import socket
 
 # Default where the examples get installed.  This will get ignored if
 # "*examples*" exists in the current or parent directory.
 # Override with --examples
-EXAMPLES_DEFAULT='/apps/share64/debian7/anaconda/examples-4.1'
+EXAMPLES_DEFAULT = '/apps/share64/debian7/anaconda/examples-4.1'
 
 # for python2 compatibility
 try:
@@ -301,13 +302,18 @@ def install_extensions(pathlist, desktop):
             f.write("c.NotebookApp.iopub_data_rate_limit=100000000\n")
             if not desktop:
                 f.write("c.NotebookApp.login_handler_class = 'hublogin.HubLoginHandler'")
-            # f.write("c.NotebookApp.nbserver_extensions = {'tool_ext': True}\n")
+            if socket.gethostname() == 'nanoHUB':
+                # mailboxes only on nanohub at this time
+                f.write("c.NotebookApp.nbserver_extensions = {'inboxes': True}\n")
 
         bindir = os.path.join(p, 'bin')
         os.environ['PATH'] = bindir + ':' + path
 
         # Install the tool autorun extension.
         os.system('jupyter nbextension install --sys-prefix autorun')
+
+        if not desktop:
+            os.system('jupyter nbextension install --sys-prefix prefs')
 
         # drag and drop images
         os.system('jupyter nbextension install --sys-prefix dragdrop')
@@ -327,6 +333,12 @@ def install_extensions(pathlist, desktop):
         if not desktop:
             os.system('cp hublogin.py %s' % ext)
 
+        # mailboxes. only on nanohub right now
+        # if socket.gethostname() == 'nanoHUB':
+        if socket.gethostname() == 'mmh':
+            os.system('cp inboxes.py %s' % ext)
+            os.system('jupyter nbextension install --sys-prefix sendto')
+
         # patch dashboards to work with our tool mode and autorun extensions
         dashdir = os.path.join(ext, 'jupyter_dashboards', 'notebook', 'dashboard-view')
         os.system('patch -f -d %s < dashboard-actions.patch' % dashdir)
@@ -340,7 +352,7 @@ def install_extensions(pathlist, desktop):
     os.chdir(cwd)
 
 
-def cleanup(pathlist):
+def cleanup(pathlist, desktop):
     # final cleanup
     path = os.environ['PATH']
     for p in pathlist:
@@ -353,6 +365,8 @@ def cleanup(pathlist):
         # Must do this after uninstalling the conda extensions because they
         # will uninstall our extensions too!  These just update etc/jupyter/nbconfig/notebook.json
         os.system('jupyter nbextension enable --sys-prefix autorun/main 2> /dev/null')
+        if not desktop:
+            os.system('jupyter nbextension enable --sys-prefix prefs/prefs')
         os.system('jupyter nbextension enable --sys-prefix dragdrop/main')
         os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
         os.system('jupyter nbextension enable --py --sys-prefix gmaps')
@@ -376,6 +390,11 @@ def cleanup(pathlist):
         # if p == pathlist[0]:
         #    # python2 only
         #    os.system('jupyter nbextension enable --sys-prefix  --py nbmolviz')
+
+        # mailboxes. only on nanohub right now
+        # if socket.gethostname() == 'nanoHUB':
+        if socket.gethostname() == 'mmh':
+            os.system('jupyter nbextension enable --sys-prefix sendto/sendto')
 
         os.system('conda clean -y --all')
         os.environ['PATH'] = path
@@ -465,7 +484,7 @@ def do_update(desktop, cname, env_dir, examples, pathlist):
     install_misc(pathlist, desktop)
     install_extensions(pathlist, desktop)
     check_perm(pathlist)
-    cleanup(pathlist)
+    cleanup(pathlist, desktop)
 
 
 def make_fix(args):
@@ -473,7 +492,7 @@ def make_fix(args):
     pathlist = get_pathlist(rver)
     install_extensions(pathlist, desktop)
     check_perm(pathlist)
-    cleanup(pathlist)
+    cleanup(pathlist, desktop)
 
 
 def find_octave(pypath, desktop, env_dir, prompt=True):
