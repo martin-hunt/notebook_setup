@@ -26,7 +26,10 @@ class SendToHandler(RequestHandler):
 
         idir = os.path.join(inbox, os.environ['LOGNAME'])
         if not os.path.isdir(idir):
+            # log.info("Creating directory %s" % idir)
             os.mkdir(idir)
+            uid = str(os.stat(inbox).st_uid)
+            check_call(['setfacl', '-m', 'u::rwx,g::---,o::---,u:%s:rwx' % uid, idir])
 
         # print("INBOX:", inbox)
         notebook = json_obj['notebook'].strip('/')
@@ -34,10 +37,11 @@ class SendToHandler(RequestHandler):
         # print("2. cwd=", os.getcwd())
         # print("notebook:", os.path.join(os.getcwd(), notebook))
 
-        notebook = os.path.join(os.getcwd(), notebook)
+        notebook_path = os.path.join(os.getcwd(), notebook)
 
         try:
-            failed = check_call(['cp', notebook, idir])
+            failed = check_call(['cp', notebook_path, idir])
+            check_call(['setfacl', '-m', 'u::rwx,g::---,o::---,u:%s:rwx' % uid, os.path.join(idir, notebook)])
         except:
             failed = 1
 
