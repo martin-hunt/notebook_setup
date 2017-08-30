@@ -37,13 +37,13 @@ define([
     }
 
     function sendit(inbox) {
-        // console.log('SENDIT: ' + inbox);
+        console.log('SENDIT: ' + inbox);
 
         var args = {'inbox': inbox,
                     'notebook': Jupyter.notebook.notebook_path};
 
         var settings = {
-            url : '/sendto',
+            url : Jupyter.notebook.base_url + 'sendto',
             type : "POST",
             dataType: "text",
             data: JSON.stringify(args),
