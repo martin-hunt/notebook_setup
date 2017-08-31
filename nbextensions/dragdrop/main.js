@@ -7,10 +7,16 @@
 define([
     'base/js/namespace',
     'jquery',
-    "base/js/events",
-    "base/js/utils"
-], function(IPython, $, events, utils) {
+	'base/js/utils',
+    "base/js/events"
+], function(IPython, $, utils, events) {
     "use strict";
+
+	var params = {
+		subdirectory : '',
+	};
+
+    var base_url = utils.get_body_data("baseUrl");
 
     /* http://stackoverflow.com/questions/3231459/create-unique-id-with-javascript */
     function uniqueid(){
@@ -28,15 +34,34 @@ define([
         return (idstr);
     }
 
-    var send_to_server = function(name,path,msg) {
+    var create_dir = function(path) {
+        var options = {type:'directory'};
+
+        var data = JSON.stringify({
+          ext: options.ext,
+          type: options.type
+        });
+
+        var settings = {
+            processData : false,
+            type : "PUT",
+            data: data,
+            contentType: 'application/json',
+            dataType : "json"
+        };
+    utils.promising_ajax(IPython.contents.api_url(path), settings);
+    };
+
+    var send_to_server = function(name, msg) {
+        var path = utils.url_path_join(utils.url_path_split(IPython.notebook.notebook_path)[0], params.subdirectory);
         if (name == '') {
             name = uniqueid() + '.' + msg.match(/data:image\/(\S+);/)[1];
             }
-        path = path.substring(0, path.lastIndexOf('/')) + '/';
-        if (path === '/') path = '';
-        var url = '//' + location.host + utils.get_body_data('base-url') + 'api/contents/' + path + name;
+        create_dir(path);
+        var url = '//' + location.host + utils.url_path_join(base_url, 'api/contents', path, name);
+
         var img = msg.replace(/(^\S+,)/, ''); // strip header
-        //console.log("send_to_server:", url);
+        //console.log("send_to_server:", url, img);
         var data = {'name': name, 'format':'base64', 'content': img, 'type': 'file'};
         var settings = {
             processData : false,
@@ -46,15 +71,18 @@ define([
             data : JSON.stringify(data),
             headers : {'Content-Type': 'text/plain'},
             async : false,
-            success : function (data, status, xhr) {
-                var new_cell = IPython.notebook.insert_cell_below('markdown');
-                var str = '<img  src="' + name + '"/>';
-                new_cell.set_text(str);
-                new_cell.execute();
-                },
             error : function() {console.log('Data transfer for drag-and-drop failed.'); }
         };
-        $.ajax(url, settings);
+        utils.promising_ajax(url, settings).then(
+            function on_success (data, status, xhr) {
+                var new_cell = IPython.notebook.insert_cell_below('markdown');
+                var str = '![](' + utils.url_path_join(params.subdirectory, name) + ')';
+                new_cell.set_text(str);
+                new_cell.execute();
+            },
+            function on_error (reason) {
+                     console.log('Data transfer for drag-and-drop failed.');
+            });
     };
 
     /* the dragover event needs to be canceled to allow firing the drop event */
@@ -69,23 +97,24 @@ define([
         var cell = IPython.notebook.get_selected_cell();
         event.preventDefault();
         if(event.stopPropagation) {event.stopPropagation();}
-            if (event.dataTransfer.items != undefined) {
+
+            if (event.dataTransfer.items !== undefined) {
                 /* Chrome here */
                 var items = event.dataTransfer.items;
                 for (var i = 0; i < items.length; i++) {
                     /* data coming from local file system, must be an image to allow dropping*/
-                    if (items[i].kind == 'file' && items[i].type.indexOf('image/') !== -1) {
-
-                        var blob = items[i].getAsFile();
+                    var blob = items[i].getAsFile();
+                    if (items[i].kind === 'file' && blob.type.indexOf('image/') !== -1) {
                         var filename = blob.name;
                         var reader = new FileReader();
                         reader.onload = ( function(evt) {
-                            send_to_server(filename, IPython.notebook.notebook_path, evt.target.result);
+                            send_to_server(filename, evt.target.result);
                             if(event.stopPropagation) {event.stopPropagation();}
                          } );
                         reader.readAsDataURL(blob);
                     } else {
-                        console.log("Unsupported type:", items[i].kind);
+                        console.log("Unsupported type for file:", blob.name);
+
                     }
                 }
             } else {
@@ -105,8 +134,8 @@ define([
                      *   url  - image is given as an url
                      *   data - image is a base64 blob
                      */
-                    // console.log("type:",url," name:", filename," path:", IPython.notebook.notebook_path," url:", url);
-                    send_to_server(filename, IPython.notebook.notebook_path, data);
+                    //console.log("type:",url," name:", filename," path:", IPython.notebook.notebook_path," url:", url);
+                    send_to_server(filename, data);
                     return;
                     }
                 /* data coming from local file system, must be an image to allow dropping*/
@@ -117,8 +146,8 @@ define([
                         var url = event.view.location.origin;
                         var reader = new FileReader();
                             reader.onload = ( function(evt) {
-                                // console.log("file"," name:", filename," path:", IPython.notebook.notebook_path," url:", url);
-                                send_to_server(filename, IPython.notebook.notebook_path, evt.target.result);
+                                //console.log("file"," name:", filename," path:", IPython.notebook.notebook_path," url:", url);
+                                send_to_server(filename, evt.target.result);
                                 event.preventDefault();
                                 } );
                         reader.readAsDataURL(blob);
@@ -160,12 +189,20 @@ define([
         }
     }
 
-    var load_ipython_extension = function() {
+    var load_jupyter_extension = function() {
         events.on('create.Cell', create_cell);
-    };
-    var extension = {
-        load_ipython_extension : load_ipython_extension
-    };
-    return extension;
-});
 
+        return IPython.notebook.config.loaded.then(function () {
+            // update params
+            $.extend(true, params, IPython.notebook.config.data.dragdrop);
+            if (params.subdirectory) {
+                console.log('[dragdrop] subdir:', params.subdirectory);
+            }
+        });
+    };
+
+	return {
+		load_jupyter_extension : load_jupyter_extension,
+		load_ipython_extension : load_jupyter_extension,
+	};
+});
