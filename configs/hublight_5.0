@@ -1,0 +1,50 @@
+# desktop or hub install? (True/False)
++DESKTOP False
+
+# anaconda version to start with
++VERSION 5.0.0.1
+
+# name to call it when installed: anaconda2-$RVERSION
++RVERSION 5.0
+
+++ DONE
+
+# common packages for python2 and python3
+# columns are:
+# package version {conda|pip} [channel_name]
+# Use '*' for any version
+
+# https://plot.ly/products/dash/
+dash 0.18.3 pip
+dash-renderer 0.11.0 pip
+dash-html-components 0.8.0 pip
+dash-core-components 0.13.0 pip
+
+# https://dask.pydata.org/en/latest/index.html
+dask 0.15.4 conda conda-forge
+
+# R
+# rpy2 2.8.5 conda
+r-essentials 1.5.2 conda
+
+gpy 1.8.4 pip
+plotly 2.0.15 pip
+nglview 1.0b5 pip
+ezvis3d 0.2 pip
+pint 0.8.1 pip
+hublib 0.8.0 pip
+geopandas 0.3.0 pip
+moviepy 0.2.3.2 pip
+git+https://github.com/jakevdp/JSAnimation.git * pip
+colorlover 0.2.1 pip
+parse 1.8.2 pip
+celery 4.1.0 pip
+xarray 0.9.6 pip
+holoviews 1.8.4 conda conda-forge
+branca 0.2.0 conda conda-forge
+folium 0.5.0 conda conda-forge
+
+jupyter_dashboards 0.7.0 pip
+oct2py 4.0.6 pip
+rise 5.0.0 conda damianavila82
+future 0.16.0 conda
