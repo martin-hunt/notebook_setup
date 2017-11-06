@@ -334,8 +334,7 @@ def install_extensions(pathlist, desktop):
             os.system('cp hublogin.py %s' % ext)
 
         # mailboxes. only on nanohub right now
-        # if socket.gethostname() == 'nanoHUB':
-        if socket.gethostname() == 'mmh':
+        if socket.gethostname() == 'nanoHUB':
             os.system('cp inboxes.py %s' % ext)
             os.system('jupyter nbextension install --sys-prefix sendto')
 
@@ -368,32 +367,23 @@ def cleanup(pathlist, desktop):
         if not desktop:
             os.system('jupyter nbextension enable --sys-prefix prefs/prefs')
         os.system('jupyter nbextension enable --sys-prefix dragdrop/main')
-        os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
-        os.system('jupyter nbextension enable --py --sys-prefix gmaps')
+        # os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
+        # os.system('jupyter nbextension enable --py --sys-prefix gmaps')
         # os.system('jupyter serverextension enable --py declarativewidgets --sys-prefix')
-        # os.system('jupyter serverextension enable --py jupyter_cms --sys-prefix')
         # os.system('jupyter nbextension enable --py --sys-prefix declarativewidgets')
-        # os.system('jupyter nbextension enable --py jupyter_cms --sys-prefix')
-        # os.system('jupyter bundler enable --py jupyter_cms --sys-prefix')
-        # os.system('jupyter dashboards_bundlers quick-setup --sys-prefix')
         os.system('jupyter nbextension enable --py jupyter_dashboards --sys-prefix')
 
         # maybe someday we will enable nbpresent, but right now it is much too buggy
         # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
 
-        # no longer using this
-        # os.system('jupyter nbextension disable --sys-prefix  livereveal/main 2> /dev/null')
-
         # os.system('jupyter nbextension enable --sys-prefix  --py pythreejs')
         os.system('jupyter nbextension enable --sys-prefix  --py nglview')
-        os.system('jupyter nbextension enable --sys-prefix  --py bqplot')
         # if p == pathlist[0]:
         #    # python2 only
         #    os.system('jupyter nbextension enable --sys-prefix  --py nbmolviz')
 
         # mailboxes. only on nanohub right now
-        # if socket.gethostname() == 'nanoHUB':
-        if socket.gethostname() == 'mmh':
+        if socket.gethostname() == 'nanoHUB':
             os.system('jupyter nbextension enable --sys-prefix sendto/sendto')
 
         os.system('conda clean -y --all')
@@ -401,11 +391,12 @@ def cleanup(pathlist, desktop):
 
 
 def install_misc(pathlist, desktop):
-    global dirname
-    for p in pathlist:
-        lib = os.path.join(p, 'lib')
-        libfreeimage = os.path.join(dirname, 'misc', 'libfreeimage-3.16.0-linux64.so')
-        os.system("cp %s %s" % (libfreeimage, lib))
+    return
+    # global dirname
+    # for p in pathlist:
+    #     lib = os.path.join(p, 'lib')
+    #     libfreeimage = os.path.join(dirname, 'misc', 'libfreeimage-3.16.0-linux64.so')
+    #     os.system("cp %s %s" % (libfreeimage, lib))
 
 
 def get_pathlist(rver):
