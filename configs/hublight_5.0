@@ -49,17 +49,21 @@ colorlover 0.2.1 pip
 parse 1.8.2 pip
 celery 4.1.0 pip
 xarray 0.9.6 pip
-holoviews 1.8.4 conda ioam
+holoviews 1.9.0 conda ioam
 branca 0.2.0 conda conda-forge
 folium 0.5.0 conda conda-forge
 
 jupyter_dashboards 0.7.0 pip
 oct2py 4.0.6 pip
-rise 5.0.0 conda damianavila82
+rise 5.1.0 conda damianavila82
 future 0.16.0 conda
 
+# rdkit has a libkml dependency which breaks gdal
 #rdkit 2017.09.1 conda rdkit
 #mdtraj 1.9.1 conda conda-forge
+
+# GDAL - Geospatial Data Abstraction Library
+gdal 2.2.2 conda conda-forge
 networkx 2.0 conda
 
 bokeh 0.12.10 conda
@@ -83,7 +87,3 @@ sshtunnel 0.1.2 pip
 #https://github.com/jupyterlab/jupyterlab-git
 #!jupyter labextension install @jupyter-widgets/jupyterlab-manager
 #!jupyter labextension install jupyterlab_bokeh
-
-# 2 ONLY
-python 2.7.14 conda
-

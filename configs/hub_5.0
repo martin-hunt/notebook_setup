@@ -1,11 +1,13 @@
 # desktop or hub install? (True/False)
-+DESKTOP True
++DESKTOP False
 
 # anaconda version to start with
 +VERSION 5.0.1
 
 # name to call it when installed: anaconda2-$RVERSION
 +RVERSION 5.0
+
++ENVIRON_CONFIG_DIR /apps/share64/debian7/environ.d
 
 ++ DONE
 
@@ -96,7 +98,7 @@ dash-core-components 0.14.0 pip
 # jupyterlab
 jupyterlab 0.29.1 conda conda-forge
 
-#nodejs 6.11.2 conda
+nodejs 6.11.2 conda
 !jupyter labextension install @jupyterlab/geojson-extension
 !jupyter labextension install @jupyterlab/json-extension
 !jupyter labextension install @jupyterlab/plotly-extension
