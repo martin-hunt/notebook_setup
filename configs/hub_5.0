@@ -21,9 +21,10 @@
 # package version {conda|pip} [channel_name]
 # Use '*' for any version
 
+nglview 1.0 pip
+
 opencv 3.2.0=np112py36_0 conda conda-forge
 notebook 5.2.1 conda conda-forge
-ipywidgets 7.0.3 conda conda-forge
 dask 0.15.4 conda conda-forge
 xarray 0.9.6 conda conda-forge
 holoviews 1.9.1 conda conda-forge
@@ -39,7 +40,7 @@ bqplot 0.10.0 conda conda-forge
 mdtraj 1.9.1 conda conda-forge
 mmtf-python 1.0.9 conda conda-forge
 moviepy 0.2.3.2 conda conda-forge
-nglview 1.0 conda conda-forge
+ambertools 17 conda http://ambermd.org/downloads/ambertools/conda/
 
 # magnetics
 oommfc 0.7.6 conda conda-forge
