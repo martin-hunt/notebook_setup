@@ -353,6 +353,10 @@ def install_extensions(pathlist, desktop):
 
 def cleanup(pathlist, desktop):
     # final cleanup
+    
+    # remove any local extensions because they may conflict with global
+    os.system('rm -rf ~/.local/share/jupyter/nbextensions')
+
     path = os.environ['PATH']
     for p in pathlist:
         os.environ['PATH'] = os.path.join(p, 'bin') + ':' + path
