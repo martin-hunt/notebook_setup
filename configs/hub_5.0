@@ -41,6 +41,7 @@ mdtraj 1.9.1 conda conda-forge
 mmtf-python 1.0.9 conda conda-forge
 moviepy 0.2.3.2 conda conda-forge
 ambertools 17 conda http://ambermd.org/downloads/ambertools/conda/
+ase 3.15.0 conda conda-forge 
 
 # magnetics
 oommfc 0.7.6 conda conda-forge
@@ -89,6 +90,14 @@ oct2py 4.0.6 pip
 py3dmol 0.7.0 pip
 sshtunnel 0.1.2 pip
 pandas_datareader 0.5.0 pip
+molPX 0.1.5 pip
+https://github.com/lmmentel/ase-espresso/archive/master.zip * pip
+
+# Citrine's public platform for data-driven materials and chemistry research
+citrination-client 3.0.0 pip
+
+# Materials Data Facility 
+mdf-forge 0.4.7 pip
 
 # https://plot.ly/products/dash/
 dash 0.19.0 pip
