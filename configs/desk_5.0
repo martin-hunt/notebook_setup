@@ -77,6 +77,7 @@ rpy2 2.9.0 conda
 r-essentials 1.7.0 conda
 
 fenics 2017.1.0.post0 pip
+# petsc 3.8.1 pip # Needed??
 atomman 1.1.4 pip
 gpy 1.8.4 pip
 plotly 2.2.2 pip
@@ -127,4 +128,4 @@ ipywidgets 7.0.5 conda conda-forge
 
 # 2 ONLY
 mdanalysis 0.16.2 conda conda-forge
-mdanalysistests conda conda-forge
+mdanalysistests 0.16.2 conda conda-forge
