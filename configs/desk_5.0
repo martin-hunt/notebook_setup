@@ -73,8 +73,8 @@ ipython 6.2.1 conda
 seaborn 0.8.1 conda
 
 # R
-rpy2 2.9.0 conda
-r-essentials 1.7.0 conda
+rpy2 2.8.6 conda conda-forge
+r-essentials 1.6.0 conda
 
 fenics 2017.1.0.post0 pip
 # petsc 3.8.1 pip # Needed??
@@ -125,6 +125,7 @@ dash-core-components 0.15.2 pip
 #!jupyter labextension install qgrid-jupyterlab@1.0.0-beta.8
 
 ipywidgets 7.0.5 conda conda-forge
+widgetsnbextension 3.0.8 conda
 
 # 2 ONLY
 mdanalysis 0.16.2 conda conda-forge
