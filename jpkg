@@ -242,14 +242,15 @@ def install_kernels(pathlist):
 
 def install_octave(path, env_dir, desktop):
     "Install octave kernel, if octave is found"
-    octave_kstr = find_octave(path, desktop, env_dir, prompt=False)
-    if octave_kstr is not None:
-        dname = os.path.join(path, 'share', 'jupyter', 'kernels', 'octave')
-        if not os.path.exists(dname):
-            os.mkdir(dname)
-        fname = os.path.join(dname, 'kernel.json')
-        with open(fname, 'w') as f:
-            f.write(octave_kstr)
+    for p in pathlist:
+        octave_kstr = find_octave(p, desktop, env_dir, prompt=False)
+        if octave_kstr is not None:
+            dname = os.path.join(p, 'share', 'jupyter', 'kernels', 'octave')
+            if not os.path.exists(dname):
+                os.mkdir(dname)
+            fname = os.path.join(dname, 'kernel.json')
+            with open(fname, 'w') as f:
+                f.write(octave_kstr)
 
 
 def write_env(rver, env_dir, pathlist):
@@ -474,7 +475,7 @@ def make_update(args):
 def do_update(desktop, cname, env_dir, examples, pathlist):
     install_updates(cname, examples, pathlist)
     install_kernels(pathlist)
-    install_octave(pathlist[0], env_dir, desktop)
+    install_octave(pathlist, env_dir, desktop)
     install_R_pkgs(pathlist)
     install_misc(pathlist, desktop)
     install_extensions(pathlist, desktop)
