@@ -240,7 +240,7 @@ def install_kernels(pathlist):
         os.environ['PATH'] = path
 
 
-def install_octave(path, env_dir, desktop):
+def install_octave(pathlist, env_dir, desktop):
     "Install octave kernel, if octave is found"
     for p in pathlist:
         octave_kstr = find_octave(p, desktop, env_dir, prompt=False)
