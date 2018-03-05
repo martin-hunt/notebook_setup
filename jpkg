@@ -126,9 +126,9 @@ def install_packages(cname, pyver):
                         cmd += " -c %s" % channel
                 elif inst == 'pip':
                     if ver == '*':
-                        cmd = "pip install -qU --upgrade-strategy only-if-needed %s" % pkg
+                        cmd = "pip install -U --upgrade-strategy only-if-needed %s" % pkg
                     else:
-                        cmd = "pip install -qU --upgrade-strategy only-if-needed %s==%s" % (pkg, ver)
+                        cmd = "pip install -U --upgrade-strategy only-if-needed %s==%s" % (pkg, ver)
                 elif inst == 'npm':
                         cmd = 'npm install -g %s@%s' % (pkg, ver)
                 print("Running '%s'" % cmd)
