@@ -300,12 +300,15 @@ def install_extensions(pathlist, desktop):
             f.write("c.NotebookApp.trust_xheaders = True\n")
             f.write("c.NotebookApp.mathjax_url = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js'\n")
             # needed for notebook 5.0 with holoviews and some others
-            f.write("c.NotebookApp.iopub_data_rate_limit=100000000\n")
+            #f.write("c.NotebookApp.iopub_data_rate_limit=100000000\n")
             if not desktop:
                 f.write("c.NotebookApp.login_handler_class = 'hublogin.HubLoginHandler'\n")
-            if socket.gethostname() == 'nanoHUB':
-                # mailboxes only on nanohub at this time
-                f.write("c.NotebookApp.nbserver_extensions = {'inboxes': True}\n")
+            #if socket.gethostname() == 'nanoHUB':
+            #    # mailboxes only on nanohub at this time
+            #    f.write("c.NotebookApp.nbserver_extensions = {'inboxes': True}\n")
+            # needed for proxy
+            f.write("c.NotebookApp.disable_check_xsrf = True")
+
 
         bindir = os.path.join(p, 'bin')
         os.environ['PATH'] = bindir + ':' + path
