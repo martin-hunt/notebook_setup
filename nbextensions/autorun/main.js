@@ -113,8 +113,11 @@ define([
 
         /* mark all cells read-only */
         var cells = IPython.notebook.get_cells();
-        for(var i in cells){
+        for(var i in cells) {
             cells[i].code_mirror.setOption('readOnly',true);
+            if (cells[i].cell_type == 'markdown') {
+                cells[i].element.unbind('dblclick');
+            }
         };
 
         /* disable editing shortcuts */
