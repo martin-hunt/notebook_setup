@@ -121,7 +121,7 @@ def install_packages(cname, pyver):
                 else:
                     print("Installing %s %s" % (pkg, ver))
                 if inst == 'conda':
-                    cmd = "conda install -qy %s=%s %s" % (pkg, ver, nodeps)
+                    cmd = "conda install -y %s=%s %s" % (pkg, ver, nodeps)
                     if channel:
                         cmd += " -c %s" % channel
                 elif inst == 'pip':
