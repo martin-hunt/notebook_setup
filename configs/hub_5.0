@@ -21,7 +21,7 @@
 # package version {conda|pip} [channel_name]
 # Use '*' for any version
 
-opencv 3.3.0 conda conda-forge
+opencv 3.1.0 conda conda-forge
 
 nglview 1.0 conda bioconda
 !jupyter-nbextension enable nglview --py --sys-prefix
@@ -112,6 +112,7 @@ dash 0.19.0 pip
 dash-renderer 0.11.1 pip
 dash-html-components 0.8.0 pip
 dash-core-components 0.15.2 pip
+dash-table-experiments 0.5.0 pip
 
 # jupyterlab
 #jupyterlab 0.29.1 conda conda-forge

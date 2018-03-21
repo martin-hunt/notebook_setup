@@ -19,9 +19,6 @@
 # package version {conda|pip} [channel_name]
 # Use '*' for any version
 
-
-nglview 1.0 conda conda-forge
-ipywidgets 7.1.2 conda
 matplotlib 2.2.0 conda
 
 opencv 3.3.1 conda
@@ -51,8 +48,14 @@ rise 5.2.0 conda damianavila82
 future 0.16.0 conda
 qgrid 1.0.1 conda
 rdkit 2017.09.3.0 conda rdkit
-molpx 0.1.7 conda conda-forge
 citrination-client 3.2.0 pip
+
+# this part is a bit tricky because we want to have
+# specific versions
+molpx 0.1.7 conda conda-forge
+nglview 1.1.1 conda conda-forge --no-deps
+ipywidgets 7.1.2 conda --no-deps
+widgetsnbextension 3.1.4 conda --no-deps
 
 # Materials Data Facility 
 mdf-forge 0.5.1 pip
@@ -89,6 +92,7 @@ mdtraj 1.9.1 conda conda-forge
 mdanalysis 0.17.0 conda conda-forge
 mdanalysistests 0.17.0 conda conda-forge
 openbabel 2.4.1 conda openbabel
+pytraj 2.0.2 conda ambermd
 
 hublib 0.8.6 pip
 
@@ -110,7 +114,7 @@ nodejs 8.9.3 conda
 !jupyter labextension install qgrid
 #!jupyter labextension install @jupyterlab/latex
 !jupyter labextension install jupyterlab-drawio
-# sandbox
+!jupyter labextension install jupyterlab_iframe
 
 # 2 ONLY
 

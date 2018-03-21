@@ -1,5 +1,5 @@
 # desktop or hub install? (True/False)
-+DESKTOP False
++DESKTOP True
 
 # anaconda version to start with
 +VERSION 5.0.1
@@ -22,34 +22,43 @@
 # Use '*' for any version
 
 # https://plot.ly/products/dash/
-dash 0.19.0 pip
-dash-renderer 0.11.1 pip
+dash 0.20.0 pip
+dash-renderer 0.11.2 pip
 dash-html-components 0.8.0 pip
-dash-core-components 0.14.0 pip
+dash-core-components 0.18.0 pip
 
 # https://dask.pydata.org/en/latest/index.html
-dask 0.15.4 conda conda-forge
+dask 0.16.1 conda
 
 # R
-# rpy2 2.8.5 conda
-r-essentials 1.5.2 conda
+rpy2 2.9.0 conda
+r-essentials 1.7.0 conda
 
-gpy 1.8.4 pip
-plotly 2.2.1 pip
+jupyter_client 5.2.1 conda
+jupyter_core 4.4.0 conda
+
+opencv 3.3.1 conda
+pandas 0.22.0 conda
+notebook 5.3.1 conda
+mkl 2018.0.1 conda
+matplotlib 2.1.1 conda
+
+gpy 1.8.5 pip
+plotly 2.2.3 pip
 nglview 1.0 pip
-ezvis3d 0.2 pip
+ezvis3d 0.2.2 pip
 pint 0.8.1 pip
-hublib 0.8.1 pip
+hublib 0.8.2 pip
 geopandas 0.3.0 pip
 geoplotlib 0.3.2 pip
-gmaps 0.6.2 pip
+gmaps 0.7.0 pip
 moviepy 0.2.3.2 pip
 git+https://github.com/jakevdp/JSAnimation.git * pip
 colorlover 0.2.1 pip
 parse 1.8.2 pip
 celery 4.1.0 pip
 xarray 0.9.6 pip
-holoviews 1.9.0 conda ioam
+holoviews 1.9.2 conda
 branca 0.2.0 conda conda-forge
 folium 0.5.0 conda conda-forge
 
@@ -62,14 +71,13 @@ future 0.16.0 conda
 #rdkit 2017.09.1 conda rdkit
 #mdtraj 1.9.1 conda conda-forge
 
-# GDAL - Geospatial Data Abstraction Library
-gdal 2.2.2 conda conda-forge
+# GDAL - Geospatial Data Abstraction Librarygdal 2.2.2 conda conda-forge
 networkx 2.0 conda
 
-bokeh 0.12.10 conda
-bqplot 0.10.0 conda conda-forge
+bokeh 0.12.13 conda
+bqplot 0.10.2 conda conda-forge
 matplotlib 2.1.0 conda
-qgrid 1.0.0b7 conda tim_shawver/label/dev 
+qgrid 1.0.0 conda tim_shawver/label/dev 
 ipyleaflet 0.5.0 conda conda-forge 
 
 mysql-connector-python 2.0.4 conda
@@ -87,3 +95,10 @@ sshtunnel 0.1.2 pip
 #https://github.com/jupyterlab/jupyterlab-git
 #!jupyter labextension install @jupyter-widgets/jupyterlab-manager
 #!jupyter labextension install jupyterlab_bokeh
+
+#ipywidgets 7.1.0 conda
+#widgetsnbextension 3.1.0 conda
+
+# 3 ONLY
+ipython 6.2.1 conda
+python 3.6.4 conda
