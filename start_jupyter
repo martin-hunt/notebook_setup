@@ -23,10 +23,12 @@ This script handles four different modes.
 from __future__ import print_function
 import sys
 import os
+import glob
 import shutil
 import signal
 import argparse
 import json
+import binascii
 from subprocess import call, Popen, check_output
 
 EXAMPLES = '${examples}'
@@ -138,6 +140,29 @@ def get_proxy_addr():
     proxy_url = "https://proxy." + url.split('//')[1] + url_path
     return url_path, proxy_url
 
+def get_cookie():
+    cookie_name = ""
+    try:
+        session = int(os.environ['SESSION'])
+        pwfile = glob.glob('/var/run/Xvnc/passwd-*')[0]
+        with open(pwfile, 'rb') as f:
+            pwd = binascii.hexlify(f.read()).decode('utf-8')
+            token = "%d:%s" % (session, str(pwd))
+
+        fn = os.path.join(os.environ['SESSIONDIR'], 'resources')
+        with open(fn, 'r') as f:
+            res = f.read()
+        for line in res.split('\n'):
+            if line.startswith('hub_url'):
+                url = line.split()[1]
+                host = url[url.find('//') + 2:]
+                cookie_name = 'weber-auth-' + host.replace('.', '-')
+                break
+    except:
+        # not running on a hub
+        return "", ""
+    print("returning %s, %s" % (cookie_name, token))
+    return cookie_name, token
 
 def load_examples(arglist):
     # Run in users 'notebooks' subdirectory
@@ -157,6 +182,9 @@ def load_examples(arglist):
 
     # The NotebookSettings is an autorun tool and we must flag it as trusted.
     sign_tool('%s/NotebookSettings/NotebookSettings.ipynb' % EXAMPLES, True)
+    # also trust Index page
+    sign_tool('%s/Index.ipynb' % EXAMPLES, True)
+
     notebook = "notebooks/%s/Index.ipynb" % EXAMPLES_DIR
     arglist.append('--NotebookApp.default_url="%s"' % notebook)
 
@@ -236,14 +264,18 @@ def run_notebook(args):
               '--NotebookApp.base_url="%s"' % p_path
               ]
 
+    token = get_cookie()[1]
+    if token:
+        cmdlist.append('--NotebookApp.token=%s' % token)
+
     if args.debug:
         cmdlist.append('--Application.log_level="DEBUG"')
     cmdlist += arglist
 
-    print("=" * 60)
-    print("URL is")
-    print(p_url)
-    print("=" * 60)
+    urlstring = "%s?token=%s" % (p_url, token)
+    print("=" * len(urlstring))
+    print("URL is\n%s" % urlstring)
+    print("=" * len(urlstring))
     sys.stdout.flush()  # make sure this gets displayed now.
 
     # If invoked by system, display logo for screenshots
@@ -253,7 +285,8 @@ def run_notebook(args):
 
     # having DISPLAY set breaks notebook terminals
     os.environ['DISPLAY'] = ""
-    # print("CMDLIST:", cmdlist)
+    if args.debug:
+        print("cmdlist:", cmdlist)
     call(cmdlist)
     print("\n\nNotebook server terminated.\n")
 
