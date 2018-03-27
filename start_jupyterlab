@@ -1,0 +1,166 @@
+#!/usr/bin/python
+"""
+This script handles four different modes.
+
+1. start_jupyter
+  Runs notebook server in current directory
+
+2. start_jupyter foo.ipynb
+  Runs notebook in current directory
+
+3. /path/to/tool/middleware/invoke
+  Runs tools.  The invoke script will give the
+  path to the notebook to run.  The path of the
+  invoke script is used to locate the notebook.
+  Current directory will be set to the notebook
+  location (usually in the tool bin directory)
+
+4. jupyter/middleware/invoke
+  Run jupyter tool.  Starts a notebook server in
+  your "notebooks" directory.
+"""
+
+from __future__ import print_function
+import sys
+import os
+import shutil
+import signal
+import argparse
+import json
+from subprocess import call, Popen, check_output
+
+EXAMPLES = '${examples}'
+EXAMPLES_DIR = "DOCS_AND_EXAMPLES"
+INBOXES_DIR = "/data/tools/inboxes"
+
+def handler(signum, frame):
+    pass
+
+signal.signal(signal.SIGINT, handler)
+
+
+def parse_cmd_line():
+    prog = "start_jupyterlab"
+
+    parser = argparse.ArgumentParser(
+         usage="""usage: %(prog)s [-h] [-t] [name]
+
+Start a Jupyter notebook-based tool
+
+positional arguments:
+  name        Name of notebook to run.  The terminal and
+              dashboard (tree view of files) will de disabled.
+
+              If no name is given, a notebook server will
+              be started in the current directory.  Terminal
+              and dashboard will be enabled.
+
+optional arguments:
+  -h, --help  show this help message and exit.
+  -d          Show debug (verbose) output.
+""",
+         prog=prog,
+         add_help=False)
+    parser.add_argument('-d', dest='debug', action='store_true')
+    parser.add_argument('-T')  # ignore if present
+    parser.add_argument('-h', '--help', dest='help', action='store_true')
+    parser.add_argument('name', nargs='?')
+
+    return parser
+
+
+def get_session():
+    try:
+        session = os.environ['SESSION']
+        sessiondir = os.environ['SESSIONDIR']
+    except:
+        session = ""
+
+    if session != "":
+        return session, sessiondir
+
+    # something went wrong. restore environment variables
+    psout = check_output(['ps', 'auxwwe']).split('\n')
+    for line in psout:
+        ind = line.find('SESSIONDIR')
+        if ind > 0:
+            sessiondir = line[ind:].split(' ')[0]
+            display = line[line.find('DISPLAY'):].split(' ')[0]
+            break
+    session = sessiondir.split('/')[-1]
+    sessiondir = sessiondir.split('=')[1]
+    display = display.split('=')[1]
+    os.environ['SESSION'] = session
+    os.environ['SESSIONDIR'] = sessiondir
+    os.environ['DISPLAY'] = display
+    return session, sessiondir
+
+
+def get_proxy_addr():
+    session, sessiondir = get_session()
+    fn = os.path.join(sessiondir, 'resources')
+    with open(fn, 'r') as f:
+        res = f.read()
+    for line in res.split('\n'):
+        if line.startswith('hub_url'):
+            url = line.split()[1]
+        elif line.startswith('filexfer_port'):
+            fxp = str(int(line.split()[1]) % 1000)
+        elif line.startswith('filexfer_cookie'):
+            fxc = line.split()[1]
+    url_path="/weber/%s/%s/%s/" % (session, fxc, fxp)
+    proxy_url = "https://proxy." + url.split('//')[1] + url_path
+    return url_path, proxy_url
+
+
+def run_notebook(args):
+
+    # JupyterLab starts in HOME dir
+    os.chdir(os.environ['HOME'])
+
+    # When invoked by the system, the shell will be dash.
+    workspace = True
+    if os.environ["SHELL"] == "/bin/dash":
+        workspace = False
+        # Users probably want "bash"
+        os.environ['SHELL'] = "/bin/bash"
+
+    p_path, p_url = get_proxy_addr()
+    cmdlist = [
+              "jupyter", "lab", "--no-browser", "--port=8000",
+              "--ip=0.0.0.0",
+              '--NotebookApp.base_url="%s"' % p_path
+              ]
+
+    if args.debug:
+        cmdlist.append('--Application.log_level="DEBUG"')
+
+    print("=" * 60)
+    print("URL is")
+    print(p_url)
+    print("=" * 60)
+    sys.stdout.flush()  # make sure this gets displayed now.
+
+    # If invoked by system, display logo for screenshots
+    if not workspace:
+        Popen(['xview',  '-fit', '-fullscreen',
+              '%s/images/jupyter.gif' % EXAMPLES])
+
+    # having DISPLAY set breaks notebook terminals
+    os.environ['DISPLAY'] = ""
+    print("CMDLIST:", cmdlist)
+    call(cmdlist)
+    print("\n\nNotebook server terminated.\n")
+
+if __name__ == "__main__":
+    if os.getuid() == 0:
+        print("Do not run this as root.", file=sys.stderr)
+        sys.exit(1)
+
+    parser = parse_cmd_line()
+    args = parser.parse_args()
+    if args.help:
+        parser.print_usage()
+        sys.exit(0)
+
+    run_notebook(args)
