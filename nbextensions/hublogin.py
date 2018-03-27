@@ -24,6 +24,24 @@ class HubLoginHandler(IPythonHandler):
     def get(self):
         # Called when the current user cannot be authenticated.
         self._render()
+    
+    @classmethod
+    def get_user_token(cls, handler):
+        """Identify the user based on a token in the URL
+        Returns:
+        - token if authenticated
+        - None if not
+        """
+        token = handler.token
+        if not token:
+            return None
+        # check login token from URL argument
+        user_token = handler.get_argument('token', '')
+        # print("token='%s'   user_token='%s'" % (token, user_token))
+        if user_token == token:
+            handler.log.debug("Accepting token-authenticated connection from %s", handler.request.remote_ip)
+            return token
+        return None
 
     @classmethod
     def get_user(cls, handler):
@@ -44,6 +62,7 @@ class HubLoginHandler(IPythonHandler):
                 for item in cval.split(','):
                     session, passwd = item.split(':')
                     if session == cls.session and passwd == cls.vncpass:
+                        cls.first_login = False
                         return "OK"
 
             # No valid cookie, but first browser to connect
@@ -54,7 +73,14 @@ class HubLoginHandler(IPythonHandler):
                 val = url_escape("%s:%s" % (cls.session, cls.vncpass))
                 handler.set_cookie(cls.cookie_name, val, domain=cls.host, expires_days=7)
                 return "OK"
-
+            
+            # No valid cookie and not the first login.
+            # How about a login token?
+            token = cls.get_user_token(handler)
+            if token is not None:
+                handler.set_cookie(cls.cookie_name, url_escape(token), domain=cls.host, expires_days=7)
+                return "OK"
+            
         return None
 
     @classmethod
@@ -76,7 +102,7 @@ class HubLoginHandler(IPythonHandler):
 
             pwfile = glob.glob('/var/run/Xvnc/passwd-*')[0]
             with open(pwfile, 'rb') as f:
-                cls.vncpass = str(binascii.hexlify(f.read()))
+                cls.vncpass = str(binascii.hexlify(f.read()).decode('utf-8'))
 
             fn = os.path.join(os.environ['SESSIONDIR'], 'resources')
             with open(fn, 'r') as f:
