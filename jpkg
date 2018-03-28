@@ -66,7 +66,7 @@ def install_packages(cname, pyver):
 
     # get a list of installed packages so we can quickly
     # skip ones that are up-to-date.
-    pkg_list = get_pkg_list()
+    #pkg_list = get_pkg_list()
 
     pname = os.path.join(dirname, "configs", cname)
     print("Installing Packages for Python%s from %s" % (pyver, cname))
@@ -113,13 +113,13 @@ def install_packages(cname, pyver):
                 continue
 
             if (two and pyver == 2) or (three and pyver == 3):
-                if pkg in pkg_list and pkg_list[pkg]['ver'] == ver:
-                    # that version is already installed
-                    continue
-                if pkg in pkg_list:
-                    print("Upgrading %s %s -> %s" % (pkg, pkg_list[pkg]['ver'], ver))
-                else:
-                    print("Installing %s %s" % (pkg, ver))
+                #if pkg in pkg_list and pkg_list[pkg]['ver'] == ver:
+                #    # that version is already installed
+                #   continue
+                #if pkg in pkg_list:
+                #    print("Upgrading %s %s -> %s" % (pkg, pkg_list[pkg]['ver'], ver))
+                #else:
+                print("\n************** Installing %s %s" % (pkg, ver))
                 if inst == 'conda':
                     cmd = "conda install -y %s=%s %s" % (pkg, ver, nodeps)
                     if channel:
@@ -206,6 +206,10 @@ def install_updates(cname, examples, pathlist):
         with open(os.path.join(bindir, 'start_jupyter'), 'w') as f:
             f.write(s)
         os.system('chmod +x %s' % os.path.join(bindir, 'start_jupyter'))
+        s = open(os.path.join(dirname, 'start_jupyterlab')).read()
+        with open(os.path.join(bindir, 'start_jupyterlab'), 'w') as f:
+            f.write(Template(s).substitute(d))
+        os.system('chmod +x %s' % os.path.join(bindir, 'start_jupyterlab'))
         os.environ['PATH'] = path
 
 
