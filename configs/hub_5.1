@@ -17,21 +17,27 @@
 # Use '*' for any version
 
 !conda update -ny base conda
-
+pip 9.0.3 conda
+ipython 6.3.1 conda
+ipykernel 4.8.2 conda
 matplotlib 2.2.2 conda
 notebook 5.4.1 conda
 jupyterlab 0.31.12 conda
 numba 0.37.0 conda
 astropy 3.0.1 conda
 dask 0.17.2 conda
-
 opencv 3.3.1 conda
 redis-py 2.10.6 conda
 holoviews 1.9.5 conda ioam
 pydispatcher 2.0.5 conda
 future 0.16.0 conda
+nodejs 8.9.3 conda
+
 qgrid 1.0.2 conda
+
 tensorflow 1.6.0 conda
+pytorch-cpu 0.3.1 conda pytorch
+torchvision 0.2.0 conda pytorch
 r-essentials 3.4.3 conda
 
 plotly 2.5.1 conda conda-forge
@@ -43,16 +49,16 @@ oct2py 4.0.6 conda conda-forge
 imolecule 0.1.13 pip
 ezvis3d 0.2.2 pip
 pint 0.8.1 conda conda-forge
-gmaps 0.7.3 conda conda-forge
+gmaps 0.7.4 conda conda-forge
 phonopy 1.12.8 conda conda-forge
 ruamel.yaml 0.15.37 conda conda-forge
-pymatgen 2018.3.23 pip
+pymatgen 2018.4.6 pip
 chemspipy 1.0.5 pip
 colorlover 0.2.1 pip
 parse 1.8.2 conda conda-forge
 celery 4.1.0 conda conda-forge
 ipyvolume 0.4.5 conda conda-forge
-py3dmol 0.7.1 pip
+py3dmol 0.7.0 pip
 rise 5.2.0 conda damianavila82
 rdkit 2017.09.3.0 conda rdkit
 citrination-client 3.3.0 pip
@@ -63,7 +69,7 @@ asdf 1.3.3 pip
 # this part is a bit tricky because we want to have
 # specific versions
 molpx 0.1.7 conda conda-forge
-nglview 1.1.2 conda conda-forge --no-deps
+nglview 1.1.3 conda conda-forge --no-deps
 ipywidgets 7.1.2 conda --no-deps
 widgetsnbextension 3.1.4 conda --no-deps
 
@@ -76,7 +82,7 @@ atomman 1.1.5 pip
 pycalphad 0.5.2.post1 conda conda-forge
 espei 0.4.1 conda conda-forge
 
-mapboxgl 0.5.1 pip
+mapboxgl 0.6.0 pip
 
 # database stuff
 mysql 5.7.20 conda
@@ -85,6 +91,7 @@ pymysql 0.8.0 conda
 cymysql 0.9.4 pip
 mysqlclient 1.3.12 pip
 sshtunnel 0.1.3 pip
+theano 1.0.1 pip
 
 tqdm 4.19.5 conda
 moviepy 0.2.3.2 pip --no-deps
@@ -103,9 +110,9 @@ jupyter_dashboards 0.7.0 pip
 
 # plotly dash
 dash 0.21.0 pip
-dash-renderer 0.11.3 pip
-dash-html-components 0.9.0 pip
-dash-core-components 0.21.0 pip
+dash-renderer 0.12.1 pip
+dash-html-components 0.10.0 pip
+dash-core-components 0.22.1 pip
 
 ipysheet 0.2.0b3 pip
 
@@ -118,21 +125,20 @@ rpy2 2.8.6 conda
 rpy2 2.9.1 conda
 
 # this is a downgrade needed for nglview
-ipykernel 4.6.1 conda
+#ipykernel 4.6.1 conda
 
 #sidecar pip
 
 # jupyterlab
-nodejs 8.9.3 conda
 !jupyter labextension install @jupyter-widgets/jupyterlab-manager
 !jupyter labextension install @jupyterlab/geojson-extension
 !jupyter labextension install @jupyterlab/json-extension
 !jupyter labextension install @jupyterlab/plotly-extension
-!jupyter labextension install @jupyterlab/google-drive
+#!jupyter labextension install @jupyterlab/google-drive
 #!jupyter labextension install @jupyterlab/github
 !jupyter labextension install jupyterlab_bokeh
 !jupyter labextension install qgrid
-#!jupyter labextension install @jupyterlab/latex
+!jupyter labextension install @jupyterlab/latex
 !jupyter labextension install jupyterlab-drawio
 !jupyter labextension install jupyterlab_iframe
 !jupyter labextension install ipysheet
