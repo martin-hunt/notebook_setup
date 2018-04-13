@@ -493,9 +493,9 @@ def do_update(desktop, cname, env_dir, examples, pathlist):
 def make_fix(args):
     ver, rver, env_dir, desktop = get_versions(args.name)
     pathlist = get_pathlist(rver)
-    install_extensions(pathlist, desktop)
+    # install_extensions(pathlist, desktop)
     check_perm(pathlist)
-    cleanup(pathlist, desktop)
+    # cleanup(pathlist, desktop)
 
 
 def find_octave(pypath, desktop, env_dir, prompt=True):
