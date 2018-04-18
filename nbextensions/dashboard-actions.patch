@@ -1,6 +1,18 @@
---- dashboard-actions.js.orig	2017-05-05 14:40:06.760861869 -0400
-+++ dashboard-actions.js	2017-05-05 14:40:54.766798710 -0400
-@@ -116,6 +116,10 @@
+--- dashboard-actions.js.orig	2018-04-17 14:59:29.046907192 -0400
++++ dashboard-actions.js	2018-04-05 14:31:41.395445660 -0400
+@@ -106,16 +106,20 @@
+     function setHeaderVisibility(doShow) {
+         // if hiding, save current state
+         if (!doShow) {
+-            isHeaderVisible = $('#header-container').is(':visible');
++            // isHeaderVisible = $('#header-container').is(':visible');
+             isToolbarVisible = $('div#maintoolbar').is(':visible');
+         }
+         // hide or revert back to previous state
+-        $('#header-container, .header-bar').toggle(doShow && isHeaderVisible);
++        // $('#header-container, .header-bar').toggle(doShow && isHeaderVisible);
+         $('div#maintoolbar').toggle(doShow && isToolbarVisible);
+         IPython.notebook.events.trigger('resize-header.Page');
      }
  
      function setStateFromQueryString() {

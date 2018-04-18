@@ -24,7 +24,7 @@ define([
 
     function hide_code () {
         $('div.input').hide();
-        $('#header-container').hide();
+        // $('#header-container').hide();
         $('.header-bar').hide();
         $('.navbar').hide();
         IPython.notebook.clear_all_output();
