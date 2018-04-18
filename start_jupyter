@@ -291,12 +291,17 @@ def run_notebook(args):
     print("\n\nNotebook server terminated.\n")
 
 
+<<<<<<< HEAD
 def find_headers(file):
     found = []
+=======
+def find_logo(file):
+>>>>>>> 527efb00f9fffb1237cb6d92b84e2e5de8639591
     try:
         f = open(file, 'r')
         for line in f.read().split('\n'):
             if line.startswith('/** LOGO '):
+<<<<<<< HEAD
                 found.append('LOGO')
             elif line.startswith('/** HEADER '):
                 found.append('HEADER')
@@ -325,6 +330,28 @@ var end = base.indexOf('/',7);
 var session = base.slice(7,end);
 var url = `https://${host}/tools/jupyter/stop?sess=${session}`
 term.innerHTML = `<button class="btn btn-sm navbar-btn" title="Terminate this notebook or tool and any others in the session" onclick="window.open('${url}')">Terminate Session</button>`;
+=======
+                return True
+        f.close()
+    except:
+        pass
+    return False
+
+
+logo_template = """
+/** LOGO **/
+var logo = document.getElementById("ipython_notebook").children[0];
+var host = window.location.hostname.replace('proxy.', '');
+var uid = $uid;
+
+var stat = 'https://' + window.location.hostname + Jupyter.notebook.base_url + 'static/';
+logo.href = 'https://' + host + '/members/' + uid + '/dashboard';
+logo.target = "_blank";
+logo.title = "$host Dashboard";
+var hostlogo = stat + '${lhost}.png';
+var jlogo = stat + 'jupyter.png';
+logo.innerHTML=`<img src="${hostlogo}" style="margin:0px 20px 0px 0px"><img src="${jlogo}">`;
+>>>>>>> 527efb00f9fffb1237cb6d92b84e2e5de8639591
 """
 
 
@@ -334,6 +361,7 @@ def write_custom():
     if not os.path.exists(cdir):
         os.system('mkdir -p ' + cdir)
 
+<<<<<<< HEAD
     found = find_headers(cjs)
 
     mode = 'a'
@@ -349,6 +377,17 @@ def write_custom():
     uid = os.getuid()
     with open(cjs, mode) as f:
         f.write(t.safe_substitute(uid=uid, shost=host, lhost=host.lower()))
+=======
+    if find_logo(cjs):
+        return
+
+    t = Template(logo_template)
+    host = os.uname()[1]
+    uid = os.getuid()
+    with open(cjs, 'a') as f:
+        f.write(t.safe_substitute(uid=uid, host=host, lhost=host.lower()))
+
+>>>>>>> 527efb00f9fffb1237cb6d92b84e2e5de8639591
 
 if __name__ == "__main__":
     if os.getuid() == 0:
