@@ -202,13 +202,13 @@ def install_updates(cname, examples, pathlist):
         examples = os.path.abspath(examples)
         s = open(os.path.join(dirname, 'start_jupyter')).read()
         d = dict(examples=examples)
-        s = Template(s).substitute(d)
+        s = Template(s).safe_substitute(d)
         with open(os.path.join(bindir, 'start_jupyter'), 'w') as f:
             f.write(s)
         os.system('chmod +x %s' % os.path.join(bindir, 'start_jupyter'))
         s = open(os.path.join(dirname, 'start_jupyterlab')).read()
         with open(os.path.join(bindir, 'start_jupyterlab'), 'w') as f:
-            f.write(Template(s).substitute(d))
+            f.write(Template(s).safe_substitute(d))
         os.system('chmod +x %s' % os.path.join(bindir, 'start_jupyterlab'))
         os.environ['PATH'] = path
 
@@ -350,6 +350,10 @@ def install_extensions(pathlist, desktop):
         dashdir = os.path.join(ext, 'jupyter_dashboards', 'notebook', 'dashboard-view')
         os.system('patch -f -d %s < dashboard-actions.patch' % dashdir)
 
+        # install logos
+        os.system('mkdir -p ' + dst + '/static')
+        os.system('cp -r ../logo/* ' + dst + '/static')
+        
         # install tool view extensions (really just a replacement for the tree view)
         # os.system("cp tool/tool_ext.py " + ext)
         # os.system("cp -r tool/static " + dst)
@@ -389,7 +393,7 @@ def cleanup(pathlist, desktop):
         # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
 
         # os.system('jupyter nbextension enable --sys-prefix  --py pythreejs')
-        os.system('jupyter nbextension enable --sys-prefix  --py nglview')
+        # os.system('jupyter nbextension enable --sys-prefix  --py nglview')
         # if p == pathlist[0]:
         #    # python2 only
         #    os.system('jupyter nbextension enable --sys-prefix  --py nbmolviz')
