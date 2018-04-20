@@ -324,7 +324,7 @@ var term = document.getElementById("login_widget");
 var end = base.indexOf('/',7);
 var session = base.slice(7,end);
 var url = `https://${host}/tools/jupyter/stop?sess=${session}`
-term.innerHTML = `<button class="btn btn-sm navbar-btn" title="Terminate this notebook or tool and any others in the session" onclick="window.open('${url}')">Terminate Session</button>`;
+term.innerHTML = `<button class="btn btn-sm navbar-btn" title="Terminate this notebook or tool and any others in the session" onclick="window.location.href='${url}'">Terminate Session</button>`;
 """
 
 
