@@ -18,53 +18,57 @@
 
 !conda update -ny base conda
 pip 9.0.3 conda
-ipython 6.3.1 conda
-ipykernel 4.8.2 conda
+numpy 1.14.2 conda
+scipy 1.0.1 conda
 matplotlib 2.2.2 conda
 notebook 5.4.1 conda
 jupyterlab 0.31.12 conda
 numba 0.37.0 conda
-astropy 3.0.1 conda
 dask 0.17.2 conda
+theano 1.0.1 conda
+ipykernel 4.8.2 conda
+hypothesis 3.56.0
+jedi 0.12.0 conda
+
 opencv 3.3.1 conda
 redis-py 2.10.6 conda
-holoviews 1.9.5 conda ioam
+holoviews 1.10.1 conda 
 pydispatcher 2.0.5 conda
 future 0.16.0 conda
-nodejs 8.9.3 conda
-
 qgrid 1.0.2 conda
-
-tensorflow 1.6.0 conda
-pytorch-cpu 0.3.1 conda pytorch
+tensorflow 1.7.0 conda
+cuda91 1.0 conda pytorch
+pytorch 0.3.1 conda pytorch
 torchvision 0.2.0 conda pytorch
+
+nodejs 8.9.3 conda
 r-essentials 3.4.3 conda
 
 plotly 2.5.1 conda conda-forge
 bqplot 0.10.5 conda conda-forge
 gpy 1.9.2 conda conda-forge
 ase 3.16.0 conda conda-forge
-ipyleaflet 0.7.3 conda conda-forge
+ipyleaflet 0.8.1 conda conda-forge
 oct2py 4.0.6 conda conda-forge
 imolecule 0.1.13 pip
-ezvis3d 0.2.2 pip
+ezvis3d 0.2.3 pip
 pint 0.8.1 conda conda-forge
-gmaps 0.7.4 conda conda-forge
-phonopy 1.12.8 conda conda-forge
+gmaps 0.8.0 conda conda-forge
+phonopy 1.13.0.4 conda conda-forge
 ruamel.yaml 0.15.37 conda conda-forge
-pymatgen 2018.4.6 pip
+pymatgen 2018.4.20 pip
 chemspipy 1.0.5 pip
 colorlover 0.2.1 pip
 parse 1.8.2 conda conda-forge
 celery 4.1.0 conda conda-forge
 ipyvolume 0.4.5 conda conda-forge
-py3dmol 0.7.0 pip
+py3dmol 0.7.2 pip
 rise 5.2.0 conda damianavila82
 rdkit 2017.09.3.0 conda rdkit
-citrination-client 3.3.0 pip
+citrination-client 3.4.0 pip
 nbdime 0.4.1 conda conda-forge
 lmfit 0.9.9 conda conda-forge
-asdf 1.3.3 pip
+xgboost 0.71 conda conda-forge
 imutils 0.4.6 pip
 
 # this part is a bit tricky because we want to have
@@ -75,7 +79,7 @@ ipywidgets 7.1.2 conda --no-deps
 widgetsnbextension 3.1.4 conda --no-deps
 
 # Materials Data Facility 
-mdf-forge 0.5.1 pip
+mdf-forge 0.6.0 pip
 
 https://github.com/lmmentel/ase-espresso/archive/master.zip * pip
 
@@ -83,7 +87,7 @@ atomman 1.1.5 pip
 pycalphad 0.5.2.post1 conda conda-forge
 espei 0.4.1 conda conda-forge
 
-mapboxgl 0.6.0 pip
+mapboxgl 0.7.2 pip
 
 # database stuff
 mysql 5.7.20 conda
@@ -92,21 +96,20 @@ pymysql 0.8.0 conda
 cymysql 0.9.4 pip
 mysqlclient 1.3.12 pip
 sshtunnel 0.1.3 pip
-theano 1.0.1 pip
 
 tqdm 4.19.5 conda
-moviepy 0.2.3.2 pip --no-deps
+moviepy 0.2.3.4 pip 
 
 git+https://github.com/jakevdp/JSAnimation.git * pip
 
 mdtraj 1.9.1 conda conda-forge
 
-mdanalysis 0.17.0 conda conda-forge
-mdanalysistests 0.17.0 conda conda-forge
+mdanalysis 0.18.0 conda conda-forge
+mdanalysistests 0.18.0 conda conda-forge
 openbabel 2.4.1 conda openbabel
 pytraj 2.0.2 conda ambermd
 
-hublib 0.9.0 pip
+hublib 0.9.4 pip
 jupyter_dashboards 0.7.0 pip
 
 # plotly dash
@@ -119,19 +122,23 @@ ipysheet 0.2.0b3 pip
 
 # 2 ONLY
 rpy2 2.8.6 conda
+ipython 5.6.0 conda
+astropy 2.0.6 conda
+asdf 1.3.3 pip
 
 ###############################################################
 
 # 3 ONLY
 rpy2 2.9.1 conda
-
-# this is a downgrade needed for nglview
-#ipykernel 4.6.1 conda
+ipython 6.3.1 conda
+astropy 3.0.2 conda
+asdf 2.0.0 pip
 
 #sidecar pip
 
 # jupyterlab
-jupyterlab-latex 0.2.1 pip
+jupyterlab 0.32.1 conda conda-forge
+jupyterlab-latex 0.3.0 pip
 
 !jupyter labextension install @jupyter-widgets/jupyterlab-manager
 !jupyter labextension install @jupyterlab/geojson-extension
@@ -139,11 +146,11 @@ jupyterlab-latex 0.2.1 pip
 !jupyter labextension install @jupyterlab/plotly-extension
 #!jupyter labextension install @jupyterlab/google-drive
 #!jupyter labextension install @jupyterlab/github
-!jupyter labextension install jupyterlab_bokeh
+#!jupyter labextension install jupyterlab_bokeh
 !jupyter labextension install qgrid
 !jupyter labextension install @jupyterlab/latex
 #!jupyter labextension install jupyterlab-drawio
-!jupyter labextension install jupyterlab_iframe
+#!jupyter labextension install jupyterlab_iframe
 !jupyter labextension install ipysheet
 #!jupyter labextension install jupyterlab_3Dmol
 #! sidecar
