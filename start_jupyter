@@ -71,7 +71,6 @@ optional arguments:
     parser.add_argument('-T')
     parser.add_argument('-h', '--help', dest='help', action='store_true')
     parser.add_argument('name', nargs='?')
-
     return parser
 
 
@@ -296,10 +295,8 @@ def find_headers(file):
     try:
         f = open(file, 'r')
         for line in f.read().split('\n'):
-            if line.startswith('/** LOGO '):
-                found.append('LOGO')
-            elif line.startswith('/** HEADER '):
-                found.append('HEADER')
+            if line.startswith('/** HEADER 3'):
+                found.append('HEADER3')   
         f.close()
     except:
         pass
@@ -307,24 +304,29 @@ def find_headers(file):
 
 
 header_template = """
-/** HEADER **/
-var logo = document.getElementById("ipython_notebook").children[0];
-var host = window.location.hostname.replace('proxy.', '');
-var uid = ${uid};
-var base = Jupyter.notebook.base_url;
-var stat = 'https://' + window.location.hostname + base + 'static/';
-logo.href = 'https://' + host + '/members/' + uid + '/dashboard';
-logo.target = "_blank";
-logo.title = "${shost} Dashboard";
-var hostlogo = stat + '${lhost}.png';
-var jlogo = stat + 'jupyter.png';
-logo.innerHTML=`<img src="${hostlogo}" style="margin:0px 20px 0px 0px"><img src="${jlogo}">`;
+/** HEADER 3 **/
+require(["base/js/namespace"],
+    function(Jupyter) {
+        var logo = document.getElementById("ipython_notebook").children[0];
+        var host = window.location.hostname.replace('proxy.', '');
+        var uid = ${uid};
+        try {var base = Jupyter.notebook.base_url;}
+        catch (err) {var base = IPython.notebook.base_url;}
+        var stat = 'https://' + window.location.hostname + base + 'static/';
+        logo.href = 'https://' + host + '/members/' + uid + '/dashboard';
+        logo.target = "_blank";
+        logo.title = "${shost} Dashboard";
+        var hostlogo = stat + '${lhost}.png';
+        var jlogo = stat + 'jupyter.png';
+        logo.innerHTML=`<img src="${hostlogo}" style="margin:0px 20px 0px 0px"><img src="${jlogo}">`;
 
-var term = document.getElementById("login_widget");
-var end = base.indexOf('/',7);
-var session = base.slice(7,end);
-var url = `https://${host}/tools/jupyter/stop?sess=${session}`
-term.innerHTML = `<button class="btn btn-sm navbar-btn" title="Terminate this notebook or tool and any others in the session" onclick="window.location.href='${url}'">Terminate Session</button>`;
+        var term = document.getElementById("login_widget");
+        var end = base.indexOf('/',7);
+        var session = base.slice(7,end);
+        var url = `https://${host}/tools/jupyter/stop?sess=${session}`
+        term.innerHTML = `<button class="btn btn-sm navbar-btn" title="Terminate this notebook or tool and any others in the session" onclick="window.location.href='${url}'">Terminate Session</button>`;
+    }
+);
 """
 
 
@@ -336,19 +338,16 @@ def write_custom():
 
     found = find_headers(cjs)
 
-    mode = 'a'
-    if 'HEADER' in found:
-        # new file. finished here
+    if 'HEADER3' in found:
+        # current format. finished here
         return
-    if 'LOGO' in found:
-        # old file.  overwrite with new
-        mode = 'w'
 
     t = Template(header_template)
     host = os.uname()[1]
     uid = os.getuid()
-    with open(cjs, mode) as f:
+    with open(cjs, 'w') as f:
         f.write(t.safe_substitute(uid=uid, shost=host, lhost=host.lower()))
+
 
 if __name__ == "__main__":
     if os.getuid() == 0:
