@@ -18,13 +18,12 @@
 
 !conda update -ny base conda
 pip 9.0.3 conda
-numpy 1.14.2 conda
-scipy 1.0.1 conda
+numpy 1.14.3 conda
+scipy 1.1.0 conda
 #matplotlib 2.2.2 conda
-notebook 5.4.1 conda
-jupyterlab 0.31.12 conda
-numba 0.37.0 conda
-dask 0.17.2 conda
+notebook 5.5.0 conda
+numba 0.38.0 conda
+dask 0.17.5 conda
 theano 1.0.1 conda
 ipykernel 4.8.2 conda
 hypothesis 3.56.0
@@ -41,7 +40,7 @@ cuda91 1.0 conda pytorch
 pytorch 0.3.1 conda pytorch
 torchvision 0.2.0 conda pytorch
 
-nodejs 8.9.3 conda
+nodejs 8.11.1 conda
 r-essentials 3.4.3 conda
 
 bqplot 0.10.5 conda conda-forge
@@ -79,6 +78,10 @@ molpx 0.1.7 conda conda-forge
 nglview 1.1.3 conda conda-forge --no-deps
 ipywidgets 7.1.2 conda --no-deps
 widgetsnbextension 3.1.4 conda --no-deps
+
+k3d 2.4.6 pip
+!jupyter nbextension install --py --sys-prefix k3d
+!jupyter nbextension enable --py --sys-prefix k3d
 
 # Materials Data Facility 
 mdf-forge 0.6.1 pip
@@ -125,7 +128,7 @@ ipysheet 0.2.0 pip
 
 # 2 ONLY
 rpy2 2.8.6 conda
-ipython 5.6.0 conda
+ipython 5.7.0 conda
 astropy 2.0.6 conda
 asdf 1.3.3 pip
 
