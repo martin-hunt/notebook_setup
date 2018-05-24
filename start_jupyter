@@ -33,9 +33,7 @@ from subprocess import call, Popen, check_output
 from string import Template
 
 EXAMPLES = '${examples}'
-OLD_EXAMPLES_DIR = " Examples"
-EXAMPLES_DIR = "DOCS_AND_EXAMPLES"
-INBOXES_DIR = "/data/tools/inboxes"
+EXAMPLES_DIR = "notebooks/_NOTEBOOK_EXAMPLES"
 
 def handler(signum, frame):
     pass
@@ -161,24 +159,17 @@ def get_cookie():
     except:
         # not running on a hub
         return "", ""
-    print("returning %s, %s" % (cookie_name, token))
     return cookie_name, token
 
 def load_examples(arglist):
-    # Run in users 'notebooks' subdirectory
+    # Run in users HOME subdirectory
     os.chdir(os.environ['HOME'])
+
+    # create if it does not exist
     call(['mkdir', '-p', 'notebooks'])
-    os.chdir('notebooks')
-
-    # delete any old symlink
-    if os.path.islink(OLD_EXAMPLES_DIR):
-        os.remove(OLD_EXAMPLES_DIR)
-
-    if not os.path.isdir(EXAMPLES_DIR):
-        call(['mkdir','-p',EXAMPLES_DIR])
 
     # create directory of symlinks to examples
-    call("cp -sRf %s/* %s" % (EXAMPLES, EXAMPLES_DIR), shell=True)
+    call("ln -s %s %s" % (EXAMPLES, EXAMPLES_DIR), shell=True)
 
     # The NotebookSettings is an autorun tool and we must flag it as trusted.
     sign_tool('%s/NotebookSettings/NotebookSettings.ipynb' % EXAMPLES, True)
@@ -186,11 +177,6 @@ def load_examples(arglist):
     sign_tool('%s/Index.ipynb' % EXAMPLES, True)
     notebook = "notebooks/%s/Index.ipynb" % EXAMPLES_DIR
     arglist.append('--NotebookApp.default_url="%s"' % notebook)
-
-    # create INBOX symlink if needeed
-    idir = os.path.join(INBOXES_DIR, os.environ['LOGNAME'])
-    if os.path.exists(idir) and not os.path.exists('INBOX'):
-        os.symlink(idir, 'INBOX')
 
 
 def find_notebook(name, tool, arglist):
