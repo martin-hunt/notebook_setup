@@ -7,7 +7,7 @@ import argparse
 import json
 
 
-def set_tool(name, tool):
+def set_tool(name, mode):
     """ Set tool metadata. """
     data = json.load(open(name))
     if 'tool' in data['metadata']:
@@ -15,14 +15,14 @@ def set_tool(name, tool):
     else:
         file_tool = False
 
-    if tool is None:
+    if mode is None:
         return file_tool
 
-    if file_tool != tool:
-        data['metadata']['tool'] = tool
+    if file_tool != mode:
+        data['metadata']['tool'] = mode
         with open(name, 'w') as f:
             json.dump(data, f)
-    return tool
+    return mode
 
 
 def parse_cmd_line():
@@ -39,11 +39,13 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
-  -n          Set Notebook mode.
-  -t          set Tool mode.
+  -a          Set notebook to autorun.
+  -n          Set normal notebook mode.
+  -t          Set tool mode (autorun, hide cells, hide Jupyter UI)
 """,
          prog=prog,
          add_help=False)
+    parser.add_argument('-a', dest='autorun', action='store_true')
     parser.add_argument('-t', dest='tool', action='store_true')
     parser.add_argument('-n', dest='notebook', action='store_true')
     parser.add_argument('-h', '--help', dest='help', action='store_true')
@@ -64,11 +66,19 @@ if __name__ == "__main__":
         sys.exit(0)
 
     tool_mode = None
-    if args.notebook:
-        tool_mode = False
+    if args.autorun:
+        tool_mode = 'a'
     if args.tool:
         tool_mode = True
+    if args.notebook:
+        tool_mode = False
 
-    tool = set_tool(args.name, tool_mode)
-    print("Tool Mode is", tool)
+    mode = set_tool(args.name, tool_mode)
+    if mode is None:
+        mode = 'NORMAL'
+    if mode == 'a':
+        mode = 'AUTORUN'
+    if mode is True:
+        mode = 'TOOL'
+    print("notebook type is", mode)
 
