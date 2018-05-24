@@ -72,25 +72,20 @@ define([
     };
 
     function load_nb() {
-        if (IPython.notebook.metadata.tool == true && IPython.notebook.trusted == true) {
-            hide_code();
-            console.log("Autorun cell extension loaded and enabled for tool");
-            // without the delay I get a bunch of errors about widgets not being ready
-            setTimeout(IPython.exec_autorun, 10);
+        if (IPython.notebook.trusted == true) {
+            if (IPython.notebook.metadata.tool == true) {
+                hide_code();
+                console.log("Autorun Tool Mode");
+                setTimeout(IPython.exec_autorun, 10);
+            } else if (IPython.notebook.metadata.tool == 'a') {
+                console.log("Autorun");
+                setTimeout(IPython.exec_autorun, 10);
+            }
         }
     };
 
     var load_extension = function() {
-        // IMPORTANT!  This extension only runs on TRUSTED notebooks with the proper metadata tag set.
-        if (IPython.notebook.trusted == null) {
-            events.on('kernel_ready.Kernel', load_nb);
-        } else {
-            if (IPython.notebook.metadata.tool == true && IPython.notebook.trusted == true) {
-                hide_code();
-                console.log("autorun cell extension loaded and enabled for tool");
-                events.on('kernel_ready.Kernel', load_autorun);
-            }
-        };
+        events.on('kernel_ready.Kernel', load_nb);
     };
 
     return {load_ipython_extension : load_extension};
