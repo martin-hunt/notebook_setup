@@ -7,7 +7,7 @@
 # name to call it when installed: anaconda2-$RVERSION
 +RVERSION 5.1
 
-# +ENVIRON_CONFIG_DIR /apps/share64/debian7/environ.d
+#+ENVIRON_CONFIG_DIR /apps/share64/debian7/environ.d
 
 ++ DONE
 
@@ -16,7 +16,8 @@
 # package version {conda|pip} [channel_name]
 # Use '*' for any version
 
-!conda update -ny base conda
+#!conda update -ny base conda
+pint 0.8.1 conda conda-forge
 pip 10.0.1 conda
 numpy 1.14.3 conda
 scipy 1.1.0 conda
@@ -30,6 +31,7 @@ ipykernel 4.8.2 conda
 hypothesis 3.56.0
 jedi 0.12.0 conda
 pandas 0.23 conda
+vtk 8.1.0 conda
 
 opencv 3.3.1 conda
 redis-py 2.10.6 conda
@@ -52,7 +54,6 @@ ipyleaflet 0.8.1 conda conda-forge
 oct2py 4.0.6 conda conda-forge
 imolecule 0.1.13 pip
 ezvis3d 0.2.5 pip
-pint 0.8.1 conda conda-forge
 gmaps 0.8.0 conda conda-forge
 phonopy 1.13.0.4 conda conda-forge
 ruamel.yaml 0.15.37 conda conda-forge
@@ -71,6 +72,7 @@ lmfit 0.9.10 conda conda-forge
 xgboost 0.71 conda conda-forge
 bagit 1.5.5 conda conda-forge
 ffmpeg 3.4.2 conda conda-forge
+
 imutils 0.4.6 pip
 pygal 2.4.0 pip
 
@@ -110,6 +112,8 @@ moviepy 0.2.3.4 pip
 git+https://github.com/jakevdp/JSAnimation.git * pip
 
 mdtraj 1.9.1 conda conda-forge
+
+joommf 0.2 pip
 
 mdanalysis 0.18.0 conda conda-forge
 mdanalysistests 0.18.0 conda conda-forge
@@ -164,3 +168,4 @@ jupyterlab-latex 0.3.1 pip
 #!jupyter labextension install jupyterlab_3Dmol
 #! sidecar
 #!jupyter-labextension install nglview-js-widgets@1.1.2
+!jupyter labextension install nbdime-jupyterlab
