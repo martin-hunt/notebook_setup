@@ -402,8 +402,8 @@ def cleanup(pathlist, desktop):
         #    os.system('jupyter nbextension enable --sys-prefix  --py nbmolviz')
 
         # mailboxes. only on nanohub right now
-        if socket.gethostname() == 'nanoHUB':
-            os.system('jupyter nbextension enable --sys-prefix sendto/sendto')
+        # if socket.gethostname() == 'nanoHUB':
+            # os.system('jupyter nbextension enable --sys-prefix sendto/sendto')
 
         os.system('conda clean -y --all')
         os.environ['PATH'] = path
