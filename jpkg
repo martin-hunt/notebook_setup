@@ -12,7 +12,7 @@ import socket
 # Default where the examples get installed.  This will get ignored if
 # "*examples*" exists in the current or parent directory.
 # Override with --examples
-EXAMPLES_DEFAULT = '/apps/share64/debian7/anaconda/examples-4.1'
+EXAMPLES_DEFAULT = '/apps/share64/debian7/anaconda/examples'
 
 # for python2 compatibility
 try:
