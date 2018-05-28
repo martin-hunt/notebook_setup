@@ -12,7 +12,7 @@ define([
 
     function load_jupyter_extension () {
 	var url = "<li id=\"prefs\" title=\"Preferences\"><a href=\"";
-	url += Jupyter.notebook.base_url + "notebooks/DOCS_AND_EXAMPLES/NotebookSettings/NotebookSettings.ipynb\"";
+	url += Jupyter.notebook.base_url + "notebooks/notebooks/_NOTEBOOK_EXAMPLES/NotebookSettings/NotebookSettings.ipynb\"";
 	url += " target=\"_blank\">Preferences</a></li>";
         $("#open_notebook").after(url);
     }
