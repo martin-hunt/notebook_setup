@@ -85,7 +85,22 @@ define([
     };
 
     var load_extension = function() {
-        events.on('kernel_ready.Kernel', load_nb);
+        // console.log("AUTORUN LOAD EXTENSION: " +  IPython.notebook.trusted);
+        // IMPORTANT!  This extension only runs on TRUSTED notebooks with the proper metadata tag set.
+        if (IPython.notebook.trusted == null) {
+            events.on('kernel_ready.Kernel', load_nb);
+        } else {
+            if (IPython.notebook.trusted == true) {
+                if (IPython.notebook.metadata.tool == true) {
+                    hide_code();
+                    console.log("Autorun Tool Mode");
+                    setTimeout(IPython.exec_autorun, 10);
+                } else if (IPython.notebook.metadata.tool == 'a') {
+                    console.log("Autorun");
+                    setTimeout(IPython.load_autorun, 10);
+                };
+            };
+        };
     };
 
     return {load_ipython_extension : load_extension};
