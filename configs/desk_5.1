@@ -27,7 +27,6 @@ numba 0.38.0 conda
 dask 0.17.5 conda
 distributed 1.21.8 conda
 theano 1.0.1 conda
-ipykernel 4.8.2 conda
 hypothesis 3.56.0 conda
 jedi 0.12.0 conda
 pandas 0.23 conda
@@ -83,7 +82,7 @@ nglview 1.1.3 conda conda-forge --no-deps
 ipywidgets 7.1.2 conda --no-deps
 widgetsnbextension 3.1.4 conda --no-deps
 
-k3d 2.4.5 pip
+k3d 2.4.8 pip
 !jupyter nbextension install --py --sys-prefix k3d
 !jupyter nbextension enable --py --sys-prefix k3d
 
@@ -140,6 +139,7 @@ dash-core-components 0.23.0 pip
 ipysheet 0.2.0 pip
 
 # 2 ONLY
+ipykernel 4.8.2 conda
 rpy2 2.8.6 conda
 ipython 5.7.0 conda
 astropy 2.0.6 conda
@@ -148,6 +148,10 @@ asdf 1.3.3 pip
 ###############################################################
 
 # 3 ONLY
+
+# needed for nglview
+ipykernel 4.6.1 conda
+
 rpy2 2.9.1 conda
 ipython 6.3.1 conda
 astropy 3.0.2 conda
