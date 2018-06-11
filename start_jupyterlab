@@ -29,9 +29,8 @@ import argparse
 import json
 from subprocess import call, Popen, check_output
 
-EXAMPLES = '${examples}'
-EXAMPLES_DIR = "DOCS_AND_EXAMPLES"
-INBOXES_DIR = "/data/tools/inboxes"
+EXAMPLES = '/apps/share64/debian7/anaconda/examples'
+
 
 def handler(signum, frame):
     pass

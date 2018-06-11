@@ -9,11 +9,6 @@ from string import Template
 from glob import glob
 import socket
 
-# Default where the examples get installed.  This will get ignored if
-# "*examples*" exists in the current or parent directory.
-# Override with --examples
-EXAMPLES_DEFAULT = '/apps/share64/debian7/anaconda/examples'
-
 # for python2 compatibility
 try:
     input = raw_input
@@ -182,7 +177,7 @@ def check_perm(pathlist):
         os.chdir(cwd)
 
 
-def install_updates(cname, examples, pathlist):
+def install_updates(cname, pathlist):
     global dirname
 
     path = os.environ['PATH']
@@ -199,17 +194,10 @@ def install_updates(cname, examples, pathlist):
         os.system('cp %s %s' % (os.path.join(dirname, 'jupyter_tool.py'), bindir))
 
         # start_jupyter script
-        examples = os.path.abspath(examples)
-        s = open(os.path.join(dirname, 'start_jupyter')).read()
-        d = dict(examples=examples)
-        s = Template(s).safe_substitute(d)
-        with open(os.path.join(bindir, 'start_jupyter'), 'w') as f:
-            f.write(s)
-        os.system('chmod +x %s' % os.path.join(bindir, 'start_jupyter'))
-        s = open(os.path.join(dirname, 'start_jupyterlab')).read()
-        with open(os.path.join(bindir, 'start_jupyterlab'), 'w') as f:
-            f.write(Template(s).safe_substitute(d))
-        os.system('chmod +x %s' % os.path.join(bindir, 'start_jupyterlab'))
+        os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyter'), bindir))
+        if pyver == 3:
+            os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyterlab'), bindir))
+
         os.environ['PATH'] = path
 
 
