@@ -4,20 +4,24 @@
 define([
     'base/js/namespace',
     'jquery',
-    'base/js/events'
-], function(IPython, $, events) {
+    'base/js/events',
+    'notebook/js/codecell'
+], function(IPython, $, events, codecell) {
     "use strict";
 
     IPython.exec_autorun = function () {
-        console.log("autoruning cells");
+        if (IPython.notebook.trusted != true) { return };
 
-        var cells = IPython.notebook.get_cells();
-        var start = IPython.notebook.get_selected_index();
-        var end = IPython.notebook.ncells();
-        //console.log("start=" + start);
-        for (var i=start; i<end; i++) {
-            if (cells[i] instanceof IPython.CodeCell) {
-                cells[i].execute();
+        if (IPython.notebook.metadata.tool == true || IPython.notebook.metadata.tool == 'a') {
+            console.log("Autorunning Cells");
+
+            var cells = IPython.notebook.get_cells();
+            var start = IPython.notebook.get_selected_index();
+            var end = IPython.notebook.ncells();
+            for (var i=start; i<end; i++) {
+                if (cells[i] instanceof IPython.CodeCell) {
+                    cells[i].execute();
+                };
             };
         };
     };
@@ -66,42 +70,19 @@ define([
         IPython.keyboard_manager.command_shortcuts.remove_shortcut("6");
     };
 
-    function load_autorun () {
-        // without the delay I get a bunch of errors about widgets not being ready
-        setTimeout(IPython.exec_autorun, 10);
-    };
-
     function load_nb() {
-        if (IPython.notebook.trusted == true) {
-            if (IPython.notebook.metadata.tool == true) {
-                hide_code();
-                console.log("Autorun Tool Mode");
-                setTimeout(IPython.exec_autorun, 10);
-            } else if (IPython.notebook.metadata.tool == 'a') {
-                console.log("Autorun");
-                setTimeout(IPython.exec_autorun, 10);
-            }
-        }
-    };
-
-    var load_extension = function() {
-        // console.log("AUTORUN LOAD EXTENSION: " +  IPython.notebook.trusted);
-        // IMPORTANT!  This extension only runs on TRUSTED notebooks with the proper metadata tag set.
-        if (IPython.notebook.trusted == null) {
-            events.on('kernel_ready.Kernel', load_nb);
-        } else {
-            if (IPython.notebook.trusted == true) {
-                if (IPython.notebook.metadata.tool == true) {
-                    hide_code();
-                    console.log("Autorun Tool Mode");
-                    setTimeout(IPython.exec_autorun, 10);
-                } else if (IPython.notebook.metadata.tool == 'a') {
-                    console.log("Autorun");
-                    setTimeout(IPython.load_autorun, 10);
-                };
-            };
+        if (IPython.notebook.trusted == true && IPython.notebook.metadata.tool == true) {
+            hide_code();
         };
     };
 
-    return {load_ipython_extension : load_extension};
+    var load_extension = function() {
+        events.on('kernel_ready.Kernel', function () {setTimeout(IPython.exec_autorun, 1000)});
+        IPython.notebook.config.loaded.then(load_nb);
+    };
+
+    return {
+        load_jupyter_extension: load_extension,
+        load_ipython_extension: load_extension
+    };
 });
