@@ -572,17 +572,6 @@ To add new packages, add them to the config file
 then run the update command.
 """)
 
-    ed = glob("*examples*")
-    if ed == []:
-        ed = glob("../*examples*")
-    if len(ed) == 1:
-        ed = ed[0]
-    else:
-        ed = EXAMPLES_DEFAULT
-
-    parser.add_argument('--examples', dest='examples', default=ed,
-                        help='Directory where the examples are installed.')
-
     subparsers = parser.add_subparsers()
 
     # create the parser for the "install" command
