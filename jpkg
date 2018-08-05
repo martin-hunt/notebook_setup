@@ -184,7 +184,7 @@ def install_updates(cname, pathlist):
 
     path = os.environ['PATH']
     for p in pathlist:
-        pyver = 3 if p == pathlist[1] else 2
+        pyver = 3 if p == pathlist[0] else 2
         bindir = os.path.join(p, 'bin')
         os.environ['PATH'] = bindir + ':' + path
 
@@ -226,7 +226,7 @@ def install_kernels(pathlist):
 
     for p in pathlist:
         os.environ['PATH'] = os.path.join(p, 'bin') + ':' + path
-        pyver = 3 if p == pathlist[1] else 2
+        pyver = 3 if p == pathlist[0] else 2
         for k in pathlist:
             print('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' % (pyver, k, pyver))
             os.system('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' %
@@ -263,7 +263,7 @@ def write_env(rver, env_dir, pathlist):
             f.write('tags MATHSCI\n')
 
         # needed for submit, which only works on python 2 for now
-        if p == pathlist[0]:
+        if len(pathlist) > 1 and p == pathlist[1]:
             hubzero = '/usr/lib/python2.7/dist-packages/hubzero'
             libdir = os.path.join(p, 'lib', 'python2.7', 'site-packages')
             os.system('ln -s %s %s' % (hubzero, libdir))
@@ -412,12 +412,14 @@ def install_misc(pathlist, desktop):
 def get_pathlist(rver):
     global dirname
 
-    pathlist = ['anaconda2-%s' % (rver),
-                'anaconda3-%s' % (rver)]
+    pathlist = ['anaconda3-%s' % (rver)]
+    if args.nopy2 is False:
+        pathlist.append('anaconda2-%s' % (rver))
 
     for i, p in enumerate(pathlist):
         pathlist[i] = os.path.realpath(p)
     return pathlist
+
 
 def get_versions(cname):
     global dirname
@@ -447,9 +449,13 @@ def get_versions(cname):
 def make_new(args):
     ver, rver, env_dir, desktop = get_versions(args.name)
     pathlist = get_pathlist(rver)
+    print("pathlist=", pathlist)
 
-    scripts = ["Anaconda2-%s-Linux-x86_64.sh" % ver,
-               "Anaconda3-%s-Linux-x86_64.sh" % ver]
+    if args.nopy2:
+        scripts = ["Anaconda3-%s-Linux-x86_64.sh" % ver]
+    else:
+        scripts = ["Anaconda3-%s-Linux-x86_64.sh" % ver, "Anaconda2-%s-Linux-x86_64.sh" % ver]
+
     ok = True
     for name in scripts:
         if not os.path.isfile(name):
@@ -459,11 +465,12 @@ def make_new(args):
                 print("Error: %s not found and could not download." % name)
                 sys.exit(1)
 
-    print("Installing Anaconda2-%s in %s" % (ver, pathlist[0]))
-    print("Installing Anaconda3-%s in %s" % (ver, pathlist[1]))
+    print("Installing Anaconda3-%s in %s" % (ver, pathlist[0]))
+    install_file(scripts[0], pathlist[0], 3)
 
-    for script, path, pyver in zip(scripts, pathlist, [2, 3]):
-        install_file(script, path, pyver)
+    if args.nopy2 is False:
+        print("Installing Anaconda2-%s in %s" % (ver, pathlist[1]))
+        install_file(scripts[1], pathlist[1], 2)
 
     if not desktop:
         write_env(rver, env_dir, pathlist)
@@ -574,6 +581,10 @@ subdirectories anaconda[2|3]-{rversion}.
 To add new packages, add them to the config file
 then run the update command.
 """)
+
+    parser.add_argument('--nopy2', dest='nopy2', action='store_true',
+                        default=False,
+                        help='Do not install Python2 (default: False)')
 
     subparsers = parser.add_subparsers()
 
