@@ -37,7 +37,7 @@ redis-py 2.10.6 conda
 holoviews 1.10.1 conda 
 pydispatcher 2.0.5 conda
 future 0.16.0 conda
-qgrid 1.0.2 conda
+qgrid 1.1.1 conda conda-forge
 tensorflow 1.7.0 conda
 cuda91 1.0 conda pytorch
 pytorch 0.4.0 conda pytorch
@@ -95,7 +95,7 @@ atomman 1.1.5 pip
 pycalphad 0.5.2.post1 conda conda-forge
 espei 0.4.1 conda conda-forge
 
-mapboxgl 0.7.3 pip
+mapboxgl 0.8.0 pip
 
 # database stuff
 mysql 5.7.20 conda
@@ -130,11 +130,11 @@ hublib 0.9.9 pip
 jupyter_dashboards 0.7.0 pip
 
 # plotly dash
-plotly 2.7.0 pip
-dash 0.21.1 pip
-dash-renderer 0.12.1 pip
-dash-html-components 0.10.1 pip
-dash-core-components 0.23.0 pip
+plotly 3.1.0 pip
+dash 0.23.1 pip
+dash-renderer 0.13.0 pip
+dash-html-components 0.11.0 pip
+dash-core-components 0.26.0 pip
 
 ipysheet 0.2.0 pip
 
@@ -161,22 +161,26 @@ asdf 2.0.1 pip
 #sidecar pip
 
 # jupyterlab
-jupyterlab 0.32.1 conda conda-forge
-jupyterlab-latex 0.3.1 pip
+jupyterlab 0.33.6 conda conda-forge
+#jupyterlab-latex 0.3.1 pip
 
-!jupyter labextension install @jupyter-widgets/jupyterlab-manager
-!jupyter labextension install @jupyterlab/geojson-extension
-!jupyter labextension install @jupyterlab/json-extension
-!jupyter labextension install @jupyterlab/plotly-extension
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyter-widgets/jupyterlab-manager
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/geojson-extension
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/json-extension
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/plotly-extension
 #!jupyter labextension install @jupyterlab/google-drive
 #!jupyter labextension install @jupyterlab/github
 #!jupyter labextension install jupyterlab_bokeh
-!jupyter labextension install qgrid
-!jupyter labextension install @jupyterlab/latex
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install qgrid
+#!jupyter labextension install @jupyterlab/latex
 #!jupyter labextension install jupyterlab-drawio
-#!jupyter labextension install jupyterlab_iframe
-!jupyter labextension install ipysheet
-#!jupyter labextension install jupyterlab_3Dmol
+
+jupyterlab_iframe 0.0.8 pip
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab_iframe
+!jupyter serverextension enable --py jupyterlab_iframe
+
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install ipysheet
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab_3Dmol
 #! sidecar
 #!jupyter-labextension install nglview-js-widgets@1.1.2
-!jupyter labextension install nbdime-jupyterlab
+#!jupyter labextension install nbdime-jupyterlab
