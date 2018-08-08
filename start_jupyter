@@ -304,7 +304,7 @@ require(["base/js/namespace"],
         var uid = ${uid};
         try {var base = Jupyter.notebook.base_url;}
         catch (err) {var base = IPython.notebook.base_url;}
-        var stat = 'https://' + window.location.hostname + base + 'static/';
+        var stat = 'https://' + window.location.host + base + 'static/';
         logo.href = 'https://' + host + '/members/' + uid + '/dashboard';
         logo.target = "_blank";
         logo.title = "${shost} Dashboard";
