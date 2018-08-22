@@ -447,9 +447,12 @@ def make_new(args):
 def make_netinst(args):
     pathlist = get_pathlist(args.ver)
     print('pathlist=', pathlist)
-    print("Fetching", pathlist[0] + '.tar.xz')
+    print("Fetching anaconda3-%s.tar.xz" % args.ver)
+    ret = os.system("wget http://packages.hubzero.org/blobs/anaconda3-%s.tar.xz -O - | tar -xJ" % args.ver)
+    print("Returned", ret)
     if args.nopy2 is False:
-        print("Fetching", pathlist[1] + '.tar.xz')
+        ret = os.system("wget http://packages.hubzero.org/blobs/anaconda2-%s.tar.xz -O - | tar -xJ" % args.ver)
+        print("Returned", ret)
 
     # do_update(desktop, args.name, env_dir, args.examples, pathlist)
 
