@@ -444,18 +444,53 @@ def make_new(args):
     do_install(desktop, args.name, env_dir, pathlist)
 
 
+def do_downloads(ver):
+    ret = os.system("wget http://packages.hubzero.org/blobs/anaconda3-%s.tar.xz -O - | tar -xJ" % ver)
+    if ret == 0 and args.nopy2 is False:
+        ret = os.system("wget http://packages.hubzero.org/blobs/anaconda2-%s.tar.xz -O - | tar -xJ" % ver)
+
+    if ret:
+        print("Download failed.")
+        sys.exit(1)
+
+
 def make_netinst(args):
+    do_downloads(args.ver)
+
     pathlist = get_pathlist(args.ver)
-    print('pathlist=', pathlist)
-    print("Fetching anaconda3-%s.tar.xz" % args.ver)
-    ret = os.system("wget http://packages.hubzero.org/blobs/anaconda3-%s.tar.xz -O - | tar -xJ" % args.ver)
-    print("Returned", ret)
-    if args.nopy2 is False:
-        ret = os.system("wget http://packages.hubzero.org/blobs/anaconda2-%s.tar.xz -O - | tar -xJ" % args.ver)
-        print("Returned", ret)
 
-    # do_update(desktop, args.name, env_dir, args.examples, pathlist)
+    # write env modules
+    env_dir = '/apps/share64/debian7/environ.d'
+    write_env(args.ver, env_dir, pathlist)
+    
+    if args.nopy2:
+        # remove python2 kernel from menu
+        kpath = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/kernels/python2" % args.ver
+        os.system("mv %s/kernel.json %s/kernel.json.disabled" % (kpath, kpath))
 
+    try:
+        check_output("octave --version", shell=True)
+        octave = True
+    except:
+        octave = False
+    if octave is False:
+        print("Could not find octave.  Disabling octave kernel in menu.")
+        kpath = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/kernels/octave" % args.ver
+        os.system("mv %s/kernel.json %s/kernel.json.disabled" % (kpath, kpath))
+
+    hostimage = os.uname()[1].lower() + '.png'
+    imagedir = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/static" % args.var
+    hifull = os.path.join(imagedir, hostimage)
+    hzfull = os.path.join(imagedir, 'hubzero.png')
+    if not os.path.isfile(name):
+        print("WARNING:")
+        print("This installation will put an image representing your host in the Jupyter menubar.")
+        print("No image for your host, \"%s\" could be found." % os.uname()[1].lower())
+        print("This installation process will use a default hubzero image instead.")
+        print("To update the image, copy a PNG image of your choice to")
+        print(hifull)
+        print()
+        os.system('cp %s %s' % (hzfull, hifull))
 
 def do_install(desktop, cname, env_dir, pathlist):
     install_updates(cname, pathlist)
