@@ -610,7 +610,7 @@ then run the update command.
 
     # create the parser for the "fix" command
     parser_fix = subparsers.add_parser('cleanup')
-    parser_fix.add_argument('name', type=str)
+    parser_fix.add_argument('ver', default = '', type=str)
     parser_fix.set_defaults(func=make_cleanup)
 
     args = parser.parse_args()
