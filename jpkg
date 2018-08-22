@@ -8,8 +8,6 @@ import os
 import argparse
 from subprocess import check_output
 from string import Template
-from glob import glob
-import socket
 
 # for python2 compatibility
 try:
@@ -37,33 +35,8 @@ So we uninstall the jupyter conda extensions and then reenable our extensions.
 """
 
 
-def get_pkg_list():
-    olist = check_output("conda list", shell=True)
-    olist = olist.decode('utf-8').split('\n')
-    d = {}
-    for line in olist:
-        if line == '' or line[0] == '#':
-            continue
-        line = line.split()
-        channel = ''
-        if len(line) == 4:
-            name, ver, prog, channel = line
-        else:
-            name, ver, prog = line
-        if prog == "<pip>":
-            prog = 'pip'
-        else:
-            prog = 'conda'
-        d[name] = {'prog': prog, 'ver': ver, 'channel': channel}
-    return d
-
-
 def install_packages(cname, pyver):
     global dirname
-
-    # get a list of installed packages so we can quickly
-    # skip ones that are up-to-date.
-    #pkg_list = get_pkg_list()
 
     pname = os.path.join(dirname, "configs", cname)
     print("Installing Packages for Python%s from %s" % (pyver, cname))
@@ -110,12 +83,6 @@ def install_packages(cname, pyver):
                 continue
 
             if (two and pyver == 2) or (three and pyver == 3):
-                #if pkg in pkg_list and pkg_list[pkg]['ver'] == ver:
-                #    # that version is already installed
-                #   continue
-                #if pkg in pkg_list:
-                #    print("Upgrading %s %s -> %s" % (pkg, pkg_list[pkg]['ver'], ver))
-                #else:
                 print("\n************** Installing %s %s" % (pkg, ver))
                 if inst == 'conda':
                     cmd = "conda install -y %s=%s %s" % (pkg, ver, nodeps)
@@ -449,7 +416,6 @@ def get_versions(cname):
 def make_new(args):
     ver, rver, env_dir, desktop = get_versions(args.name)
     pathlist = get_pathlist(rver)
-    print("pathlist=", pathlist)
 
     if args.nopy2:
         scripts = ["Anaconda3-%s-Linux-x86_64.sh" % ver]
@@ -475,16 +441,20 @@ def make_new(args):
     if not desktop:
         write_env(rver, env_dir, pathlist)
 
-    do_update(desktop, args.name, env_dir, pathlist)
+    do_install(desktop, args.name, env_dir, pathlist)
 
 
-def make_update(args):
-    ver, rver, env_dir, desktop = get_versions(args.name)
-    pathlist = get_pathlist(rver)
-    do_update(desktop, args.name, env_dir, args.examples, pathlist)
+def make_netinst(args):
+    pathlist = get_pathlist(args.ver)
+    print('pathlist=', pathlist)
+    print("Fetching", pathlist[0] + '.tar.xz')
+    if args.nopy2 is False:
+        print("Fetching", pathlist[1] + '.tar.xz')
+
+    # do_update(desktop, args.name, env_dir, args.examples, pathlist)
 
 
-def do_update(desktop, cname, env_dir, pathlist):
+def do_install(desktop, cname, env_dir, pathlist):
     install_updates(cname, pathlist)
     install_kernels(pathlist)
     install_octave(pathlist, env_dir, desktop)
@@ -495,7 +465,7 @@ def do_update(desktop, cname, env_dir, pathlist):
     cleanup(pathlist, desktop)
 
 
-def make_fix(args):
+def make_cleanup(args):
     ver, rver, env_dir, desktop = get_versions(args.name)
     pathlist = get_pathlist(rver)
     # install_extensions(pathlist, desktop)
@@ -594,12 +564,12 @@ then run the update command.
     parser_install.set_defaults(func=make_new)
 
     # create the parser for the "update" command
-    parser_up = subparsers.add_parser('update')
-    parser_up.add_argument('name', type=str)
-    parser_up.set_defaults(func=make_update)
+    parser_up = subparsers.add_parser('netinst')
+    parser_up.add_argument('ver', type=str)
+    parser_up.set_defaults(func=make_netinst)
 
     # create the parser for the "fix" command
-    parser_fix = subparsers.add_parser('fix')
+    parser_fix = subparsers.add_parser('cleanup')
     parser_fix.add_argument('name', type=str)
     parser_fix.set_defaults(func=make_fix)
 
@@ -609,6 +579,5 @@ then run the update command.
     # jpkg install nano41
     # jpkg install nano41-dev
     # jpkg install hubzero41
-    # jpkg update nano41
-    # jpkg fix nano41
-    # jpkg new na
+    # jpkg netinst 5.1
+    # jpkg cleanup [5.1]
