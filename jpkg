@@ -8,6 +8,7 @@ import os
 import argparse
 from subprocess import check_output
 from string import Template
+from glob import glob
 
 # for python2 compatibility
 try:
@@ -479,7 +480,7 @@ def make_netinst(args):
         os.system("mv %s/kernel.json %s/kernel.json.disabled" % (kpath, kpath))
 
     hostimage = os.uname()[1].lower() + '.png'
-    imagedir = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/static" % args.var
+    imagedir = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/static" % args.ver
     hifull = os.path.join(imagedir, hostimage)
     hzfull = os.path.join(imagedir, 'hubzero.png')
     if not os.path.isfile(name):
@@ -504,11 +505,12 @@ def do_install(desktop, cname, env_dir, pathlist):
 
 
 def make_cleanup(args):
-    ver, rver, env_dir, desktop = get_versions(args.name)
-    pathlist = get_pathlist(rver)
-    # install_extensions(pathlist, desktop)
+    if args.ver:
+        pathlist = get_pathlist(args.ver)
+    else:
+        pathlist = glob('/apps/share64/debian7/anaconda/anaconda[2|3]*')
+
     check_perm(pathlist)
-    # cleanup(pathlist, desktop)
 
 
 def find_octave(pypath, desktop, env_dir, prompt=True):
@@ -579,12 +581,12 @@ if __name__ == '__main__':
 Commands are:
    install {configname}    New install using the config file in config/configname.
 
-   update {configname}     Update the current installation from the package list.
+   netinst {version}       Network install a specific version of anaconda from hubzero.
 
-   fix {configname}        Fix any problems with local changes and extensions.
+   cleanup [version]       Fix any permissions problems.  Run after manually updating installation.
 
 Packages will be installed in the current directory in
-subdirectories anaconda[2|3]-{rversion}.
+subdirectories anaconda[2|3]-{version}.
 
 To add new packages, add them to the config file
 then run the update command.
