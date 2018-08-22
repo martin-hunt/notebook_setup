@@ -483,7 +483,7 @@ def make_netinst(args):
     imagedir = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/static" % args.ver
     hifull = os.path.join(imagedir, hostimage)
     hzfull = os.path.join(imagedir, 'hubzero.png')
-    if not os.path.isfile(name):
+    if not os.path.isfile(hifull):
         print("WARNING:")
         print("This installation will put an image representing your host in the Jupyter menubar.")
         print("No image for your host, \"%s\" could be found." % os.uname()[1].lower())
