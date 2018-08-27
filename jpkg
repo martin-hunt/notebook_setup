@@ -458,19 +458,15 @@ def do_downloads(ver):
 def make_netinst(args):
     do_downloads(args.ver)
 
-    rver = args.rver
-    if rver == '':
-        rver = args.ver
-
-    pathlist = get_pathlist(rver)
+    pathlist = get_pathlist(args.ver)
 
     # write env modules
     env_dir = '/apps/share64/debian7/environ.d'
-    write_env(rver, env_dir, pathlist)
+    write_env(args.ver, env_dir, pathlist)
     
     if args.nopy2:
         # remove python2 kernel from menu
-        kpath = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/kernels/python2" % rver
+        kpath = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/kernels/python2" % args.ver
         os.system("mv %s/kernel.json %s/kernel.json.disabled" % (kpath, kpath))
 
     try:
@@ -480,11 +476,11 @@ def make_netinst(args):
         octave = False
     if octave is False:
         print("Could not find octave.  Disabling octave kernel in menu.")
-        kpath = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/kernels/octave" % rver
+        kpath = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/kernels/octave" % args.ver
         os.system("mv %s/kernel.json %s/kernel.json.disabled" % (kpath, kpath))
 
     hostimage = os.uname()[1].lower() + '.png'
-    imagedir = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/static" % rver
+    imagedir = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/static" % args.ver
     hifull = os.path.join(imagedir, hostimage)
     hzfull = os.path.join(imagedir, 'hubzero.png')
     if not os.path.isfile(hifull):
@@ -585,10 +581,7 @@ if __name__ == '__main__':
 Commands are:
    install {configname}    New install using the config file in config/configname.
 
-   netinst {version} [{rversion}]      Network install a specific version of anaconda from hubzero.
-                                       If {rversion}, install it as that version name.  Example,
-                                       "/jupyter_notebook_setup/jpkg --nopy2 netinst 5.1 dev" installs
-                                       into "anaconda3-dev"
+   netinst {version}       Network install a specific version of anaconda from hubzero.
 
    cleanup [version]       Fix any permissions problems.  Run after manually updating installation.
 
@@ -613,7 +606,6 @@ then run the update command.
     # create the parser for the "update" command
     parser_up = subparsers.add_parser('netinst')
     parser_up.add_argument('ver', type=str)
-    parser_up.add_argument('rver', default='', nargs='?', type=str)
     parser_up.set_defaults(func=make_netinst)
 
     # create the parser for the "fix" command
