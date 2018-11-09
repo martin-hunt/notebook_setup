@@ -4,12 +4,11 @@
 define([
     'base/js/namespace',
     'jquery',
-    'base/js/events',
-    'notebook/js/codecell'
-], function(IPython, $, events, codecell) {
+    'base/js/events'
+], function(IPython, $, events) {
     "use strict";
 
-    IPython.exec_autorun = function () {
+    function exec_autorun () {
         if (IPython.notebook.trusted != true) { return };
 
         if (IPython.notebook.metadata.tool == true || IPython.notebook.metadata.tool == 'a') {
@@ -74,15 +73,28 @@ define([
         if (IPython.notebook.trusted == true && IPython.notebook.metadata.tool == true) {
             hide_code();
         };
+        exec_autorun();
     };
 
+
+    function init_kernel() {
+        var nb = IPython.notebook;
+        if(nb.kernel && nb.kernel.info_reply.status) {
+            load_nb();
+        }else{
+            events.one('kernel_ready.Kernel', load_nb);
+        }
+    }
+
     var load_extension = function() {
-        events.on('kernel_ready.Kernel', function () {setTimeout(IPython.exec_autorun, 1000)});
-        IPython.notebook.config.loaded.then(load_nb);
+        if (IPython.notebook && IPython.notebook._fully_loaded) {
+            init_kernel();
+        }else{
+            events.one('notebook_loaded.Notebook', init_kernel);
+        }
     };
 
     return {
-        load_jupyter_extension: load_extension,
         load_ipython_extension: load_extension
     };
 });
