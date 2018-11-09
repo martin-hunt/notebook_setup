@@ -31,16 +31,40 @@ import json
 import binascii
 from subprocess import call, Popen, check_output
 from string import Template
+import time
 
 EXAMPLES = '/apps/share64/debian7/anaconda/examples'
 EXAMPLES_DIR = "notebooks/_NOTEBOOK_EXAMPLES"
 
+notebookProcess = None
 
 def handler(signum, frame):
-    pass
+    global notebookProcess
+
+    print("%s Signal %d received.\n" % (time.ctime(),signum))
+    sys.stdout.flush()  # make sure this gets displayed now.
+    if notebookProcess:
+        try:
+            print("%s killing notebookProcess = %d" % (time.ctime(),notebookProcess.pid))
+            sys.stdout.flush()  # make sure this gets displayed now.
+#           os.kill(notebookProcess.pid,signal.SIGTERM)
+            notebookProcess.terminate()
+        except:
+            print("%s killing notebookProcess = %d failed" % (time.ctime(),notebookProcess.pid))
+            sys.stdout.flush()  # make sure this gets displayed now.
+
+
+def completeHandler(signum, frame):
+    global notebookProcess
+
+    print("%s child process killed(%d)" % (time.ctime(),signum))
+    sys.stdout.flush()  # make sure this gets displayed now.
 
 
 signal.signal(signal.SIGINT, handler)
+signal.signal(signal.SIGHUP, handler)
+signal.signal(signal.SIGTERM, handler)
+signal.signal(signal.SIGCHLD, completeHandler)
 
 
 def parse_cmd_line():
@@ -63,10 +87,12 @@ optional arguments:
   -h, --help  show this help message and exit.
   -d          Show debug (verbose) output.
   -t          Run as a Tool with no notebook controls.
+  -A          Run in AppMode.
 """,
         prog=prog,
         add_help=False)
     parser.add_argument('-t', dest='tool', action='store_true')
+    parser.add_argument('-A', dest='app', action='store_true')
     parser.add_argument('-d', dest='debug', action='store_true')
     parser.add_argument('-T')
     parser.add_argument('-h', '--help', dest='help', action='store_true')
@@ -219,6 +245,8 @@ def find_notebook(name, tool, arglist):
 
 
 def run_notebook(args):
+    global notebookProcess
+
     arglist = []
 
     if args.name is None:
@@ -237,9 +265,12 @@ def run_notebook(args):
             print("Changing directory to", nb_dir)
             os.chdir(nb_dir)
 
-        arglist.append('--NotebookApp.default_url="notebooks/%s"' % nb_name)
-        set_tool(nb_name, args.tool)
-        sign_tool(nb_name, args.tool)
+        if args.app:
+            arglist.append('--NotebookApp.default_url="apps/%s"' % nb_name)
+        else:
+            arglist.append('--NotebookApp.default_url="notebooks/%s"' % nb_name)
+            set_tool(nb_name, args.tool)
+            sign_tool(nb_name, args.tool)
 
     # When invoked by the system, the shell will be dash.
     workspace = True
@@ -278,8 +309,14 @@ def run_notebook(args):
     os.environ['DISPLAY'] = ""
     if args.debug:
         print("cmdlist:", cmdlist)
-    call(cmdlist)
-    print("\n\nNotebook server terminated.\n")
+    notebookProcess = Popen(cmdlist)
+#   print("%s notebookProcess = %d" % (time.ctime(),notebookProcess.pid))
+#   sys.stdout.flush()  # make sure this gets displayed now.
+    returnCode = notebookProcess.wait()
+    notebookProcess = None
+    print("\n\n%s Notebook server terminated. returnCode = %d\n" % (time.ctime(),returnCode))
+    sys.stdout.flush()  # make sure this gets displayed now.
+#   time.sleep(120)
 
 
 def find_headers(file):
