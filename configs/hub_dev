@@ -1,0 +1,190 @@
+# Smaller hub vonfig without some of the nanohub-specific packages
+
+# desktop or hub install? (True/False)
++DESKTOP False
+
+# anaconda version to start with
++VERSION 5.1.0
+
+# name to call it when installed: anaconda2-$RVERSION
++RVERSION dev
+
++ENVIRON_CONFIG_DIR /apps/share64/debian7/environ.d
+
+++ DONE
+
+# common packages for python2 and python3
+# columns are:
+# package version {conda|pip} [channel_name]
+# Use '*' for any version
+
+#!conda update -ny base conda
+pint 0.8.1 conda conda-forge
+pip 10.0.1 conda
+numpy 1.14.3 conda
+scipy 1.1.0 conda
+matplotlib 2.2.2 conda
+notebook 5.5.0 conda
+numba 0.38.0 conda
+#dask 0.17.5 conda
+#distributed 1.21.8 conda
+theano 1.0.1 conda
+#hypothesis 3.56.0 conda
+jedi 0.12.0 conda
+pandas 0.23 conda
+#vtk 8.1.0 conda
+
+opencv 3.3.1 conda
+redis-py 2.10.6 conda
+holoviews 1.10.1 conda 
+pydispatcher 2.0.5 conda
+future 0.16.0 conda
+qgrid 1.1.1 conda conda-forge
+tensorflow 1.7.0 conda
+cuda91 1.0 conda pytorch
+pytorch 0.4.0 conda pytorch
+torchvision 0.2.1 conda pytorch
+
+nodejs 8.11.1 conda
+r-essentials 3.4.3 conda
+
+bqplot 0.10.5 conda conda-forge
+gpy 1.9.2 conda conda-forge
+#ase 3.16.0 conda conda-forge
+ipyleaflet 0.8.1 conda conda-forge
+oct2py 4.0.6 conda conda-forge
+imolecule 0.1.13 pip
+ezvis3d 0.2.5 pip
+gmaps 0.8.0 conda conda-forge
+#phonopy 1.13.0.4 conda conda-forge
+ruamel.yaml 0.15.37 conda conda-forge
+#pymatgen 2018.5.22 pip
+chemspipy 1.0.5 pip
+colorlover 0.2.1 pip
+parse 1.8.2 conda conda-forge
+celery 4.1.0 conda conda-forge
+ipyvolume 0.4.5 conda conda-forge
+py3dmol 0.7.2 pip
+rise 5.3.0 conda damianavila82
+#rdkit 2017.09.3.0 conda rdkit
+#citrination-client 4.1.1 pip
+nbdime 1.0.1 conda conda-forge
+!jupyter nbextension uninstall --py --sys-prefix nbdime
+
+lmfit 0.9.10 conda conda-forge
+xgboost 0.71 conda conda-forge
+bagit 1.5.5 conda conda-forge
+ffmpeg 3.4.2 conda conda-forge
+
+imutils 0.4.6 pip
+pygal 2.4.0 pip
+
+# this part is a bit tricky because we want to have
+# specific versions
+#molpx 0.1.7 conda conda-forge
+nglview 1.1.3 conda conda-forge --no-deps
+ipywidgets 7.1.2 conda --no-deps
+widgetsnbextension 3.1.4 conda --no-deps
+
+k3d 2.4.8 pip
+!jupyter nbextension install --py --sys-prefix k3d
+!jupyter nbextension enable --py --sys-prefix k3d
+
+# Materials Data Facility 
+#mdf-forge 0.6.1 pip
+
+#https://github.com/lmmentel/ase-espresso/archive/master.zip * pip
+
+#atomman 1.1.5 pip
+#pycalphad 0.5.2.post1 conda conda-forge
+#espei 0.4.1 conda conda-forge
+
+mapboxgl 0.8.0 pip
+
+# database stuff
+mysql 5.7.20 conda
+mysql-connector-python 2.0.4 conda
+pymysql 0.8.0 conda
+cymysql 0.9.4 pip
+mysqlclient 1.3.12 pip
+sshtunnel 0.1.3 pip
+
+tqdm 4.19.5 conda
+moviepy 0.2.3.4 pip 
+
+git+https://github.com/jakevdp/JSAnimation.git * pip
+
+#mdtraj 1.9.1 conda conda-forge
+
+#xorg-libx11 1.6.5 conda conda-forge
+#xorg-libxau 1.0.8 conda conda-forge
+# joommf
+#discretisedfield 0.7.6 pip
+#micromagneticmodel 0.7.6 pip
+#oommfodt 0.7.7 pip
+#joommfutil 0.7.6 pip
+#oommfc 0.7.6 pip
+
+#mdanalysis 0.18.0 conda conda-forge
+#mdanalysistests 0.18.0 conda conda-forge
+#openbabel 2.4.1 conda openbabel
+#pytraj 2.0.2 conda ambermd
+
+hublib 0.9.12 pip
+jupyter_dashboards 0.7.0 pip
+
+# plotly dash
+plotly 3.1.0 pip
+dash 0.23.1 pip
+dash-renderer 0.13.0 pip
+dash-html-components 0.11.0 pip
+dash-core-components 0.26.0 pip
+
+ipysheet 0.2.0 pip
+
+# 2 ONLY
+ipykernel 4.8.2 conda
+rpy2 2.8.6 conda
+ipython 5.7.0 conda
+astropy 2.0.6 conda
+asdf 1.3.3 pip
+
+###############################################################
+
+# 3 ONLY
+
+# needed for nglview
+ipykernel 4.6.1 conda
+
+rpy2 2.9.1 conda
+ipython 6.3.1 conda
+astropy 3.0.2 conda
+python 3.6.5 conda
+asdf 2.0.1 pip
+
+#sidecar pip
+
+# jupyterlab
+jupyterlab 0.33.6 conda conda-forge
+#jupyterlab-latex 0.3.1 pip
+
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyter-widgets/jupyterlab-manager
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/geojson-extension
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/json-extension
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/plotly-extension
+#!jupyter labextension install @jupyterlab/google-drive
+#!jupyter labextension install @jupyterlab/github
+#!jupyter labextension install jupyterlab_bokeh
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install qgrid
+#!jupyter labextension install @jupyterlab/latex
+#!jupyter labextension install jupyterlab-drawio
+
+#jupyterlab_iframe 0.0.8 pip
+#!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab_iframe
+#!jupyter serverextension enable --py jupyterlab_iframe
+
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install ipysheet
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab_3Dmol
+#! sidecar
+#!jupyter-labextension install nglview-js-widgets@1.1.2
+#!jupyter labextension install nbdime-jupyterlab
