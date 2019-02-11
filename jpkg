@@ -88,7 +88,7 @@ def install_packages(cname, pyver):
                 if inst == 'conda':
                     cmd = "conda install -y %s=%s %s" % (pkg, ver, nodeps)
                     if channel:
-                        cmd += " -c %s" % channel
+                        cmd += " -c defaults -c %s" % channel
                 elif inst == 'pip':
                     if ver == '*':
                         cmd = "pip install -U --upgrade-strategy only-if-needed %s" % pkg
