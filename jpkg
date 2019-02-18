@@ -36,7 +36,7 @@ So we uninstall the jupyter conda extensions and then reenable our extensions.
 """
 
 
-def install_packages(cname,):
+def install_packages(cname, nopy2):
     global dirname
 
     pname = os.path.join(dirname, "configs", cname)
@@ -47,6 +47,8 @@ def install_packages(cname,):
             if line[0] == '+':
                 continue
             if line[0] == '#':
+                if line.startswith('# PYTHON2') and nopy2 is True:
+                    return
                 # comment
                 continue
             if line[0] == '!':
@@ -83,8 +85,6 @@ def install_packages(cname,):
                     cmd = "pip install -U --upgrade-strategy only-if-needed %s" % pkg
                 else:
                     cmd = "pip install -U --upgrade-strategy only-if-needed %s==%s" % (pkg, ver)
-            elif inst == 'npm':
-                    cmd = 'npm install -g %s@%s' % (pkg, ver)
             print("Running '%s'" % cmd)
             if os.system(cmd):
                 print("ERROR: Installation of %s failed.\n" % pkg)
@@ -125,11 +125,11 @@ def check_perm(p):
     os.chdir(cwd)
 
 
-def install_updates(cname, p):
+def install_updates(cname, p, nopy2):
     global dirname
 
     # install packages we want
-    install_packages(cname)
+    install_packages(cname, nopy2)
 
     bindir = os.path.join(p, 'bin')
 
@@ -147,9 +147,13 @@ def install_R_pkgs(p):
     os.system('Rscript %s' % scriptname)
 
 
-def install_kernels(p):
+def install_kernels(p, nopy2):
     os.system('python -m ipykernel install --name "python3" --prefix=%s --display-name "Python3"' % p)
-
+    if nopy2:
+        return
+    os.system('source activate Python2')
+    os.system('python -m ipykernel install --name "python2" --prefix=%s --display-name "Python2"' % p)
+    os.system('source deactivate Python2')
 
 def install_octave(p, env_dir, desktop):
     "Install octave kernel, if octave is found"
@@ -168,7 +172,7 @@ def write_env(rver, env_dir, pathlist):
     for p in pathlist:
         bindir = os.path.join(p, 'bin')
         os.system('mkdir -p %s' % env_dir)
-        
+
         fname = os.path.join(env_dir, os.path.basename(p))
         with open(fname, 'w') as f:
             f.write('\nconflict ANACONDA_CHOICE\n\n')
@@ -239,7 +243,7 @@ def install_extensions(p, desktop):
 
 def cleanup(p, desktop):
     # final cleanup
-    
+
     # remove any local extensions because they may conflict with global
     os.system('rm -rf ~/.local/share/jupyter/nbextensions')
 
@@ -261,7 +265,7 @@ def cleanup(p, desktop):
 
     # disable nbdime extension
     # os.system('jupyter nbextension uninstall nbdime')
-    
+
     # maybe someday we will enable nbpresent, but right now it is much too buggy
     # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
 
@@ -318,19 +322,14 @@ def make_new(args):
     print("Installing Anaconda3-%s in %s" % (ver, instpath))
     install_file(script, instpath)
 
-    #args.nopy2 
-
-    #FIXME env needs written for python2
     if not desktop:
         write_env(rver, env_dir, instpath)
 
-    do_install(desktop, args.name, env_dir, instpath)
+    do_install(desktop, args.name, env_dir, instpath, args.nopy2)
 
 
 def do_downloads(ver):
     ret = os.system("wget http://packages.hubzero.org/blobs/anaconda3-%s.tar.xz -O - | tar -xJ" % ver)
-    if ret == 0 and args.nopy2 is False:
-        ret = os.system("wget http://packages.hubzero.org/blobs/anaconda2-%s.tar.xz -O - | tar -xJ" % ver)
 
     if ret:
         print("Download failed.")
@@ -345,7 +344,7 @@ def make_netinst(args):
     # write env modules
     env_dir = '/apps/share64/debian7/environ.d'
     write_env(args.ver, env_dir, pathlist)
-    
+
     if args.nopy2:
         # remove python2 kernel from menu
         kpath = "/apps/share64/debian7/anaconda/anaconda3-%s/share/jupyter/kernels/python2" % args.ver
@@ -375,9 +374,9 @@ def make_netinst(args):
         print()
         os.system('cp %s %s' % (hzfull, hifull))
 
-def do_install(desktop, cname, env_dir, instpath):
-    install_updates(cname, instpath)
-    install_kernels(instpath)
+def do_install(desktop, cname, env_dir, instpath, nopy2):
+    install_updates(cname, instpath, nopy2)
+    install_kernels(instpath, nopy2)
     install_octave(instpath, env_dir, desktop)
     install_R_pkgs(instpath)
     install_extensions(instpath, desktop)
