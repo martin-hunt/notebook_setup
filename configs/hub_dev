@@ -30,10 +30,9 @@ mysql-connector-python 8.0.13 conda
 
 pint 0.9 conda conda-forge
 qgrid 1.1.1 conda conda-forge
-#!jupyter labextension install qgrid
+!jupyter labextension install qgrid
 oct2py 4.0.6 conda conda-forge
 celery 4.2.1 conda conda-forge
-nglview 1.1.7 conda conda-forge
 gmaps 0.8.4 conda conda-forge
 ipyleaflet 0.9.2 conda conda-forge
 bagit 1.7.0 conda conda-forge
@@ -46,6 +45,8 @@ mdanalysistests 0.19.2 conda conda-forge
 openbabel 2.4.1 conda openbabel
 pytraj 2.0.2 conda ambermd
 
+nglview 1.1.8 pip
+!jupyter-nbextension enable nglview --py --sys-prefix
 black 18.9b0 pip
 mendeleev 0.4.4 pip
 yamlmagic 0.2.0 pip

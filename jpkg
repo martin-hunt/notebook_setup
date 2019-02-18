@@ -36,25 +36,15 @@ So we uninstall the jupyter conda extensions and then reenable our extensions.
 """
 
 
-def install_packages(cname, pyver):
+def install_packages(cname,):
     global dirname
 
     pname = os.path.join(dirname, "configs", cname)
-    print("Installing Packages for Python%s from %s" % (pyver, cname))
-    two = True
-    three = True
+    print("Installing Packages for Python3 from %s" % (cname))
 
     with open(pname) as fp:
         for line in fp:
             if line[0] == '+':
-                continue
-            if line[0:8] == "# 2 ONLY":
-                two = True
-                three = False
-                continue
-            if line[0:8] == "# 3 ONLY":
-                two = False
-                three = True
                 continue
             if line[0] == '#':
                 # comment
@@ -83,26 +73,25 @@ def install_packages(cname, pyver):
                     print("Cannot parse line:", line)
                 continue
 
-            if (two and pyver == 2) or (three and pyver == 3):
-                print("\n************** Installing %s %s" % (pkg, ver))
-                if inst == 'conda':
-                    cmd = "conda install -y %s=%s %s" % (pkg, ver, nodeps)
-                    if channel:
-                        cmd += " -c defaults -c %s" % channel
-                elif inst == 'pip':
-                    if ver == '*':
-                        cmd = "pip install -U --upgrade-strategy only-if-needed %s" % pkg
-                    else:
-                        cmd = "pip install -U --upgrade-strategy only-if-needed %s==%s" % (pkg, ver)
-                elif inst == 'npm':
-                        cmd = 'npm install -g %s@%s' % (pkg, ver)
-                print("Running '%s'" % cmd)
-                if os.system(cmd):
-                    print("ERROR: Installation of %s failed.\n" % pkg)
+            print("\n************** Installing %s %s" % (pkg, ver))
+            if inst == 'conda':
+                cmd = "conda install -y %s=%s %s" % (pkg, ver, nodeps)
+                if channel:
+                    cmd += " -c defaults -c %s" % channel
+            elif inst == 'pip':
+                if ver == '*':
+                    cmd = "pip install -U --upgrade-strategy only-if-needed %s" % pkg
+                else:
+                    cmd = "pip install -U --upgrade-strategy only-if-needed %s==%s" % (pkg, ver)
+            elif inst == 'npm':
+                    cmd = 'npm install -g %s@%s' % (pkg, ver)
+            print("Running '%s'" % cmd)
+            if os.system(cmd):
+                print("ERROR: Installation of %s failed.\n" % pkg)
         print('\n')
 
 
-def install_file(fname, destdir, pyver):
+def install_file(fname, destdir):
     "Run the anaconda install file"
 
     os.system('bash ' + fname + ' -b -p ' + destdir)
@@ -113,106 +102,65 @@ def install_file(fname, destdir, pyver):
     path = os.environ['PATH']
     os.environ['PATH'] = bindir + ':' + path
 
-    # clean out old cache
-    os.system('conda clean -y --all')
-    # remove any old channels
-    os.system('rm -f ~/.condarc')
 
-    # reset PATH
-    os.environ['PATH'] = path
-
-    return
-
-
-def check_perm(pathlist):
+def check_perm(p):
     """In each installation directory, check the permissions of files so
     we don't end up with packages users can't read."""
     cwd = os.getcwd()
 
-    for p in pathlist:
-        os.chdir(p)
+    os.chdir(p)
 
-        print("Checking file permissions in", p)
-        bindir = os.path.join(p, 'bin')
+    print("Checking file permissions in", p)
+    bindir = os.path.join(p, 'bin')
 
-        print("Finding and fixing files that are not world-readable")
-        os.system('find . ! -perm -004 -exec chmod a+r {} \;')
+    print("Finding and fixing files that are not world-readable")
+    os.system('find . ! -perm -004 -exec chmod a+r {} \;')
 
-        print("Finding non-searchable directories.  Should be none.")
-        os.system('find . -type d -a ! -perm -011')
+    print("Finding non-searchable directories.  Should be none.")
+    os.system('find . -type d -a ! -perm -011')
 
-        print('Finding and fixing world-writable files.')
-        os.system('find -L . -perm -o+w -exec chmod o-w {} \;')
+    print('Finding and fixing world-writable files.')
+    os.system('find -L . -perm -o+w -exec chmod o-w {} \;')
 
-        os.chdir(cwd)
+    os.chdir(cwd)
 
 
-def install_updates(cname, pathlist):
+def install_updates(cname, p):
     global dirname
 
-    path = os.environ['PATH']
-    for p in pathlist:
-        pyver = 3 if p == pathlist[0] else 2
-        bindir = os.path.join(p, 'bin')
-        os.environ['PATH'] = bindir + ':' + path
+    # install packages we want
+    install_packages(cname)
 
-        # install packages we want
-        install_packages(cname, pyver)
+    bindir = os.path.join(p, 'bin')
 
-        # install jupyter_unsign.py and jupyter_tool.py
-        os.system('cp %s %s' % (os.path.join(dirname, 'jupyter_unsign.py'), bindir))
-        os.system('cp %s %s' % (os.path.join(dirname, 'jupyter_tool.py'), bindir))
-
-        # start_jupyter script
-        os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyter'), bindir))
-        if pyver == 3:
-            os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyterlab'), bindir))
-
-        os.environ['PATH'] = path
+    # start_jupyter script
+    os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyter'), bindir))
+    os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyterlab'), bindir))
 
 
-def install_R_pkgs(pathlist):
+
+def install_R_pkgs(p):
     global dirname
 
-    path = os.environ['PATH']
-    for p in pathlist:
-        bindir = os.path.join(p, 'bin')
-        os.environ['PATH'] = bindir + ':' + path
-
-        # install packages we want
-        scriptname = os.path.join(dirname, 'inst.R')
-        os.system('Rscript %s' % scriptname)
-
-        os.environ['PATH'] = path
+    # install packages we want
+    scriptname = os.path.join(dirname, 'inst.R')
+    os.system('Rscript %s' % scriptname)
 
 
-def install_kernels(pathlist):
-    "Install python 2 and python 3 kernels"
-    print("install_kernels", pathlist)
-
-    path = os.environ['PATH']
-
-    for p in pathlist:
-        os.environ['PATH'] = os.path.join(p, 'bin') + ':' + path
-        pyver = 3 if p == pathlist[0] else 2
-        for k in pathlist:
-            print('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' % (pyver, k, pyver))
-            os.system('python -m ipykernel install --name "python%s" --prefix=%s --display-name "Python%s"' %
-            (pyver, k, pyver))
-        os.environ['PATH'] = path
+def install_kernels(p):
+    os.system('python -m ipykernel install --name "python3" --prefix=%s --display-name "Python3"' % p)
 
 
-def install_octave(pathlist, env_dir, desktop):
+def install_octave(p, env_dir, desktop):
     "Install octave kernel, if octave is found"
-    for p in pathlist:
-        octave_kstr = find_octave(p, desktop, env_dir, prompt=False)
-        if octave_kstr is not None:
-            dname = os.path.join(p, 'share', 'jupyter', 'kernels', 'octave')
-            if not os.path.exists(dname):
-                os.mkdir(dname)
-            fname = os.path.join(dname, 'kernel.json')
-            with open(fname, 'w') as f:
-                f.write(octave_kstr)
+    octave_kstr = find_octave(p, desktop, env_dir, prompt=False)
+    if octave_kstr is not None:
+        dname = os.path.join(p, 'share', 'jupyter', 'kernels', 'octave')
+        if not os.path.exists(dname):
+            os.mkdir(dname)
+        fname = os.path.join(dname, 'kernel.json')
+        with open(fname, 'w') as f:
+            f.write(octave_kstr)
 
 
 def write_env(rver, env_dir, pathlist):
@@ -237,156 +185,97 @@ def write_env(rver, env_dir, pathlist):
             os.system('ln -s %s %s' % (hubzero, libdir))
 
 
-def install_extensions(pathlist, desktop):
+def install_extensions(p, desktop):
     global dirname
-    path = os.environ['PATH']
     cwd = os.getcwd()
     os.chdir(dirname)
     os.chdir('nbextensions')
 
-    for p in pathlist:
-        with open('jupyter_notebook_config.py', 'r') as f:
-            intro = f.read()
+    with open('jupyter_notebook_config.py', 'r') as f:
+        intro = f.read()
 
-        spath = os.path.join(p, 'share', 'jupyter')
-        os.system('mkdir -p ' + os.path.join(p, 'etc', 'jupyter'))
-        fname = os.path.join(p, 'etc', 'jupyter', 'jupyter_notebook_config.py')
-        with open(fname, 'w') as f:
-            f.write(intro)
-            # f.write("c.Application.log_level = 'DEBUG'\n")
-            f.write("c.IPKernelApp.pylab = 'inline'\n")  # always put plots inline
-            f.write("import sys\n")
-            f.write("sys.path.append('%s')\n" % os.path.join(spath, 'nbextensions'))
-            f.write("\n")
-            f.write("c.NotebookApp.extra_template_paths = ['%s']\n" % os.path.join(spath, 'templates'))
-            f.write("c.NotebookApp.extra_static_paths = ['%s']\n" % os.path.join(spath, 'static'))
-            f.write("c.NotebookApp.trust_xheaders = True\n")
-            f.write("c.NotebookApp.mathjax_url = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js'\n")
-            # needed for notebook 5.0 with holoviews and some others
-            #f.write("c.NotebookApp.iopub_data_rate_limit=100000000\n")
-            if not desktop:
-                f.write("c.NotebookApp.login_handler_class = 'hublogin.HubLoginHandler'\n")
-            #if socket.gethostname() == 'nanoHUB':
-            #    # mailboxes only on nanohub at this time
-            #    f.write("c.NotebookApp.nbserver_extensions = {'inboxes': True}\n")
-            # needed for proxy
-            f.write("c.NotebookApp.disable_check_xsrf = True")
-
-
-        bindir = os.path.join(p, 'bin')
-        os.environ['PATH'] = bindir + ':' + path
-
-        # Install the tool autorun extension.
-        os.system('jupyter nbextension install --sys-prefix autorun')
-
+    spath = os.path.join(p, 'share', 'jupyter')
+    os.system('mkdir -p ' + os.path.join(p, 'etc', 'jupyter'))
+    fname = os.path.join(p, 'etc', 'jupyter', 'jupyter_notebook_config.py')
+    with open(fname, 'w') as f:
+        f.write(intro)
+        # f.write("c.Application.log_level = 'DEBUG'\n")
+        f.write("c.IPKernelApp.pylab = 'inline'\n")  # always put plots inline
+        f.write("import sys\n")
+        f.write("sys.path.append('%s')\n" % os.path.join(spath, 'nbextensions'))
+        f.write("\n")
+        f.write("c.NotebookApp.extra_template_paths = ['%s']\n" % os.path.join(spath, 'templates'))
+        f.write("c.NotebookApp.extra_static_paths = ['%s']\n" % os.path.join(spath, 'static'))
+        f.write("c.NotebookApp.trust_xheaders = True\n")
+        f.write("c.NotebookApp.mathjax_url = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js'\n")
         if not desktop:
-            os.system('jupyter nbextension install --sys-prefix prefs')
+            f.write("c.NotebookApp.login_handler_class = 'hublogin.HubLoginHandler'\n")
+        f.write("c.NotebookApp.disable_check_xsrf = True")
 
-        # drag and drop images
-        os.system('jupyter nbextension install --sys-prefix dragdrop')
 
-        # install calysto document tools
-        os.system('jupyter nbextension install --sys-prefix https://github.com/Calysto/notebook-extensions/archive/master.zip')
+    if not desktop:
+        os.system('jupyter nbextension install --sys-prefix prefs')
 
-        # declarativewidgets, cms, dashboard
-        # os.system('jupyter nbextension install --py --sys-prefix declarativewidgets')
-        # os.system('jupyter nbextension install --py jupyter_cms --sys-prefix')
-        os.system('jupyter nbextension install --py jupyter_dashboards --sys-prefix')
+    # install calysto document tools
+    os.system('jupyter nbextension install --sys-prefix https://github.com/Calysto/notebook-extensions/archive/master.zip')
 
-        # install hublogin and terminate
-        dst = os.path.join(p, 'share', 'jupyter')
-        ext = os.path.join(dst, 'nbextensions')
-        os.system('cp terminate.py %s' % ext)
-        if not desktop:
-            os.system('cp hublogin.py %s' % ext)
 
-        # mailboxes. only on nanohub right now
-        #if socket.gethostname() == 'nanoHUB':
-        #    os.system('cp inboxes.py %s' % ext)
-        #    os.system('jupyter nbextension install --sys-prefix sendto')
+    # install hublogin and terminate
+    dst = os.path.join(p, 'share', 'jupyter')
+    ext = os.path.join(dst, 'nbextensions')
+    # os.system('cp terminate.py %s' % ext)
+    if not desktop:
+        os.system('cp hublogin.py %s' % ext)
 
-        # patch dashboards to work with our tool mode and autorun extensions
-        dashdir = os.path.join(ext, 'jupyter_dashboards', 'notebook', 'dashboard-view')
-        os.system('patch -f -d %s < dashboard-actions.patch' % dashdir)
+    # patch dashboards to work with our tool mode and autorun extensions
+    # dashdir = os.path.join(ext, 'jupyter_dashboards', 'notebook', 'dashboard-view')
+    # os.system('patch -f -d %s < dashboard-actions.patch' % dashdir)
 
-        # install logos
-        os.system('mkdir -p ' + dst + '/static')
-        os.system('cp -r ../logo/* ' + dst + '/static')
-        
-        # install tool view extensions (really just a replacement for the tree view)
-        # os.system("cp tool/tool_ext.py " + ext)
-        # os.system("cp -r tool/static " + dst)
-        # os.system("cp -r tool/templates " + dst)
-
-        os.environ['PATH'] = path
+    # install logos
+    os.system('mkdir -p ' + dst + '/static')
+    os.system('cp -r ../logo/* ' + dst + '/static')
     os.chdir(cwd)
 
 
-def cleanup(pathlist, desktop):
+def cleanup(p, desktop):
     # final cleanup
     
     # remove any local extensions because they may conflict with global
     os.system('rm -rf ~/.local/share/jupyter/nbextensions')
 
-    path = os.environ['PATH']
-    for p in pathlist:
-        os.environ['PATH'] = os.path.join(p, 'bin') + ':' + path
+    # uninstall anaconda jupyter notebook extensions which we don't want
+    #os.system('conda uninstall -y nb_conda')
 
-        # uninstall anaconda jupyter notebook extensions which we don't want
-        os.system('conda uninstall -y nb_conda')
+    # Enable the extensions.
+    # Must do this after uninstalling the conda extensions because they
+    # will uninstall our extensions too!  These just update etc/jupyter/nbconfig/notebook.json
+    #os.system('jupyter nbextension enable --sys-prefix autorun/main 2> /dev/null')
+    if not desktop:
+        os.system('jupyter nbextension enable --sys-prefix prefs/prefs')
+    #os.system('jupyter nbextension enable --sys-prefix dragdrop/main')
+    # os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
+    # os.system('jupyter nbextension enable --py --sys-prefix gmaps')
+    # os.system('jupyter serverextension enable --py declarativewidgets --sys-prefix')
+    # os.system('jupyter nbextension enable --py --sys-prefix declarativewidgets')
+    #os.system('jupyter nbextension enable --py jupyter_dashboards --sys-prefix')
 
-        # Enable the extensions.
-        # Must do this after uninstalling the conda extensions because they
-        # will uninstall our extensions too!  These just update etc/jupyter/nbconfig/notebook.json
-        os.system('jupyter nbextension enable --sys-prefix autorun/main 2> /dev/null')
-        if not desktop:
-            os.system('jupyter nbextension enable --sys-prefix prefs/prefs')
-        os.system('jupyter nbextension enable --sys-prefix dragdrop/main')
-        # os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
-        # os.system('jupyter nbextension enable --py --sys-prefix gmaps')
-        # os.system('jupyter serverextension enable --py declarativewidgets --sys-prefix')
-        # os.system('jupyter nbextension enable --py --sys-prefix declarativewidgets')
-        os.system('jupyter nbextension enable --py jupyter_dashboards --sys-prefix')
+    # disable nbdime extension
+    # os.system('jupyter nbextension uninstall nbdime')
+    
+    # maybe someday we will enable nbpresent, but right now it is much too buggy
+    # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
 
-        # disable nbdime extension
-        # os.system('jupyter nbextension uninstall nbdime')
-        
-        # maybe someday we will enable nbpresent, but right now it is much too buggy
-        # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
+    # os.system('jupyter nbextension enable --sys-prefix  --py pythreejs')
+    # os.system('jupyter nbextension enable --sys-prefix  --py nglview')
+    # if p == pathlist[0]:
+    #    # python2 only
+    #    os.system('jupyter nbextension enable --sys-prefix  --py nbmolviz')
 
-        # os.system('jupyter nbextension enable --sys-prefix  --py pythreejs')
-        # os.system('jupyter nbextension enable --sys-prefix  --py nglview')
-        # if p == pathlist[0]:
-        #    # python2 only
-        #    os.system('jupyter nbextension enable --sys-prefix  --py nbmolviz')
+    # mailboxes. only on nanohub right now
+    # if socket.gethostname() == 'nanoHUB':
+        # os.system('jupyter nbextension enable --sys-prefix sendto/sendto')
 
-        # mailboxes. only on nanohub right now
-        # if socket.gethostname() == 'nanoHUB':
-            # os.system('jupyter nbextension enable --sys-prefix sendto/sendto')
-
-        os.system('conda clean -y --all')
-        os.environ['PATH'] = path
-
-
-def install_misc(pathlist, desktop):
-    return
-    # global dirname
-    # for p in pathlist:
-    #     lib = os.path.join(p, 'lib')
-    #     libfreeimage = os.path.join(dirname, 'misc', 'libfreeimage-3.16.0-linux64.so')
-    #     os.system("cp %s %s" % (libfreeimage, lib))
-
-
-def get_pathlist(rver):
-    global dirname
-
-    pathlist = ['anaconda3-%s' % (rver)]
-    if args.nopy2 is False:
-        pathlist.append('anaconda2-%s' % (rver))
-
-    for i, p in enumerate(pathlist):
-        pathlist[i] = os.path.realpath(p)
-    return pathlist
+    #os.system('conda clean -y --all')
 
 
 def get_versions(cname):
@@ -416,33 +305,26 @@ def get_versions(cname):
 
 def make_new(args):
     ver, rver, env_dir, desktop = get_versions(args.name)
-    pathlist = get_pathlist(rver)
 
-    if args.nopy2:
-        scripts = ["Anaconda3-%s-Linux-x86_64.sh" % ver]
-    else:
-        scripts = ["Anaconda3-%s-Linux-x86_64.sh" % ver, "Anaconda2-%s-Linux-x86_64.sh" % ver]
+    script = "Anaconda3-%s-Linux-x86_64.sh" % ver
+    instpath = os.path.realpath('anaconda3-%s' % (rver))
+    if not os.path.isfile(script):
+        print("Downloading", script)
+        os.system("curl -O https://repo.continuum.io/archive/%s" % script)
+        if not os.path.isfile(script):
+            print("Error: %s not found and could not download." % script)
+            sys.exit(1)
 
-    ok = True
-    for name in scripts:
-        if not os.path.isfile(name):
-            print("Downloading", name)
-            os.system("curl -O https://repo.continuum.io/archive/%s" % name)
-            if not os.path.isfile(name):
-                print("Error: %s not found and could not download." % name)
-                sys.exit(1)
+    print("Installing Anaconda3-%s in %s" % (ver, instpath))
+    install_file(script, instpath)
 
-    print("Installing Anaconda3-%s in %s" % (ver, pathlist[0]))
-    install_file(scripts[0], pathlist[0], 3)
+    #args.nopy2 
 
-    if args.nopy2 is False:
-        print("Installing Anaconda2-%s in %s" % (ver, pathlist[1]))
-        install_file(scripts[1], pathlist[1], 2)
-
+    #FIXME env needs written for python2
     if not desktop:
-        write_env(rver, env_dir, pathlist)
+        write_env(rver, env_dir, instpath)
 
-    do_install(desktop, args.name, env_dir, pathlist)
+    do_install(desktop, args.name, env_dir, instpath)
 
 
 def do_downloads(ver):
@@ -458,7 +340,7 @@ def do_downloads(ver):
 def make_netinst(args):
     do_downloads(args.ver)
 
-    pathlist = get_pathlist(args.ver)
+    instpath = os.path.realpath('anaconda3-%s' % (args.ver))
 
     # write env modules
     env_dir = '/apps/share64/debian7/environ.d'
@@ -493,24 +375,19 @@ def make_netinst(args):
         print()
         os.system('cp %s %s' % (hzfull, hifull))
 
-def do_install(desktop, cname, env_dir, pathlist):
-    install_updates(cname, pathlist)
-    install_kernels(pathlist)
-    install_octave(pathlist, env_dir, desktop)
-    install_R_pkgs(pathlist)
-    install_misc(pathlist, desktop)
-    install_extensions(pathlist, desktop)
-    check_perm(pathlist)
-    cleanup(pathlist, desktop)
+def do_install(desktop, cname, env_dir, instpath):
+    install_updates(cname, instpath)
+    install_kernels(instpath)
+    install_octave(instpath, env_dir, desktop)
+    install_R_pkgs(instpath)
+    install_extensions(instpath, desktop)
+    check_perm(instpath)
+    cleanup(instpath, desktop)
 
 
 def make_cleanup(args):
-    if args.ver:
-        pathlist = get_pathlist(args.ver)
-    else:
-        pathlist = glob('/apps/share64/debian7/anaconda/anaconda[2|3]*')
-
-    check_perm(pathlist)
+    instpath = os.path.realpath('anaconda3-%s' % (args.ver))
+    check_perm(instpath)
 
 
 def find_octave(pypath, desktop, env_dir, prompt=True):
@@ -621,3 +498,4 @@ then run the update command.
     # jpkg install hubzero41
     # jpkg netinst 5.1
     # jpkg cleanup [5.1]
+
