@@ -21,11 +21,12 @@
 
 nodejs 10.13.0 conda
 r-essentials 3.5.1 conda
-ffmpeg 4.0 conda
 mysql 5.7.24 conda
 pymysql 0.9.3 conda
 mysql-connector-python 8.0.13 conda
+rpy2 2.9.1 conda
 
+ffmpeg 4.1 conda conda-forge
 pint 0.9 conda conda-forge
 qgrid 1.1.1 conda conda-forge
 !jupyter labextension install qgrid
@@ -42,7 +43,7 @@ mdanalysis 0.19.2 conda conda-forge
 mdanalysistests 0.19.2 conda conda-forge
 openbabel 2.4.1 conda openbabel
 
-nglview 1.1.8 pip
+nglview 1.1.9 pip
 !jupyter-nbextension enable nglview --py --sys-prefix
 black 18.9b0 pip
 mendeleev 0.4.4 pip
@@ -52,8 +53,8 @@ moviepy 0.2.3.5 pip
 imolecule 0.1.13 pip
 ezvis3d 0.2.5 pip
 py3dmol 0.8.0 pip
-papermill 0.18.1 pip
-k3d 2.5.0 pip
+papermill 0.18.2 pip
+k3d 2.5.2 pip
 atomman 1.2.4 pip
 imutils 0.5.2 pip
 pygal 2.4.0 pip
@@ -61,7 +62,7 @@ mdf-forge 0.6.6 pip
 chemspipy 2.0.0 pip
 citrination-client 4.9.2 pip
 itkwidgets 0.16.1 pip
-matminer 0.5.2 pip
+matminer 0.5.3 pip
 avogadro 1.92.1 pip
 openchemistry 0.0.11 pip
 tensorflow     1.13.0rc2 pip
@@ -97,11 +98,11 @@ ipyaggrid 0.1.11 pip
 #!jupyter labextension install ipyaggrid  BROKEN
 !jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
+# FIXME: not working
 jupyterlab_iframe 0.0.11 pip
 !jupyter labextension install jupyterlab_iframe
 !jupyter serverextension enable --py jupyterlab_iframe
 
-Jupyter-Video-Widget 0.3.1 pip
 jupyterlab-latex 0.4.1 pip
 !jupyter labextension install @jupyterlab/latex
 !jupyter labextension install itk-jupyter-widgets
@@ -116,7 +117,9 @@ jupyterlab-latex 0.4.1 pip
 #!jupyter labextension install jupyterlab_filetree BROKEN??
 !NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @openchemistry/jupyterlab
 !jupyter labextension install k3d
-
+!jupyter labextension install @jupyterlab/mp4-extension
+!NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab-chart-editor
+#!jupyter labextension install jupyterlab-jupytext
 # merged into 1.0a
 !jupyter labextension install @mflevine/jupyterlab_html
 
@@ -140,8 +143,8 @@ jupyterlab-latex 0.4.1 pip
 # Now (optionally) install Python 2
 !conda create -y --name Python2 python=2.7 anaconda
 !source activate Python2
-!conda install -y -n Python2 ffmpeg mysql pymysql mysql-connector-python
-!conda install -y -n Python2 -c defaults -c conda-forge pint qgrid celery gmaps ipyleaflet bagit ipyvolume lmfit phonopy mdtraj mdanalysis mdanalysistests rdkit
+!conda install -y -n Python2 mysql pymysql mysql-connector-python
+!conda install -y -n Python2 -c defaults -c conda-forge ffmpeg pint qgrid celery gmaps ipyleaflet bagit ipyvolume lmfit phonopy mdtraj mdanalysis mdanalysistests rdkit
 !conda install -y -n Python2 -c defaults -c openbabel openbabel
 #!conda install -y -n Python2 -c defaults -c pycalphad -c msys2 -c conda-forge pycalphad espei
 !pip install -U --upgrade-strategy only-if-needed nglview mendeleev yamlmagic mapboxgl moviepy imolecule ezvis3d py3dmol papermill
