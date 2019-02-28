@@ -167,26 +167,24 @@ def install_octave(p, env_dir, desktop):
             f.write(octave_kstr)
 
 
-def write_env(rver, env_dir, pathlist):
+def write_env(rver, env_dir, p):
+    print('write_env: path=%s env_dir=%s'% (p, env_dir))
     # write environ files for 'use' on the hubs
-    for p in pathlist:
-        bindir = os.path.join(p, 'bin')
-        os.system('mkdir -p %s' % env_dir)
+    bindir = os.path.join(p, 'bin')
+    os.system('mkdir -p %s' % env_dir)
+    fname = os.path.join(env_dir, os.path.basename(p))
+    with open(fname, 'w') as f:
+        f.write('\nconflict ANACONDA_CHOICE\n\n')
+        f.write('desc "Anaconda is a package manager, an environment manager, a Python distribution, and a collection of over 1,000+ open source packages."\n\n')
+        f.write('help "https://docs.anaconda.com/new-anaconda-start-here"\n\n')
+        f.write('version=%s\n\n' % rver)
+        f.write('prepend PATH %s\n\n' % bindir)
+        f.write('tags MATHSCI\n')
 
-        fname = os.path.join(env_dir, os.path.basename(p))
-        with open(fname, 'w') as f:
-            f.write('\nconflict ANACONDA_CHOICE\n\n')
-            f.write('desc "Anaconda is a package manager, an environment manager, a Python distribution, and a collection of over 1,000+ open source packages."\n\n')
-            f.write('help "https://docs.anaconda.com/new-anaconda-start-here"\n\n')
-            f.write('version=%s\n\n' % rver)
-            f.write('prepend PATH %s\n\n' % bindir)
-            f.write('tags MATHSCI\n')
-
-        # needed for submit, which only works on python 2 for now
-        if len(pathlist) > 1 and p == pathlist[1]:
-            hubzero = '/usr/lib/python2.7/dist-packages/hubzero'
-            libdir = os.path.join(p, 'lib', 'python2.7', 'site-packages')
-            os.system('ln -s %s %s' % (hubzero, libdir))
+    # needed for submit, which only works on python 2 for now
+    #    hubzero = '/usr/lib/python2.7/dist-packages/hubzero'
+    #    libdir = os.path.join(p, 'lib', 'python2.7', 'site-packages')
+    #    os.system('ln -s %s %s' % (hubzero, libdir))
 
 
 def install_extensions(p, desktop):
