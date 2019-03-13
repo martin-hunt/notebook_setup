@@ -1,0 +1,30 @@
+# PIP nanohub packages
+pip install -U --upgrade-strategy only-if-needed nglview==1.1.9
+NODE_OPTIONS=--max-old-space-size=16384 jupyter-nbextension enable nglview --py --sys-prefix
+pip install -U --upgrade-strategy only-if-needed mendeleev==0.4.4
+pip install -U --upgrade-strategy only-if-needed imolecule==0.1.13
+pip install -U --upgrade-strategy only-if-needed py3dmol==0.8.0
+pip install -U --upgrade-strategy only-if-needed k3d==2.5.5
+pip install -U --upgrade-strategy only-if-needed atomman==1.2.4
+pip install -U --upgrade-strategy only-if-needed imutils==0.5.2
+pip install -U --upgrade-strategy only-if-needed pygal==2.4.0
+pip install -U --upgrade-strategy only-if-needed mdf-forge==0.6.6
+pip install -U --upgrade-strategy only-if-needed chemspipy==2.0.0
+pip install -U --upgrade-strategy only-if-needed citrination-client==4.9.2
+pip install -U --upgrade-strategy only-if-needed itkwidgets==0.16.1
+pip install -U --upgrade-strategy only-if-needed matminer==0.5.3
+pip install -U --upgrade-strategy only-if-needed avogadro==1.92.1
+pip install -U --upgrade-strategy only-if-needed openchemistry==0.0.11
+pip install -U --upgrade-strategy only-if-needed vtk==8.1.2
+# joommf
+pip install -U --upgrade-strategy only-if-needed discretisedfield==0.8.3
+pip install -U --upgrade-strategy only-if-needed joommfutil==0.8.4
+pip install -U --upgrade-strategy only-if-needed micromagneticmodel==0.8.4
+pip install -U --upgrade-strategy only-if-needed oommfc==0.8.8
+pip install -U --upgrade-strategy only-if-needed oommfodt==0.8.4
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install itk-jupyter-widgets
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @openchemistry/jupyterlab
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install k3d
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install itk-jupyter-widgets
+NODE_OPTIONS=--max-old-space-size=16384 jupyter-labextension install nglview-js-widgets
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab_3dmol

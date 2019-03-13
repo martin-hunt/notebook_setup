@@ -1,0 +1,9 @@
+# plotly dash
+#dash 0.36.0 pip
+#dash-renderer 0.17.0 pip
+#dash-html-components 0.13.5 pip
+#dash-core-components 0.43.0 pip
+#dash-daq 0.1.0 pip
+#dash-table 3.4.0 pip
+#dash-cytoscape 0.0.4 pip
+#jupyter-plotly-dash 0.2.0 pip

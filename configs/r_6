@@ -1,0 +1,17 @@
+# install R in a new environment
+
+basedir=$(dirname $(dirname $(which python)))
+path=$PATH
+
+conda create -y --name R r-essentials=3.5.1 anaconda
+export PATH=${basedir}/envs/R/bin:$PATH
+
+conda install -y rpy2=2.9.1
+conda install -y r-keras=2.2.4
+conda install -y r-tensorflow=1.10
+conda install -y r-plotly=4.8.0  -c defaults -c conda-forge
+
+python -m ipykernel install --name "R" --prefix=${basedir} --display-name "R"
+
+# restore PATH
+export PATH=$path

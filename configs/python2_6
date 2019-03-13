@@ -1,0 +1,25 @@
+# install Python2 environment
+
+basedir=$(dirname $(dirname $(which python)))
+path=$PATH
+
+conda create -y --name Python2 python=2.7 anaconda
+
+#source activate Python2
+export PATH=${basedir}/envs/Python2/bin:$PATH
+
+conda install -y -n Python2 mysql pymysql mysql-connector-python
+conda install -y -n Python2 -c defaults -c conda-forge ffmpeg pint qgrid celery gmaps ipyleaflet bagit ipyvolume lmfit phonopy mdtraj mdanalysis mdanalysistests rdkit
+conda install -y -n Python2 -c defaults -c openbabel openbabel
+#!conda install -y -n Python2 -c defaults -c pycalphad -c msys2 -c conda-forge pycalphad espei
+
+pip install -U --upgrade-strategy only-if-needed nglview mendeleev yamlmagic mapboxgl moviepy imolecule ezvis3d py3dmol papermill
+pip install -U --upgrade-strategy only-if-needed k3d atomman imutils pygal mdf-forge chemspipy citrination-client itkwidgets matminer
+pip install -U --upgrade-strategy only-if-needed tensorflow keras
+pip install -U --upgrade-strategy only-if-needed cymysql mysqlclient sshtunnel
+pip install -U --upgrade-strategy only-if-needed vtk hublib plotly ipysheet
+
+python -m ipykernel install --name "python2" --prefix=${basedir} --display-name "Python2"
+
+#source deactivate
+export PATH=$path

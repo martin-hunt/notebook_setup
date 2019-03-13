@@ -1,0 +1,2 @@
+# install special nbnovnc for hubs
+pip  install -U --upgrade-strategy only-if-needed git+https://github.com/martin-hunt/nbnovnc.git

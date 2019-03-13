@@ -1,0 +1,16 @@
+#ver=Anaconda3-2018.12-Linux-x86_64.sh
+conda update -y --all
+conda install -y nodejs=10.13.0 
+conda install -y mysql=5.7.24 
+conda install -y pymysql=0.9.3 
+conda install -y mysql-connector-python=8.0.13 
+conda install -y ffmpeg=4.1  -c defaults -c conda-forge
+conda install -y pint=0.9  -c defaults -c conda-forge
+conda install -y qgrid=1.1.1  -c defaults -c conda-forge
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
+jupyter labextension install qgrid
+conda install -y oct2py=4.0.6  -c defaults -c conda-forge
+conda install -y celery=4.2.1  -c defaults -c conda-forge
+conda install -y gmaps=0.8.4  -c defaults -c conda-forge
+conda install -y ipyleaflet=0.10.0  -c defaults -c conda-forge
+conda install -y bagit=1.7.0  -c defaults -c conda-forge

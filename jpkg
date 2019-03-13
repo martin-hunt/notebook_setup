@@ -17,90 +17,11 @@ except:
     pass
 
 """
-This installation script installs the same version of anaconda2 and anaconda3 distributions.
-
-Anaconda2 is built with Python 2
-Anaconda3 is build with Python 3
-
-We set up the jupyter notebook configurations to enable either python 2 or 3
-kernels to be used regardless of which anaconda distribution was used to launch
-the jupyter notebook server.
+This installation script installs anaconda with a set of packages.
 
 We also add our custom jupyter hub code to the jupyter configs.  All our configuration changes
 and extensions are added to the anaconda subdirectory.
-
-The tricky part is that anaconda installs its own extensions which we do not want.  It also
-manages its own kernels which assume you use its virtual environments.  We do not.
-So we uninstall the jupyter conda extensions and then reenable our extensions.
-
 """
-
-
-def install_packages(cname, nopy2):
-    global dirname
-
-    pname = os.path.join(dirname, "configs", cname)
-    print("Installing Packages for Python3 from %s" % (cname))
-
-    with open(pname) as fp:
-        for line in fp:
-            if line[0] == '+':
-                continue
-            if line[0] == '#':
-                if line.startswith('# PYTHON2') and nopy2 is True:
-                    return
-                # comment
-                continue
-            if line[0] == '!':
-                line = line[1:].strip()
-                print("Running:", line)
-                os.system(line)
-                continue
-            sline = line.split()
-            channel = None
-            if len(sline) == 0:
-                continue
-            if sline[-1] == '--no-deps':
-                sline = sline[:-1]
-                nodeps = '--no-deps'
-            else:
-                nodeps = ''
-
-            if len(sline) == 3:
-                pkg, ver, inst = sline
-            elif len(sline) == 4:
-                pkg, ver, inst, channel = sline
-            else:
-                if len(sline) > 0:
-                    print("Cannot parse line:", line)
-                continue
-
-            print("\n************** Installing %s %s" % (pkg, ver))
-            if inst == 'conda':
-                cmd = "conda install -y %s=%s %s" % (pkg, ver, nodeps)
-                if channel:
-                    cmd += " -c defaults -c %s" % channel
-            elif inst == 'pip':
-                if ver == '*':
-                    cmd = "pip install -U --upgrade-strategy only-if-needed %s" % pkg
-                else:
-                    cmd = "pip install -U --upgrade-strategy only-if-needed %s==%s" % (pkg, ver)
-            print("Running '%s'" % cmd)
-            if os.system(cmd):
-                print("ERROR: Installation of %s failed.\n" % pkg)
-        print('\n')
-
-
-def install_file(fname, destdir):
-    "Run the anaconda install file"
-
-    os.system('bash ' + fname + ' -b -p ' + destdir)
-
-    bindir = os.path.join(destdir, 'bin')
-
-    # set PATH so we can use 'conda'  and 'pip'
-    path = os.environ['PATH']
-    os.environ['PATH'] = bindir + ':' + path
 
 
 def check_perm(p):
@@ -125,36 +46,6 @@ def check_perm(p):
     os.chdir(cwd)
 
 
-def install_updates(cname, p, nopy2):
-    global dirname
-
-    # install packages we want
-    install_packages(cname, nopy2)
-
-    bindir = os.path.join(p, 'bin')
-
-    # start_jupyter script
-    os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyter'), bindir))
-    os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyterlab'), bindir))
-
-
-
-def install_R_pkgs(p):
-    global dirname
-
-    # install packages we want
-    scriptname = os.path.join(dirname, 'inst.R')
-    os.system('Rscript %s' % scriptname)
-
-
-def install_kernels(p, nopy2):
-    os.system('python -m ipykernel install --name "python3" --prefix=%s --display-name "Python3"' % p)
-    if nopy2:
-        return
-    os.system('source activate Python2')
-    os.system('python -m ipykernel install --name "python2" --prefix=%s --display-name "Python2"' % p)
-    os.system('source deactivate Python2')
-
 def install_octave(p, env_dir, desktop):
     "Install octave kernel, if octave is found"
     octave_kstr = find_octave(p, desktop, env_dir, prompt=False)
@@ -167,12 +58,13 @@ def install_octave(p, env_dir, desktop):
             f.write(octave_kstr)
 
 
-def write_env(rver, env_dir, p):
-    print('write_env: path=%s env_dir=%s'% (p, env_dir))
+def write_env(rver, env_dir, instpath):
     # write environ files for 'use' on the hubs
-    bindir = os.path.join(p, 'bin')
+    bindir = os.path.join(instpath, 'bin')
     os.system('mkdir -p %s' % env_dir)
-    fname = os.path.join(env_dir, os.path.basename(p))
+
+    fname = os.path.join(env_dir, os.path.basename(instpath))
+
     with open(fname, 'w') as f:
         f.write('\nconflict ANACONDA_CHOICE\n\n')
         f.write('desc "Anaconda is a package manager, an environment manager, a Python distribution, and a collection of over 1,000+ open source packages."\n\n')
@@ -182,9 +74,9 @@ def write_env(rver, env_dir, p):
         f.write('tags MATHSCI\n')
 
     # needed for submit, which only works on python 2 for now
-    #    hubzero = '/usr/lib/python2.7/dist-packages/hubzero'
-    #    libdir = os.path.join(p, 'lib', 'python2.7', 'site-packages')
-    #    os.system('ln -s %s %s' % (hubzero, libdir))
+    #   hubzero = '/usr/lib/python2.7/dist-packages/hubzero'
+    # libdir = os.path.join(p, 'lib', 'python2.7', 'site-packages')
+    # os.system('ln -s %s %s' % (hubzero, libdir))
 
 
 def install_extensions(p, desktop):
@@ -215,8 +107,8 @@ def install_extensions(p, desktop):
         f.write("c.NotebookApp.disable_check_xsrf = True")
 
 
-    if not desktop:
-        os.system('jupyter nbextension install --sys-prefix prefs')
+    # if not desktop:
+    #     os.system('jupyter nbextension install --sys-prefix prefs')
 
     # install calysto document tools
     os.system('jupyter nbextension install --sys-prefix https://github.com/Calysto/notebook-extensions/archive/master.zip')
@@ -245,71 +137,41 @@ def cleanup(p, desktop):
     # remove any local extensions because they may conflict with global
     os.system('rm -rf ~/.local/share/jupyter/nbextensions')
 
-    # uninstall anaconda jupyter notebook extensions which we don't want
-    #os.system('conda uninstall -y nb_conda')
 
-    # Enable the extensions.
-    # Must do this after uninstalling the conda extensions because they
-    # will uninstall our extensions too!  These just update etc/jupyter/nbconfig/notebook.json
-    #os.system('jupyter nbextension enable --sys-prefix autorun/main 2> /dev/null')
-    if not desktop:
-        os.system('jupyter nbextension enable --sys-prefix prefs/prefs')
-    #os.system('jupyter nbextension enable --sys-prefix dragdrop/main')
-    # os.system('jupyter nbextension enable --py --sys-prefix widgetsnbextension')
-    # os.system('jupyter nbextension enable --py --sys-prefix gmaps')
-    # os.system('jupyter serverextension enable --py declarativewidgets --sys-prefix')
-    # os.system('jupyter nbextension enable --py --sys-prefix declarativewidgets')
-    #os.system('jupyter nbextension enable --py jupyter_dashboards --sys-prefix')
-
-    # disable nbdime extension
-    # os.system('jupyter nbextension uninstall nbdime')
-
-    # maybe someday we will enable nbpresent, but right now it is much too buggy
-    # os.system('jupyter nbextension enable --sys-prefix  nbpresent/js/nbpresent.min 2> /dev/null')
-
-    # os.system('jupyter nbextension enable --sys-prefix  --py pythreejs')
-    # os.system('jupyter nbextension enable --sys-prefix  --py nglview')
-    # if p == pathlist[0]:
-    #    # python2 only
-    #    os.system('jupyter nbextension enable --sys-prefix  --py nbmolviz')
-
-    # mailboxes. only on nanohub right now
-    # if socket.gethostname() == 'nanoHUB':
-        # os.system('jupyter nbextension enable --sys-prefix sendto/sendto')
-
-    #os.system('conda clean -y --all')
-
-
-def get_versions(cname):
+def get_scriptname(ver):
     global dirname
-    env_dir = ""
-
-    cname = os.path.join(dirname, 'configs', cname)
+    cname = os.path.join(dirname, 'configs', 'base_conda_'+ver)
     with open(cname) as fp:
         for line in fp:
             if line[0] == '#':
-                # comment
-                continue
-            sline = line.split()
-            if len(sline) != 2:
-                continue
-            if sline[0] == '+DESKTOP':
-                desk = sline[1] == 'True'
-            elif sline[0] == '+VERSION':
-                ver = sline[1]
-            elif sline[0] == '+RVERSION':
-                rver = sline[1]
-            elif sline[0] == '+ENVIRON_CONFIG_DIR':
-                env_dir = sline[1]
-            elif sline[0] == '++':
-                return (ver, rver, env_dir, desk)
+                line = line[1:].split('=')
+                if len(line) != 2:
+                    continue
+                line = [x.strip() for x in line]
+                if line[0] == 'ver':
+                    return line[1]
+    return None
 
 
 def make_new(args):
-    ver, rver, env_dir, desktop = get_versions(args.name)
+    global dirname  # where the install scripts are
 
-    script = "Anaconda3-%s-Linux-x86_64.sh" % ver
-    instpath = os.path.realpath('anaconda3-%s' % (rver))
+    print(args)
+    print("Installing version %s" % args.ver)
+    print("Nanohub: %s" % (args.with_nanohub))
+    print("Desktop: %s" % (args.desktop))
+    print("Python2: %s" % (args.with_py2))
+    print("ML: %s" % (args.with_ml))
+    print("VNC: %s" % (args.with_vnc))
+    print("Dash: %s" % (args.with_dash))
+    if not args.desktop:
+        print("Env Dir: %s" % args.envdir)
+    print()
+
+    env_dir = args.envdir
+    script = get_scriptname(args.ver)
+    instpath = os.path.realpath('anaconda-%s' % (args.ver))
+    print("script:%s - %s" % (script, instpath))
     if not os.path.isfile(script):
         print("Downloading", script)
         os.system("curl -O https://repo.continuum.io/archive/%s" % script)
@@ -317,18 +179,73 @@ def make_new(args):
             print("Error: %s not found and could not download." % script)
             sys.exit(1)
 
-    print("Installing Anaconda3-%s in %s" % (ver, instpath))
-    install_file(script, instpath)
+    print("Installing anaconda-%s in %s" % (args.ver, instpath))
+    os.system('bash ' + script + ' -b -p ' + instpath)
 
-    if not desktop:
-        write_env(rver, env_dir, instpath)
+    bindir = os.path.join(instpath, 'bin')
 
-    do_install(desktop, args.name, env_dir, instpath, args.nopy2)
+    # set PATH so we can use 'conda'  and 'pip'
+    path = os.environ['PATH']
+    os.environ['PATH'] = bindir + ':' + path
+
+    cmd = '. ' + os.path.join(dirname, 'configs', 'base_conda_' + args.ver)
+    print("********\n%s\n********" % cmd)
+    os.system(cmd)
+    if args.with_nanohub:
+        cmd = '. ' + os.path.join(dirname, 'configs', 'nanohub_conda_' + args.ver)
+        print("********\n%s\n********" % cmd)
+        os.system(cmd)
+
+    cmd = '. ' + os.path.join(dirname, 'configs', 'base_pip_' + args.ver)
+    print("********\n%s\n********" % cmd)
+    os.system(cmd)
+
+    if args.with_nanohub:
+        cmd = '. ' + os.path.join(dirname, 'configs', 'nanohub_pip_' + args.ver)
+        print("********\n%s\n********" % cmd)
+        os.system(cmd)
+
+    if args.with_ml:
+        cmd = '. ' + os.path.join(dirname, 'configs', 'ml_' + args.ver)
+        print("********\n%s\n********" % cmd)
+        os.system(cmd)
+
+    # if args.desktop:
+    #     cmd = '. ' + os.path.join(dirname, 'configs', 'desktop_' + args.ver)
+    #     print("********\n%s\n********" % cmd)
+    #     os.system(cmd)
+
+    if args.with_py2:
+        cmd = '. ' + os.path.join(dirname, 'configs', 'python2_' + args.ver)
+        print("********\n%s\n********" % cmd)
+        os.system(cmd)
+
+    if args.with_r:
+        cmd = '. ' + os.path.join(dirname, 'configs', 'r_' + args.ver)
+        print("********\n%s\n********" % cmd)
+        os.system(cmd)
+
+    if args.with_vnc:
+        cmd = '. ' + os.path.join(dirname, 'configs', 'nbnovnc')
+        print("********\n%s\n********" % cmd)
+        os.system(cmd)
+
+    # start_jupyter script
+    os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyter'), bindir))
+    os.system('cp %s %s' % (os.path.join(dirname, 'start_jupyterlab'), bindir))
+
+    install_octave(instpath, env_dir, args.desktop)
+    install_extensions(instpath, args.desktop)
+
+    if not args.desktop:
+        write_env(args.ver, env_dir, instpath)
+
+    check_perm(instpath)
+    cleanup(instpath, args.desktop)
 
 
 def do_downloads(ver):
     ret = os.system("wget http://packages.hubzero.org/blobs/anaconda3-%s.tar.xz -O - | tar -xJ" % ver)
-
     if ret:
         print("Download failed.")
         sys.exit(1)
@@ -449,32 +366,31 @@ if __name__ == '__main__':
     # at least one install fails if this is not set
     os.environ['LANG'] = 'en_US.UTF-8'
 
-    parser = argparse.ArgumentParser(
-            usage="""jpkg <command> [<args>]
+    parser = argparse.ArgumentParser()
 
-Commands are:
-   install {configname}    New install using the config file in config/configname.
+    parser.add_argument('--with-py2', action='store_true', default=True,
+                        help='Install Python2 (default: True)')
+    parser.add_argument('--with-nanohub', action='store_true', default=True,
+                        help='Install tools for materials simulations (default: True)')
+    parser.add_argument('--with-dash', action='store_true', default=False,
+                        help='Install Plotly Dash (default: False)')
+    parser.add_argument('--with-vnc', action='store_true', default=False,
+                        help='Install VNC (default: False)')
+    parser.add_argument('--with-ml', action='store_true', default=True,
+                        help='Install Machine Learning tools (default: True)')
+    parser.add_argument('--desktop', action='store_true', default=True,
+                        help='Install Desktop version (default: True)')
+    parser.add_argument('--envdir', type=str, default='/apps/share64/debian7/environ.d',
+                        help='Environment directory for hubs (default: /apps/share64/debian7/environ.d)')
+    parser.add_argument('--with-r', action='store_true', default=False,
+                        help='Install the R kernel and packages (default: False)')
 
-   netinst {version}       Network install a specific version of anaconda from hubzero.
-
-   cleanup [version]       Fix any permissions problems.  Run after manually updating installation.
-
-Packages will be installed in the current directory in
-subdirectories anaconda[2|3]-{version}.
-
-To add new packages, add them to the config file
-then run the update command.
-""")
-
-    parser.add_argument('--nopy2', dest='nopy2', action='store_true',
-                        default=False,
-                        help='Do not install Python2 (default: False)')
 
     subparsers = parser.add_subparsers()
 
     # create the parser for the "install" command
     parser_install = subparsers.add_parser('install')
-    parser_install.add_argument('name', type=str)
+    parser_install.add_argument('ver', type=str)
     parser_install.set_defaults(func=make_new)
 
     # create the parser for the "update" command
@@ -487,12 +403,9 @@ then run the update command.
     parser_fix.add_argument('ver', default='',  nargs='?', type=str)
     parser_fix.set_defaults(func=make_cleanup)
 
+    
     args = parser.parse_args()
     args.func(args)
+    # parser.print_help()
 
-    # jpkg install nano41
-    # jpkg install nano41-dev
-    # jpkg install hubzero41
-    # jpkg netinst 5.1
-    # jpkg cleanup [5.1]
 
