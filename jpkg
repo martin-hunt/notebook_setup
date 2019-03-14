@@ -368,22 +368,16 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--with-py2', action='store_true', default=True,
-                        help='Install Python2 (default: True)')
-    parser.add_argument('--with-nanohub', action='store_true', default=True,
-                        help='Install tools for materials simulations (default: True)')
-    parser.add_argument('--with-dash', action='store_true', default=False,
-                        help='Install Plotly Dash (default: False)')
-    parser.add_argument('--with-vnc', action='store_true', default=False,
-                        help='Install VNC (default: False)')
-    parser.add_argument('--with-ml', action='store_true', default=True,
-                        help='Install Machine Learning tools (default: True)')
-    parser.add_argument('--desktop', action='store_true', default=True,
-                        help='Install Desktop version (default: True)')
+    parser.add_argument('--with-py2', action='store_true', help='Install Python2')
+    parser.add_argument('--with-nanohub', action='store_true', help='Install tools for materials simulations')
+    parser.add_argument('--with-dash', action='store_true', help='Install Plotly Dash')
+    parser.add_argument('--with-vnc', action='store_true', help='Install VNC')
+    parser.add_argument('--with-ml', action='store_true', help='Install Machine Learning tools')
+    parser.add_argument('--desktop', action='store_true', help='Install Desktop version')
     parser.add_argument('--envdir', type=str, default='/apps/share64/debian7/environ.d',
                         help='Environment directory for hubs (default: /apps/share64/debian7/environ.d)')
-    parser.add_argument('--with-r', action='store_true', default=False,
-                        help='Install the R kernel and packages (default: False)')
+    parser.add_argument('--with-r', action='store_true', 
+                        help='Install the R kernel and packages')
 
 
     subparsers = parser.add_subparsers()
@@ -405,7 +399,12 @@ if __name__ == '__main__':
 
     
     args = parser.parse_args()
+    print(args)
     args.func(args)
-    # parser.print_help()
 
 
+# ./jupyter_notebook_setup/jpkg --desktop --with-py2 --with-r install 6  
+# ./jupyter_notebook_setup/jpkg --with-nanohub --envdir='/apps/share64/debian9/environ.d' --with-r --with-vnc install 6
+
+# typical nanohub
+# ./jupyter_notebook_setup/jpkg --with-nanohub --with-py2 --with-r --with-vnc --with-ml install 6
