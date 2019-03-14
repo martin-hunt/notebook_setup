@@ -13,7 +13,8 @@ conda install -y r-keras=2.2.4
 conda install -y r-tensorflow=1.10
 conda install -y r-plotly=4.8.0  -c defaults -c conda-forge
 
-echo 'INSTALLING R kernel to ${basedir}/share/jupyter/kernels/r/kernel.json'
+echo INSTALLING R kernel to ${basedir}/share/jupyter/kernels/r/kernel.json
+mkdir -p ${basedir}/share/jupyter/kernels/r
 cat <<EOF > ${basedir}/share/jupyter/kernels/r/kernel.json
 {"argv": ["${basedir}/envs/R/bin/R", "--slave", "-e", "IRkernel::main()", "--args", "{connection_file}"],
  "display_name":"R",
