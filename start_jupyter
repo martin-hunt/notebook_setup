@@ -33,9 +33,6 @@ from subprocess import call, Popen, check_output
 from string import Template
 import time
 
-EXAMPLES = '/apps/share64/debian7/anaconda/examples'
-EXAMPLES_DIR = "notebooks/_NOTEBOOK_EXAMPLES"
-
 notebookProcess = None
 
 def handler(signum, frame):
@@ -126,32 +123,6 @@ def get_session():
     os.environ['DISPLAY'] = display
     return session, sessiondir
 
-
-def sign_tool(name, sign=False):
-    if sign:
-        call(['jupyter', 'trust', name])
-    else:
-        call(['jupyter_unsign.py', name])
-
-
-def set_tool(name, tool=False):
-    """ Set tool metadata.  Must have write permission.
-    Otherwise fails silently.
-    """
-    try:
-        data = json.load(open(name))
-        if 'tool' in data['metadata']:
-            file_tool = data['metadata']['tool']
-        else:
-            file_tool = False
-        if file_tool != tool:
-            data['metadata']['tool'] = tool
-            with open(name, 'w') as f:
-                json.dump(data, f)
-    except:
-        pass
-
-
 def get_proxy_addr():
     session, sessiondir = get_session()
     fn = os.path.join(sessiondir, 'resources')
@@ -193,24 +164,6 @@ def get_cookie():
     return cookie_name, token
 
 
-def load_examples(arglist):
-    # Run in users HOME subdirectory
-    os.chdir(os.environ['HOME'])
-
-    # create if it does not exist
-    call(['mkdir', '-p', 'notebooks'])
-
-    # create directory of symlinks to examples
-    call("ln -s %s %s" % (EXAMPLES, EXAMPLES_DIR), shell=True)
-
-    # The NotebookSettings is an autorun tool and we must flag it as trusted.
-    sign_tool('%s/NotebookSettings/NotebookSettings.ipynb' % EXAMPLES, True)
-    # also trust Index page
-    sign_tool('%s/Index.ipynb' % EXAMPLES, True)
-    notebook = "notebooks/%s/Index.ipynb" % EXAMPLES_DIR
-    arglist.append('--NotebookApp.default_url="%s"' % notebook)
-
-
 def find_notebook(name, tool, arglist):
     if tool is None:
         if not os.path.isfile(name):
@@ -239,8 +192,6 @@ def find_notebook(name, tool, arglist):
             print("Cannot find %s." % name, file=sys.stderr)
             sys.exit(1)
 
-    # It's a published tool, so no terminals or dashboard
-    arglist.append("--NotebookApp.nbserver_extensions={'terminate':True}")
     return os.path.split(nb_name)
 
 
@@ -252,13 +203,6 @@ def run_notebook(args):
     if args.name is None:
         if args.tool:
             parser.error("ERROR: -t with no filename.\n")
-
-        # If no notebook name, just run server in current directory,
-        # unless -T parameter is there, then load examples.  Normally
-        # only the jupyter tool invoke script does this.
-        if args.T:
-            load_examples(arglist)
-
     else:
         nb_dir, nb_name = find_notebook(args.name, args.T, arglist)
         if nb_dir:
@@ -269,8 +213,6 @@ def run_notebook(args):
             arglist.append('--NotebookApp.default_url="apps/%s"' % nb_name)
         else:
             arglist.append('--NotebookApp.default_url="notebooks/%s"' % nb_name)
-            set_tool(nb_name, args.tool)
-            sign_tool(nb_name, args.tool)
 
     # When invoked by the system, the shell will be dash.
     workspace = True
