@@ -1,2 +1,5 @@
 # install special nbnovnc for hubs
-pip  install -U --upgrade-strategy only-if-needed git+https://github.com/martin-hunt/nbnovnc.git
+pip --no-cache-dir install git+https://github.com/martin-hunt/nbnovnc.git
+jupyter serverextension enable  --py --sys-prefix nbnovnc
+jupyter nbextension     install --py --sys-prefix nbnovnc
+jupyter nbextension     enable  --py --sys-prefix nbnovnc
