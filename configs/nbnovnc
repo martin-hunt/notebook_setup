@@ -1,5 +1,16 @@
+# install nbnovnc
+if [ ! -d "/apps/share64/debian7/NoVNC" ]; then
+    git clone https://github.com/novnc/noVNC.git /apps/share64/debian7/NoVNC
+    git clone https://github.com/novnc/websockify /apps/share64/debian7/NoVNC/utils/websockify
+    ln -s /apps/share64/debian7/NoVNC /apps/share64/debian7/NoVNC-1.0.0
+fi
+
 # install special nbnovnc for hubs
 pip --no-cache-dir install git+https://github.com/martin-hunt/nbnovnc.git
 jupyter serverextension enable  --py --sys-prefix nbnovnc
 jupyter nbextension     install --py --sys-prefix nbnovnc
 jupyter nbextension     enable  --py --sys-prefix nbnovnc
+
+# install jupyter-server-proxy
+pip install -U --upgrade-strategy only-if-needed jupyter-server-proxy
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab-server-proxy
