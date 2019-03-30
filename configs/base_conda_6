@@ -2,6 +2,7 @@
 conda update -y --all
 conda install -y tornado=5.1.1
 conda install -y nodejs=10.13.0 
+npm install -g npm
 conda install -y mysql=5.7.24 
 conda install -y pymysql=0.9.3 
 conda install -y mysql-connector-python=8.0.13 

@@ -14,7 +14,7 @@ pip install -U --upgrade-strategy only-if-needed citrination-client==5.0.1
 pip install -U --upgrade-strategy only-if-needed itkwidgets==0.16.1
 pip install -U --upgrade-strategy only-if-needed matminer==0.5.4
 pip install -U --upgrade-strategy only-if-needed avogadro==1.92.1
-pip install -U --upgrade-strategy only-if-needed openchemistry==0.0.16
+pip install -U --upgrade-strategy only-if-needed openchemistry==0.0.17
 pip install -U --upgrade-strategy only-if-needed vtk==8.1.2
 # joommf
 pip install -U --upgrade-strategy only-if-needed discretisedfield==0.8.3
