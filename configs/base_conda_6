@@ -1,5 +1,6 @@
 #ver=Anaconda3-2018.12-Linux-x86_64.sh
 conda update -y --all
+conda install -y tornado=5.1.1
 conda install -y nodejs=10.13.0 
 conda install -y mysql=5.7.24 
 conda install -y pymysql=0.9.3 

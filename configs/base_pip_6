@@ -14,7 +14,6 @@ pip install -U --upgrade-strategy only-if-needed appmode==0.5.0
 jupyter nbextension     enable --py --sys-prefix appmode
 jupyter serverextension enable --py --sys-prefix appmode
 pip install -U --upgrade-strategy only-if-needed hublib==0.9.94
-pip install -U --upgrade-strategy only-if-needed plotly==3.7.1
 pip install -U --upgrade-strategy only-if-needed ipysheet==0.3.2
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install ipysheet
 pip install -U --upgrade-strategy only-if-needed jp_proxy_widget==1.0.0
@@ -26,14 +25,21 @@ jupyter serverextension enable --py jupyterlab_iframe
 pip install -U --upgrade-strategy only-if-needed jupyterlab-latex==0.4.1
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/latex
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/geojson-extension
-NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/plotly-extension
-NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install plotlywidget
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/vega3-extension
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyter-matplotlib
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/mp4-extension
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab-chart-editor
 # merged into 1.0a
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @mflevine/jupyterlab_html
+
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab-spreadsheet
+
+pip install  -U --upgrade-strategy only-if-needed floatview
+pip install -U --upgrade-strategy only-if-needed plotly==3.7.1
+pip install -U --upgrade-strategy only-if-needed plotly_express
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/plotly-extension
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install plotlywidget
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab-floatview
 
 # Jupyter Snippets Menu
 git clone https://github.com/martin-hunt/jupyter_snippets.git /tmp/jupyter_snippets
