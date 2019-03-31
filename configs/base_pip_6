@@ -2,7 +2,7 @@
 pip install -U --upgrade-strategy only-if-needed black==19.3b0
 pip install -U --upgrade-strategy only-if-needed scikit-video==1.1.11
 pip install -U --upgrade-strategy only-if-needed yamlmagic==0.2.0
-pip install -U --upgrade-strategy only-if-needed mapboxgl==0.10.0
+pip install -U --upgrade-strategy only-if-needed mapboxgl==0.10.1
 pip install -U --upgrade-strategy only-if-needed moviepy==0.2.3.5
 pip install -U --upgrade-strategy only-if-needed papermill==0.19.0
 pip install -U --upgrade-strategy only-if-needed git+https://github.com/SheffieldML/GPy.git

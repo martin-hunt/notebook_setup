@@ -18,3 +18,4 @@ conda install -y gmaps=0.8.4  -c defaults -c conda-forge
 conda install -y ipyleaflet=0.10.0  -c defaults -c conda-forge
 conda install -y bagit=1.7.0  -c defaults -c conda-forge
 conda install -y fftw=3.3.8 -c defaults -c conda-forge
+conda install -y nbsphinx=0.4.2 -c defaults -c conda-forge

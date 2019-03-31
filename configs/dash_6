@@ -1,9 +1,11 @@
 # plotly dash
-#dash 0.36.0 pip
-#dash-renderer 0.17.0 pip
-#dash-html-components 0.13.5 pip
-#dash-core-components 0.43.0 pip
-#dash-daq 0.1.0 pip
-#dash-table 3.4.0 pip
-#dash-cytoscape 0.0.4 pip
-#jupyter-plotly-dash 0.2.0 pip
+pip install -U --upgrade-strategy only-if-needed dash==0.40.0
+pip install -U --upgrade-strategy only-if-needed dash-renderer==0.21.0
+pip install -U --upgrade-strategy only-if-needed dash-html-components==0.15.0
+pip install -U --upgrade-strategy only-if-needed dash-core-components==0.45.0
+pip install -U --upgrade-strategy only-if-needed dash-daq==0.1.4
+pip install -U --upgrade-strategy only-if-needed dash-cytoscape==0.0.5
+pip install -U --upgrade-strategy only-if-needed jupyterlab-dash==0.1.0a2
+NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab-dash@0.1.0-alpha.2
+
+#jupyter-plotly-dash FIXME still uses nbserverproxy
