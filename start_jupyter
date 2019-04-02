@@ -203,6 +203,9 @@ def run_notebook(args):
     if args.name is None:
         if args.tool:
             parser.error("ERROR: -t with no filename.\n")
+        if args.T:
+            os.chdir(os.environ['HOME'])
+
     else:
         nb_dir, nb_name = find_notebook(args.name, args.T, arglist)
         if nb_dir:
@@ -261,7 +264,6 @@ def run_notebook(args):
     notebookProcess = None
     print("\n\n%s Notebook server terminated. returnCode = %d\n" % (time.ctime(),returnCode))
     sys.stdout.flush()  # make sure this gets displayed now.
-#   time.sleep(120)
 
 
 def find_headers(file):
