@@ -107,8 +107,9 @@ def install_extensions(p, desktop):
         f.write("c.NotebookApp.disable_check_xsrf = True")
 
 
-    # if not desktop:
-    #     os.system('jupyter nbextension install --sys-prefix prefs')
+    if not desktop:
+        os.system('jupyter nbextension install --sys-prefix prefs')
+        os.system('jupyter nbextension enable --sys-prefix prefs/prefs')
 
     # install calysto document tools
     os.system('jupyter nbextension install --sys-prefix https://github.com/Calysto/notebook-extensions/archive/master.zip')
