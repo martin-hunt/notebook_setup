@@ -12,12 +12,13 @@ pip install -U --upgrade-strategy only-if-needed mdf-forge==0.7.0
 pip install -U --upgrade-strategy only-if-needed chemspipy==2.0.0
 pip install -U --upgrade-strategy only-if-needed citrination-client==5.0.1
 pip install -U --upgrade-strategy only-if-needed itkwidgets==0.16.1
-pip install -U --upgrade-strategy only-if-needed matminer==0.5.4
+pip install -U --upgrade-strategy only-if-needed matminer==0.5.5
 pip install -U --upgrade-strategy only-if-needed avogadro==1.92.1
 pip install -U --upgrade-strategy only-if-needed openchemistry==0.0.17
 pip install -U --upgrade-strategy only-if-needed vtk==8.1.2
 pip  install -U --upgrade-strategy only-if-needed boxsdk==2.3.2
 pip  install -U --upgrade-strategy only-if-needed mdf_connect_client==0.3.0
+pip  install -U --upgrade-strategy only-if-needed scikit-rf==0.14.9
 
 # joommf
 pip install -U --upgrade-strategy only-if-needed discretisedfield==0.8.3

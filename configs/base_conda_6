@@ -5,6 +5,9 @@ conda install -y nodejs=10.13.0
 npm install -g npm
 conda install -y mysql=5.7.24 
 conda install -y pymysql=0.9.3 
+conda install -y bokeh=1.1.0
+conda install -y dask=1.1.5
+conda install -y notebook=5.7.8
 conda install -y mysql-connector-python=8.0.13 
 conda install -y rdkit=2018.09.1 -c defaults -c conda-forge
 conda install -y ffmpeg=4.1  -c defaults -c conda-forge
