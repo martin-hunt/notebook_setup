@@ -1,5 +1,5 @@
 # PIP nanohub packages
-pip install -U --upgrade-strategy only-if-needed nglview==1.1.9
+pip install -U --upgrade-strategy only-if-needed nglview==1.2.0
 NODE_OPTIONS=--max-old-space-size=16384 jupyter-nbextension enable nglview --py --sys-prefix
 pip install -U --upgrade-strategy only-if-needed mendeleev==0.4.5
 pip install -U --upgrade-strategy only-if-needed imolecule==0.1.13
@@ -16,9 +16,10 @@ pip install -U --upgrade-strategy only-if-needed matminer==0.5.5
 pip install -U --upgrade-strategy only-if-needed avogadro==1.92.1
 pip install -U --upgrade-strategy only-if-needed openchemistry==0.0.17
 pip install -U --upgrade-strategy only-if-needed vtk==8.1.2
-pip  install -U --upgrade-strategy only-if-needed boxsdk==2.3.2
-pip  install -U --upgrade-strategy only-if-needed mdf_connect_client==0.3.0
-pip  install -U --upgrade-strategy only-if-needed scikit-rf==0.14.9
+pip install -U --upgrade-strategy only-if-needed boxsdk==2.3.2
+pip install -U --upgrade-strategy only-if-needed mdf_connect_client==0.3.0
+pip install -U --upgrade-strategy only-if-needed scikit-rf==0.14.9
+pip install -U --upgrade-strategy only-if-needed git+https://github.com/martin-hunt/MAST-ML.git
 
 # joommf
 pip install -U --upgrade-strategy only-if-needed discretisedfield==0.8.3
