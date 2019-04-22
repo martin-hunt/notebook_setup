@@ -1,7 +1,7 @@
 # conda nanohub packages
 conda install -y ipyvolume=0.5.1  -c defaults -c conda-forge
 conda install -y lmfit=0.9.12  -c defaults -c conda-forge
-conda install -y phonopy=2.0.0  -c defaults -c conda-forge
+conda install -y phonopy=2.1.3  -c defaults -c conda-forge
 conda install -y mdtraj=1.9.2  -c defaults -c conda-forge
 conda install -y mdanalysis=0.19.2  -c defaults -c conda-forge
 conda install -y mdanalysistests=0.19.2  -c defaults -c conda-forge
