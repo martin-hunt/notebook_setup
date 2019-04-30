@@ -4,12 +4,26 @@ pip install -U --upgrade-strategy only-if-needed scikit-video==1.1.11
 pip install -U --upgrade-strategy only-if-needed yamlmagic==0.2.0
 pip install -U --upgrade-strategy only-if-needed mapboxgl==0.10.1
 pip install -U --upgrade-strategy only-if-needed moviepy==0.2.3.5
-pip install -U --upgrade-strategy only-if-needed papermill==0.19.1
+pip install -U --upgrade-strategy only-if-needed papermill==1.0.0
+pip install -U --upgrade-strategy only-if-needed scrapbook==0.2.0
 pip install -U --upgrade-strategy only-if-needed git+https://github.com/SheffieldML/GPy.git
 pip install -U --upgrade-strategy only-if-needed cymysql==0.9.13
 pip install -U --upgrade-strategy only-if-needed mysqlclient==1.4.2
 pip install -U --upgrade-strategy only-if-needed sshtunnel==0.1.4
 pip install -U --upgrade-strategy only-if-needed graphviz==0.10.1
+
+# dev tools
+pip install -U --upgrade-strategy only-if-needed cookiecutter==1.6.0
+pip install -U --upgrade-strategy only-if-needed flake8==3.7.7
+pip install -U --upgrade-strategy only-if-needed sphinx==2.0.1
+pip install -U --upgrade-strategy only-if-needed punch.py==1.6.0
+pip install -U --upgrade-strategy only-if-needed watchdog==0.9.0
+pip install -U --upgrade-strategy only-if-needed tox==3.9.0
+pip install -U --upgrade-strategy only-if-needed coverage==4.5.3
+pip install -U --upgrade-strategy only-if-needed pytest==4.4.1
+pip install -U --upgrade-strategy only-if-needed pytest-cov==2.6.1
+
+
 pip install -U --upgrade-strategy only-if-needed appmode==0.5.0
 jupyter nbextension     enable --py --sys-prefix appmode
 jupyter serverextension enable --py --sys-prefix appmode
@@ -34,7 +48,7 @@ NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @mflevine/j
 
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab-spreadsheet
 
-pip install  -U --upgrade-strategy only-if-needed floatview
+pip install -U --upgrade-strategy only-if-needed floatview
 pip install -U --upgrade-strategy only-if-needed plotly==3.8.1
 pip install -U --upgrade-strategy only-if-needed plotly_express
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/plotly-extension
