@@ -1,11 +1,11 @@
 # PIP nanohub packages
-pip install -U --upgrade-strategy only-if-needed nglview==1.2.0
+pip install -U --upgrade-strategy only-if-needed nglview==1.2.1
 NODE_OPTIONS=--max-old-space-size=16384 jupyter-nbextension enable nglview --py --sys-prefix
 pip install -U --upgrade-strategy only-if-needed mendeleev==0.4.5
 pip install -U --upgrade-strategy only-if-needed imolecule==0.1.13
 pip install -U --upgrade-strategy only-if-needed py3dmol==0.8.0
 pip install -U --upgrade-strategy only-if-needed k3d==2.5.5
-pip install -U --upgrade-strategy only-if-needed atomman==1.2.5
+pip install -U --upgrade-strategy only-if-needed atomman==1.2.6
 pip install -U --upgrade-strategy only-if-needed imutils==0.5.2
 pip install -U --upgrade-strategy only-if-needed pygal==2.4.0
 pip install -U --upgrade-strategy only-if-needed mdf-forge==0.7.0
