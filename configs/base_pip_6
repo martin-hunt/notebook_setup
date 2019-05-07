@@ -30,6 +30,7 @@ jupyter serverextension enable --py --sys-prefix appmode
 pip install -U --upgrade-strategy only-if-needed hublib==0.9.94
 pip install -U --upgrade-strategy only-if-needed ipysheet==0.3.4
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install ipysheet
+pip install -U --upgrade-strategy only-if-needed pscript==0.7.1
 pip install -U --upgrade-strategy only-if-needed jp_proxy_widget==1.0.0
 jupyter nbextension enable --py --sys-prefix jp_proxy_widget
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jp_proxy_widget
