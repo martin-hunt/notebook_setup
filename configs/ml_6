@@ -1,3 +1,6 @@
 # Machine Learning
-pip install -U --upgrade-strategy only-if-needed tensorflow==1.13.1
+
+# CPU version
+conda install -y 'tensorflow=1.13.1=mkl*'
+
 pip install -U --upgrade-strategy only-if-needed keras==2.2.4
