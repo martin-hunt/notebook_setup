@@ -51,7 +51,7 @@ NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @mflevine/j
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install jupyterlab-spreadsheet
 
 pip install -U --upgrade-strategy only-if-needed floatview
-pip install -U --upgrade-strategy only-if-needed plotly==3.9.0
+pip install -U --upgrade-strategy only-if-needed plotly==3.10.0
 pip install -U --upgrade-strategy only-if-needed plotly_express
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install @jupyterlab/plotly-extension
 NODE_OPTIONS=--max-old-space-size=16384 jupyter labextension install plotlywidget
