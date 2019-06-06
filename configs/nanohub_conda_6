@@ -5,4 +5,4 @@ conda install -y mdtraj=1.9.2  -c defaults -c conda-forge
 conda install -y mdanalysis=0.19.2  -c defaults -c conda-forge
 conda install -y mdanalysistests=0.19.2  -c defaults -c conda-forge
 conda install -y openbabel=2.4.1  -c defaults -c openbabel
-
+conda install -y -c csdms-stack dakota 
