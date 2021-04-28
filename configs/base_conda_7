@@ -1,0 +1,25 @@
+#ver=Anaconda3-2020.11-Linux-x86_64.sh
+conda update -y --all
+conda install -y tornado
+conda install -y nodejs
+npm install -g npm
+conda install -y mysql
+conda install -y pymysql
+conda install -y bokeh
+conda install -y dask
+conda install -y jupyterlab
+conda install -y notebook
+conda install -y mysql-connector-python
+conda install -y rdkit -c defaults -c conda-forge
+conda install -y ffmpeg  -c defaults -c conda-forge
+conda install -y pint  -c defaults -c conda-forge
+conda install -y qgrid  -c defaults -c conda-forge
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
+jupyter labextension install qgrid
+conda install -y oct2py  -c defaults -c conda-forge
+conda install -y celery  -c defaults -c conda-forge
+conda install -y gmaps  -c defaults -c conda-forge
+conda install -y ipyleaflet  -c defaults -c conda-forge
+conda install -y bagit  -c defaults -c conda-forge
+conda install -y fftw -c defaults -c conda-forge
+conda install -y nbsphinx -c defaults -c conda-forge
